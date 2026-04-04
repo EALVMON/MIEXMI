@@ -11,15 +11,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MIEXMI">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter> <!-- Nos especifica que es la actividad principal -->
-                <action android:name="android.intent.action.MAIN" />
 
+        <!-- Activity de REGISTRO -->
+        <activity
+            android:name=".Registro"
+            android:exported="false" />
+
+        <!-- Activity de LOGIN (la principal) -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true">
+
+            <!-- ESTA ES LA QUE ARRANCA LA APP -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
+        <!-- MainActivity (ya no es la principal) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -1,4 +1,12 @@
 <resources>
-    <string name="app_name">MIEXMI</string>
-    <string name="hola_edu">HOLA EDU!</string>
+    <string name="app_name" translatable="false">MIEXMI</string>
+    <string name="hola_edu" translatable="false">HOLA EDU!</string>
+    <string name="In_Se" translatable="false">Iniciar sesión</string>
+    <string name="dni" translatable="false">DNI</string>
+    <string name="contrasena" translatable="false">Contraseña</string>
+    <string name="Nregistro" translatable="false">¿No tienes cuenta? Regístrate</string>
+    <string name="registro" translatable="false">Registro</string>
+    <string name="registrarse" translatable="false">Registarse</string>
+    <string name="entrar">Entrar</string>
+
 </resources>

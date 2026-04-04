@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="bbva_blue">#004481</color>
+    <color name="bbva_dark_blue">#072146</color>
+    <color name="bbva_light_blue">#1464A5</color>
+    <color name="gris_fondo">#F4F4F4</color>
+
 </resources>
