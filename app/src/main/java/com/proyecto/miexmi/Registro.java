@@ -18,7 +18,7 @@ public class Registro extends AppCompatActivity {
     EditText etDniRegistro, etPasswordRegistro;
     Button btnRegistro;
 
-    // Método principal que se ejecuta al abrir la pantalla
+    // Metodo principal que se ejecuta al abrir la pantalla
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

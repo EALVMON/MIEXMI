@@ -20,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
     TextView tvRegistro;
 
-    // Método principal que se ejecuta al abrir la pantalla
+    // Metodo principal que se ejecuta al abrir la pantalla
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,18 +40,34 @@ public class LoginActivity extends AppCompatActivity {
             // Obtenemos lo que escribe el usuario
             String dni = etDni.getText().toString();
             String pass = etPassword.getText().toString();
+            // Despues de ver como funciona la pagina de menu principal quitar este inet y ponerlo en
+            // el esle
+            // Mensaje visual de que todo ha ido bien (opcional)
+            Toast.makeText(this, "Accediendo a Mi Expediente...", Toast.LENGTH_SHORT).show();
 
+            // 1. Creamos el Intent indicando: (De donde venimos , A donde vamos)
+            Intent intent = new Intent(LoginActivity.this, MenuPrincipal.class);
+
+            // 2. Iniciamos la nueva actividad (pantalla)
+            startActivity(intent);
+
+            // 3. (Recomendado) Cerramos la pantalla de Login actual.
+            // Así, si el usuario pulsa el botón "Atrás" del móvil, sale de la app en lugar de volver a ver el Login.
+            finish();
+            /*
             // Comprobamos si hay campos vacíos
             if (dni.isEmpty() || pass.isEmpty()) {
 
-                // Mostramos mensaje de error
-                Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
+                // Mostramos mensaje de error descomentar despues de hacer las pruebas
+               Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
 
             } else {
 
                 // Mensaje de login correcto (aqui tengo que poner lo que me hace que es pasar a la pantalla de menu)
                 Toast.makeText(this, "Login correcto", Toast.LENGTH_SHORT).show();
             }
+            */
+
         });
 
         // Acción al pulsar "Regístrate"

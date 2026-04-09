@@ -17,6 +17,9 @@
             android:name=".Registro"
             android:exported="false" />
 
+        <!-- Activity de MenuPrincipal -->
+        <activity android:name=".MenuPrincipal" />
+
         <!-- Activity de LOGIN (la principal) -->
         <activity
             android:name=".LoginActivity"
@@ -30,10 +33,8 @@
 
         </activity>
 
-        <!-- MainActivity (ya no es la principal) -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
+
+
 
     </application>
 
