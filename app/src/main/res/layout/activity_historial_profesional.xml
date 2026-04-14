@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gris_fondo_abajo">
+
+    <View
+        android:id="@+id/viewHeaderHistorial"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:background="@color/bbva_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnVolverHistorial"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/volver"
+        android:src="@drawable/abc_ic_ab_back_material"
+        app:tint="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTituloCategoria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/historial_profesional"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnVolverHistorial" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewHeaderHistorial"
+        app:layout_constraintVertical_bias="0.0">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alignmentMode="alignMargins"
+            android:columnCount="2"
+            android:padding="16dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSubEmpleos"
+                style="@style/EstiloModuloCard">
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/empleos" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSubDestinos"
+                style="@style/EstiloModuloCard">
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/destinos" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSubMisiones"
+                style="@style/EstiloModuloCard">
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/misiones" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSubComisiones"
+                style="@style/EstiloModuloCard">
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/comisiones" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSubEvaluacion"
+                style="@style/EstiloModuloCard">
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/evaluacion" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSubHps"
+                style="@style/EstiloModuloCard">
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/hps" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSubRelacion"
+                style="@style/EstiloModuloCard">
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/relacion" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardSubSituacion"
+                style="@style/EstiloModuloCard">
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/situaciones" />
+            </androidx.cardview.widget.CardView>
+
+        </GridLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

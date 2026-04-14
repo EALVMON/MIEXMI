@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="4dp">
+        <!-- las columnas deben medir exactamente lo mismo que los títulos que puse en activity_destinos.xml
+        he copiado exactamente los mismos valores de layout_weight (0.5, 2, 1.2 y 1)
+        Con el atributo tools:text="CIFP Avilés" texto solo se ve en la pantalla de diseño para que
+         me haga una idea de cómo va a quedar-->
+        <TextView
+            android:id="@+id/tvItemNum"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:textColor="@color/gris_claro"
+            android:textSize="14sp"
+            tools:text="1" />
+
+        <TextView
+            android:id="@+id/tvItemNombre"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:textColor="@color/negro_oscuro"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="CIFP Avilés" />
+
+        <TextView
+            android:id="@+id/tvItemFecha"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:textColor="@color/gris_claro"
+            android:textSize="14sp"
+            tools:text="15/09/2023" />
+
+        <TextView
+            android:id="@+id/tvItemBod"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="viewEnd"
+            android:textColor="@color/gris_claro"
+            android:textSize="14sp"
+            tools:text="180" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blanco_lista" />
+
+</LinearLayout>

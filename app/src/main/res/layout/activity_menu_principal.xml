@@ -5,13 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F4F7">
+    android:background="@color/gris_fondo_abajo">
 
     <View
         android:id="@+id/viewHeader"
         android:layout_width="0dp"
         android:layout_height="180dp"
-        android:background="#004481"
+        android:background="@color/bbva_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,8 +22,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
-        android:text="Bienvenido,"
-        android:textColor="#CCFFFFFF"
+        android:text="@string/bienvenido"
+        android:textColor="@color/texto_bienvenida"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -32,7 +32,7 @@
         android:id="@+id/tvNombreMilitar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Eduardo Álvarez"
+        android:text="@string/nombre_ejemplo"
         android:textColor="@android:color/white"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -60,8 +60,8 @@
                 android:id="@+id/tvTituloResumen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Resumen del Expediente"
-                android:textColor="#004481"
+                android:text="@string/resumen_expediente"
+                android:textColor="@color/bbva_blue"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -71,8 +71,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Empleo: Sargento Primero"
-                android:textColor="#444444"
+                android:text="@string/empleo_ejemplo"
+                android:textColor="@color/texto_resumen"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTituloResumen" />
 
@@ -81,8 +81,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Destino: CIFP Avilés (PMDM)"
-                android:textColor="#444444"
+                android:text="@string/destino_ejemplo"
+                android:textColor="@color/texto_resumen"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDetalleEmpleo" />
 
@@ -110,37 +110,49 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardDatosPersonales"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="Datos\nPersonales" />
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/cat_datos_personales" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardHistorialProfesional"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="Historial\nProfesional" />
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/cat_historial_profesional" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardMeritosFormacion"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="Méritos y\nFormación" />
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/cat_meritos_formacion" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardRegistrosAdmin"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="Otros\nRegistros" />
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/cat_otros_registros" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardExportar"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="Exportar\nExpediente" />
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/cat_exportar_expediente" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardActividad"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="Actividad\nAPP" />
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/cat_actividad_app" />
             </androidx.cardview.widget.CardView>
 
         </GridLayout>

@@ -6,5 +6,20 @@
     <color name="bbva_dark_blue">#072146</color>
     <color name="bbva_light_blue">#1464A5</color>
     <color name="gris_fondo">#F4F4F4</color>
+    <color name="gris_fondo_abajo">#F2F4F7</color>
+    <color name="texto_bienvenida">#CCFFFFFF</color>
+    <color name="texto_resumen">#444444</color>
+    <color name="blanco_insercion">#E8EAF6</color>
+    <color name="negro_oscuro">#000000</color>
+
+    <!-- Colores de los botones -->
+    <color name="boton_anadir">#003366</color>
+    <color name="boton_editar">#1464A5</color>
+    <color name="boton_eliminar">#D32F2F</color>
+    <color name="boton_limpiar">#004481</color>
+
+    <!-- Colores de los items de la lista -->
+    <color name="gris_claro">#555555</color>
+    <color name="blanco_lista">#D1D5DB</color>
 
 </resources>

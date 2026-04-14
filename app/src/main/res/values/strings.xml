@@ -1,12 +1,69 @@
-<resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name" translatable="false">MIEXMI</string>
-    <string name="hola_edu" translatable="false">HOLA EDU!</string>
-    <string name="In_Se" translatable="false">Iniciar sesión</string>
+      <string name="In_Se" translatable="false">Iniciar sesión</string>
     <string name="dni" translatable="false">DNI</string>
     <string name="contrasena" translatable="false">Contraseña</string>
     <string name="Nregistro" translatable="false">¿No tienes cuenta? Regístrate</string>
     <string name="registro" translatable="false">Registro</string>
     <string name="registrarse" translatable="false">Registarse</string>
     <string name="entrar">Entrar</string>
+
+
+
+    <string name="bienvenido">Bienvenido,</string>
+    <string name="nombre_ejemplo">Eduardo Álvarez</string> /* quitar luego*/
+    <string name="empleo_ejemplo">Empleo: Sargento Primero</string> /* quitar luego*/
+    <string name="destino_ejemplo">Destino: CIFP Avilés (PMDM)</string> /* quitar luego*/
+    <string name="resumen_expediente">Resumen del Expediente</string>
+    <string name="cat_datos_personales">Datos\nPersonales</string>
+    <string name="cat_historial_profesional">Historial\nProfesional</string>
+    <string name="cat_meritos_formacion">Méritos y\nFormación</string>
+    <string name="cat_otros_registros">Otros\nRegistros</string>
+    <string name="cat_exportar_expediente">Exportar\nExpediente</string>
+    <string name="cat_actividad_app">Actividad\nAPP</string>
+
+
+    <string name="historial_profesional">Historial Profesional</string>
+    <string name="empleos">Empleos</string>
+    <string name="destinos">Destinos</string>
+    <string name="misiones">Misiones</string>
+    <string name="comisiones">Comisiones de Servicio</string>
+    <string name="evaluacion">Evaluación Ascenso</string>
+    <string name="hps">Habilitación Personal\nSeguridad</string>
+    <string name="relacion">Relación\nAdministración</string>
+    <string name="situaciones">Stituaciones\nAdministrativas</string>
+    <string name="volver">Volver</string>
+
+    <string name="titulo_meritos_formacion">Méritos y Formación</string>
+    <string name="trienios">Trienios</string>
+    <string name="aptitudes">Aptitudes</string>
+    <string name="recompensas">Recompensas</string>
+    <string name="distintivos">Distintivos</string>
+    <string name="idiomas">Idiomas</string>
+    <string name="cursos_militares">Cursos\nMilitares</string>
+    <string name="titulos_civiles">Títulos y\nCursos Civiles</string>
+
+    <string name="titulo_otros_registros">Otros Registros</string>
+    <string name="tgcf">T.G.C.F.</string>
+    <string name="carnes_conducir">Carnés\nConducir</string>
+    <string name="armas_particulares">Armas\nParticulares</string>
+
+
+    <string name="titulo_datos_personales">Datos Personales</string>
+    <string name="filiacion">Filiación</string>
+    <string name="tmi">T.M.I.</string>
+    <string name="cuerpo_escala">Cuerpo / Escala\nEspecialidad</string>
+    <string name="nombre_del_destino">Nombre del Destino</string>
+    <string name="fecha_bod_dd_mm_aaaa">Fecha BOD (DD/MM/AAAA)</string>
+    <string name="n_bod">Nº BOD</string>
+    <string name="anadir">Añadir</string>
+    <string name="editar">Editar</string>
+    <string name="borrar">Borrar</string>
+    <string name="limpiar">LIMPIAR</string>
+    <string name="historial_de_destinos_guardados">Historial de Destinos guardados:</string>
+    <string name="nº">Nº</string>
+    <string name="nombre_destino">Nombre Destino</string>
+    <string name="fecha_bod">Fecha BOD</string>
 
 </resources>

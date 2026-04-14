@@ -12,15 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MIEXMI">
 
-        <!-- Activity de REGISTRO -->
-        <activity
-            android:name=".Registro"
-            android:exported="false" />
-
-        <!-- Activity de MenuPrincipal -->
-        <activity android:name=".MenuPrincipal" />
-
-        <!-- Activity de LOGIN (la principal) -->
+        <!-- Activity de LOGIN (LA QUE ARRANCA LA APP) -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -32,6 +24,36 @@
             </intent-filter>
 
         </activity>
+
+        <!-- Activity de REGISTRO -->
+        <activity
+            android:name=".Registro"
+            android:exported="false" />
+
+        <!-- Activity de MenuPrincipal -->
+        <activity
+            android:name=".MenuPrincipal"
+            android:exported="false" />
+
+        <!-- Activity Menu Datos Personales-->
+        <activity
+            android:name=".MenuDatosPer"
+            android:exported="false" />
+
+        <!-- Activity Menu Historial Militar -->
+        <activity
+            android:name=".MenuHistoProfe"
+            android:exported="false" />
+
+        <!-- Activity Menu Meritos y Formaciones -->
+        <activity
+            android:name=".MenuMeritoFor"
+            android:exported="false" />
+
+        <!-- Activity Menu Otros Registros -->
+        <activity
+            android:name=".MenuOtrosRegi"
+            android:exported="false" />
 
 
 
