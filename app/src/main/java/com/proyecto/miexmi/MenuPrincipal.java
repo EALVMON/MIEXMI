@@ -19,7 +19,7 @@ public class MenuPrincipal extends AppCompatActivity {
         // Conectamos esta clase con el XML (activity_nemu_principal.xml)
         setContentView(R.layout.activity_menu_principal);
 
-// 1. Enlazamos las tarjetas del XML con variables en Java
+        // 1. Enlazamos las tarjetas del XML con variables en Java
         CardView cardDatosPersonales = findViewById(R.id.cardDatosPersonales);
         CardView cardHistorialProfesional = findViewById(R.id.cardHistorialProfesional);
         CardView cardMeritosFormacion = findViewById(R.id.cardMeritosFormacion);

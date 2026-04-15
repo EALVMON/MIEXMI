@@ -45,6 +45,32 @@
             android:name=".MenuHistoProfe"
             android:exported="false" />
 
+            <!-- Activity SubMenus de  Historial Militar -->
+                <activity android:name=".Destinos"
+                 android:exported="false" />
+
+                <activity android:name=".Misiones"
+                android:exported="false" />
+
+                <activity android:name=".Empleos"
+                android:exported="false" />
+
+                <activity android:name=".Comisiones"
+                android:exported="false" />
+
+                <activity android:name=".RelacionesAdmin"
+                android:exported="false" />
+
+                <activity android:name=".SituacionesAdmin"
+                android:exported="false" />
+
+
+
+
+
+
+
+
         <!-- Activity Menu Meritos y Formaciones -->
         <activity
             android:name=".MenuMeritoFor"

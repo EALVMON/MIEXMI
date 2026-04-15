@@ -66,4 +66,29 @@
     <string name="nombre_destino">Nombre Destino</string>
     <string name="fecha_bod">Fecha BOD</string>
 
+    <!-- Modulo Mision  -->
+    <string name="nombre_de_la_mision">Nombre de la Misión</string>
+    <string name="nombre_mision">Nombre Misión</string>
+    <string name="historial_de_misiones_guardadas">Historial de Misiones guardadas:</string>
+
+    <!-- Modulo Empleos  -->
+    <string name="nombre_del_empleo">Nombre del Empleo</string>
+    <string name="nombre_empleo">Nombre Empleo</string>
+    <string name="historial_de_empleos_guardados">Historial de Empleos guardados:</string>
+
+    <!-- Modulo Comisiones de Servicio  -->
+    <string name="nombre_de_la_comision">Nombre de la Comisión</string>
+    <string name="nombre_comision">Nombre Comisión</string>
+    <string name="historial_de_comisiones_guardadas">Historial de Comisiones guardadas:</string>
+
+    <!-- Modulo Relaciones Administrativas -->
+    <string name="nombre_de_la_relacion">Nombre de la Relación</string>
+    <string name="nombre_relacion">Nombre Relación</string>
+    <string name="historial_de_relaciones_guardadas">Historial de Relaciones guardadas:</string>
+
+    <!-- Modulo Situaciones Administrativas -->
+    <string name="nombre_de_la_situacion">Nombre de la Situación</string>
+    <string name="nombre_situacion">Nombre Situación</string>
+    <string name="historial_de_situaciones_guardadas">Historial de Situaciones guardadas:</string>
+
 </resources>

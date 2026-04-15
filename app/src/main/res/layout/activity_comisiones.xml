@@ -8,14 +8,14 @@
     android:background="@color/gris_fondo_abajo">
 
     <View
-        android:id="@+id/viewHeaderDestinos"
+        android:id="@+id/viewHeaderComisiones"
         style="@style/EstiloCabeceraAzul"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btnVolverDestinos"
+        android:id="@+id/btnVolverComisiones"
         style="@style/EstiloBotonVolver"
         android:contentDescription="@string/volver"
         android:src="@drawable/abc_ic_ab_back_material"
@@ -24,15 +24,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvTituloDestinos"
+        android:id="@+id/tvTituloComisiones"
         style="@style/EstiloTituloPantalla"
-        android:text="@string/destinos"
-        app:layout_constraintBottom_toBottomOf="@+id/btnVolverDestinos"
-        app:layout_constraintStart_toEndOf="@+id/btnVolverDestinos"
-        app:layout_constraintTop_toTopOf="@+id/btnVolverDestinos" />
+        android:text="@string/comisiones"
+        app:layout_constraintBottom_toBottomOf="@+id/btnVolverComisiones"
+        app:layout_constraintStart_toEndOf="@+id/btnVolverComisiones"
+        app:layout_constraintTop_toTopOf="@+id/btnVolverComisiones" />
 
     <LinearLayout
-        android:id="@+id/layoutFormularioInferior"
+        android:id="@+id/layoutFormularioInferiorComisiones"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -46,11 +46,11 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/nombre_del_destino"
+            android:hint="@string/nombre_de_la_comision"
             app:boxStrokeColor="@color/bbva_blue">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etNombreDestino"
+                android:id="@+id/etNombreComision"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textCapSentences" />
@@ -72,7 +72,7 @@
                 app:boxStrokeColor="@color/bbva_blue">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFechaBod"
+                    android:id="@+id/etFechaBodComision"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="date" />
@@ -88,7 +88,7 @@
                 app:boxStrokeColor="@color/bbva_blue">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNumBod"
+                    android:id="@+id/etNumBodComision"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number" />
@@ -102,47 +102,47 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnAnadir"
+                android:id="@+id/btnAnadirComision"
                 style="@style/EstiloBotonAnadir"
                 android:text="@string/anadir" />
 
             <Button
-                android:id="@+id/btnModificar"
+                android:id="@+id/btnModificarComision"
                 style="@style/EstiloBotonEditar"
                 android:text="@string/editar" />
 
             <Button
-                android:id="@+id/btnEliminar"
+                android:id="@+id/btnEliminarComision"
                 style="@style/EstiloBotonBorrar"
                 android:text="@string/borrar" />
 
             <Button
-                android:id="@+id/btnLimpiar"
+                android:id="@+id/btnLimpiarComision"
                 style="@style/EstiloBotonLimpiar"
                 android:text="@string/limpiar" />
         </LinearLayout>
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tvTituloLista"
+        android:id="@+id/tvTituloListaComisiones"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="@string/historial_de_destinos_guardados"
+        android:text="@string/historial_de_comisiones_guardadas"
         android:textColor="@color/bbva_blue"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewHeaderDestinos" />
+        app:layout_constraintTop_toBottomOf="@+id/viewHeaderComisiones" />
 
     <LinearLayout
-        android:id="@+id/layoutTitulosColumnas"
+        android:id="@+id/layoutTitulosColumnasComisiones"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="16dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/tvTituloLista">
+        app:layout_constraintTop_toBottomOf="@+id/tvTituloListaComisiones">
 
         <TextView
             style="@style/EstiloTextoColumna"
@@ -152,7 +152,7 @@
         <TextView
             style="@style/EstiloTextoColumna"
             android:layout_weight="2"
-            android:text="@string/nombre_destino"/>
+            android:text="@string/nombre_comision"/>
 
         <TextView
             style="@style/EstiloTextoColumna"
@@ -167,15 +167,15 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvDestinos"
+        android:id="@+id/rvComisiones"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginHorizontal="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/layoutTitulosColumnas"
-        app:layout_constraintBottom_toTopOf="@+id/layoutFormularioInferior"
+        app:layout_constraintTop_toBottomOf="@+id/layoutTitulosColumnasComisiones"
+        app:layout_constraintBottom_toTopOf="@+id/layoutFormularioInferiorComisiones"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/item_destino" />
+        tools:listitem="@layout/item_comision" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
