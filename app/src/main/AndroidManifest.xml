@@ -104,22 +104,29 @@
                 <activity android:name=".TitulosCiviles"
                 android:exported="false" />
 
-
-
+                 <activity android:name=".IdiomasSLP"
+                  android:exported="false" />
 
         <!-- Activity Menu Otros Registros -->
         <activity
             android:name=".MenuOtrosRegi"
             android:exported="false" />
 
-        <!-- Activity SubMenus de  Otros Registros -->
+             <!-- Activity SubMenus de  Otros Registros -->
 
-        <activity android:name=".ArmasParticulares"
+                <activity android:name=".ArmasParticulares"
+                android:exported="false" />
+
+                <activity android:name=".PruebasFisicas"
+                    android:exported="false" />
+
+                <activity android:name=".CarnetConducir"
+                    android:exported="false" />
+
+        <!-- Activity Log de Actividad -->
+
+        <activity android:name=".LogActividad"
             android:exported="false" />
-
-
-
-
 
     </application>
 

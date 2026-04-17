@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="12dp"
+        android:paddingHorizontal="4dp"
+        android:baselineAligned="false">
+
+        <TextView
+            android:id="@+id/tvItemNumTcgf"
+            style="@style/EstiloItemSecundario"
+            android:layout_weight="0.5"
+            tools:text="1" />
+
+        <TextView
+            android:id="@+id/tvItemFechaTcgf"
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="1.5"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="14/05/2023" />
+
+        <TextView
+            android:id="@+id/tvItemPuntuacionTcgf"
+            style="@style/EstiloItemSecundario"
+            android:layout_weight="1"
+            tools:text="85 Puntos" />
+
+        <TextView
+            android:id="@+id/tvItemAptoTcgf"
+            style="@style/EstiloItemSecundario"
+            android:layout_weight="1"
+            android:textAlignment="viewEnd"
+            tools:text="Apto" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blanco_lista" />
+
+</LinearLayout>

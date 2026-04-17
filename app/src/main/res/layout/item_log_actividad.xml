@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="14dp"
+        android:paddingHorizontal="4dp"
+        android:baselineAligned="false">
+
+        <TextView
+            android:id="@+id/tvIdLog"
+            style="@style/EstiloItemSecundario"
+            android:layout_weight="0.4"
+            tools:text="125" />
+
+        <TextView
+            android:id="@+id/tvDniLog"
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="1.2"
+            android:textStyle="bold"
+            tools:text="12345678Z" />
+
+        <TextView
+            android:id="@+id/tvFechaHoraLog"
+            style="@style/EstiloItemSecundario"
+            android:layout_weight="1.5"
+            android:textAlignment="viewEnd"
+            tools:text="17/04/2026 19:40" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blanco_lista" />
+
+</LinearLayout>

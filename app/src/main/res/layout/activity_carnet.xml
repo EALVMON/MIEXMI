@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gris_fondo_abajo">
+
+    <View
+        android:id="@+id/viewHeaderCarnet"
+        style="@style/EstiloCabeceraAzul"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnVolverCarnet"
+        style="@style/EstiloBotonVolver"
+        android:contentDescription="@string/volver"
+        android:src="@drawable/abc_ic_ab_back_material"
+        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTituloCarnet"
+        style="@style/EstiloTituloPantalla"
+        android:text="@string/carnets_pantalla"
+        app:layout_constraintBottom_toBottomOf="@+id/btnVolverCarnet"
+        app:layout_constraintStart_toEndOf="@+id/btnVolverCarnet"
+        app:layout_constraintTop_toTopOf="@+id/btnVolverCarnet" />
+
+    <LinearLayout
+        android:id="@+id/layoutFormularioInferiorCarnet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@color/blanco_insercion"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/tipo_carnet_hint"
+            app:boxStrokeColor="@color/bbva_blue">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etTipoCarnet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapCharacters" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:hint="@string/concesion_columna"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFechaConcesionCarnet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:hint="@string/caducidad_columna"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFechaCaducidadCarnet"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <Button android:id="@+id/btnAnadirCarnet" style="@style/EstiloBotonAnadir" android:text="@string/anadir" />
+            <Button android:id="@+id/btnModificarCarnet" style="@style/EstiloBotonEditar" android:text="@string/editar" />
+            <Button android:id="@+id/btnEliminarCarnet" style="@style/EstiloBotonBorrar" android:text="@string/borrar" />
+            <Button android:id="@+id/btnLimpiarCarnet" style="@style/EstiloBotonLimpiar" android:text="@string/limpiar" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvTituloListaCarnet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/historial_carnets_guardados"
+        android:textColor="@color/bbva_blue"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewHeaderCarnet" />
+
+    <LinearLayout
+        android:id="@+id/layoutTitulosColumnasCarnet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        app:layout_constraintTop_toBottomOf="@+id/tvTituloListaCarnet">
+
+        <TextView style="@style/EstiloTextoColumna" android:layout_weight="1" android:text="@string/tipo_carnet_columna"/>
+        <TextView style="@style/EstiloTextoColumna" android:layout_weight="1.2" android:text="@string/concesion_columna"/>
+        <TextView style="@style/EstiloTextoColumna" android:layout_weight="1.2" android:text="@string/caducidad_columna" android:textAlignment="viewEnd"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCarnet"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/layoutTitulosColumnasCarnet"
+        app:layout_constraintBottom_toTopOf="@+id/layoutFormularioInferiorCarnet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_carnet" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

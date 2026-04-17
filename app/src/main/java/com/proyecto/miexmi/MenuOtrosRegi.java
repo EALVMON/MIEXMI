@@ -18,7 +18,8 @@ public class MenuOtrosRegi extends AppCompatActivity {
 
         // 1. Enlazamos las tarjetas del XML con variables en Java
         CardView cardSubArmas = findViewById(R.id.cardSubArmas);
-
+        CardView cardSubTgcf = findViewById(R.id.cardSubTgcf);
+        CardView cardSubCarnes = findViewById(R.id.cardSubCarnes);
 
         // 2. Programamos el clic de cada tarjeta
 
@@ -26,6 +27,18 @@ public class MenuOtrosRegi extends AppCompatActivity {
             Intent intent = new Intent(MenuOtrosRegi.this, ArmasParticulares.class);
             startActivity(intent);
         });
+
+        cardSubTgcf.setOnClickListener(v -> {
+            Intent intent = new Intent(MenuOtrosRegi.this, PruebasFisicas.class);
+            startActivity(intent);
+        });
+
+        cardSubCarnes.setOnClickListener(v -> {
+            Intent intent = new Intent(MenuOtrosRegi.this, CarnetConducir.class);
+            startActivity(intent);
+        });
+
+
 
         // Boton volver llamamos a la funcion de la clase Utilidades
         Utilidades.configurarBotonVolver(this, R.id.btnVolverOtros);

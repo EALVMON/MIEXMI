@@ -57,7 +57,9 @@ public class MenuPrincipal extends AppCompatActivity {
 
         // 6. Programamos clics temporales para las que aún no tienen pantalla
         cardExportar.setOnClickListener(v -> {
-            Toast.makeText(this, "Módulo de Exportación en construcción", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MenuPrincipal.this, LogActividad.class);
+            startActivity(intent);
+
         });
 
         cardActividad.setOnClickListener(v -> {

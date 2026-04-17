@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gris_fondo_abajo">
+
+    <View
+        android:id="@+id/viewHeaderTcgf"
+        style="@style/EstiloCabeceraAzul"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnVolverTcgf"
+        style="@style/EstiloBotonVolver"
+        android:contentDescription="@string/volver"
+        android:src="@drawable/abc_ic_ab_back_material"
+        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTituloTcgf"
+        style="@style/EstiloTituloPantalla"
+        android:text="@string/tcgf_pantalla"
+        app:layout_constraintBottom_toBottomOf="@+id/btnVolverTcgf"
+        app:layout_constraintStart_toEndOf="@+id/btnVolverTcgf"
+        app:layout_constraintTop_toTopOf="@+id/btnVolverTcgf" />
+
+    <LinearLayout
+        android:id="@+id/layoutFormularioInferiorTcgf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@color/blanco_insercion"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/puntuacion_tcgf"
+            app:boxStrokeColor="@color/bbva_blue">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPuntuacionTcgf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapCharacters" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:hint="@string/fecha_prueba"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFechaTcgf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:hint="@string/apto_tcgf"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etAptoTcgf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAnadirTcgf"
+                style="@style/EstiloBotonAnadir"
+                android:text="@string/anadir" />
+
+            <Button
+                android:id="@+id/btnModificarTcgf"
+                style="@style/EstiloBotonEditar"
+                android:text="@string/editar" />
+
+            <Button
+                android:id="@+id/btnEliminarTcgf"
+                style="@style/EstiloBotonBorrar"
+                android:text="@string/borrar" />
+
+            <Button
+                android:id="@+id/btnLimpiarTcgf"
+                style="@style/EstiloBotonLimpiar"
+                android:text="@string/limpiar" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvTituloListaTcgf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/historial_tcgf_guardados"
+        android:textColor="@color/bbva_blue"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewHeaderTcgf" />
+
+    <LinearLayout
+        android:id="@+id/layoutTitulosColumnasTcgf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        app:layout_constraintTop_toBottomOf="@+id/tvTituloListaTcgf">
+
+        <TextView
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="0.5"
+            android:text="@string/nº"/>
+
+        <TextView
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="1.5"
+            android:text="@string/fecha_prueba"/>
+
+        <TextView
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="1"
+            android:text="@string/puntuacion_columna"/>
+
+        <TextView
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="1"
+            android:text="@string/apto_columna"
+            android:textAlignment="viewEnd"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvTcgf"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/layoutTitulosColumnasTcgf"
+        app:layout_constraintBottom_toTopOf="@+id/layoutFormularioInferiorTcgf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_tcgf" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

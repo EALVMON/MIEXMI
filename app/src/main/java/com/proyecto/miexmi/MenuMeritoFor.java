@@ -24,7 +24,7 @@ public class MenuMeritoFor extends AppCompatActivity {
         CardView cardSubAptitudes = findViewById(R.id.cardSubAptitudes);
         CardView cardSubCursosMilitares = findViewById(R.id.cardSubCursosMilitares);
         CardView cardSubTitulosCiviles = findViewById(R.id.cardSubTitulosCiviles);
-
+        CardView cardSubIdiomas = findViewById(R.id.cardSubIdiomas);
 
 
         // 2. Programamos el clic de cada tarjeta
@@ -52,6 +52,11 @@ public class MenuMeritoFor extends AppCompatActivity {
 
         cardSubTitulosCiviles.setOnClickListener(v -> {
             Intent intent = new Intent(MenuMeritoFor.this, TitulosCiviles.class);
+            startActivity(intent);
+        });
+
+        cardSubIdiomas.setOnClickListener(v -> {
+            Intent intent = new Intent(MenuMeritoFor.this, IdiomasSLP.class);
             startActivity(intent);
         });
 
