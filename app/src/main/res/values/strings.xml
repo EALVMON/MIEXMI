@@ -91,4 +91,70 @@
     <string name="nombre_situacion">Nombre Situación</string>
     <string name="historial_de_situaciones_guardadas">Historial de Situaciones guardadas:</string>
 
+    <!-- Modulo Trienio -->
+    <string name="numero_de_trienio">Número de Trienio (Ej: 1, 2, 3...)</string>
+    <string name="num_trienio">Nº Trienio</string>
+    <string name="historial_de_trienios_guardados">Historial de Trienios guardados:</string>
+
+    <!-- Modulo Recompensas -->
+    <string name="nombre_de_la_recompensa">Nombre de la Recompensa</string>
+    <string name="nombre_recompensa">Nombre Recompensa</string>
+    <string name="historial_de_recompensas_guardadas">Historial de Recompensas guardadas:</string>
+
+    <!-- Modulo Distintivos -->
+    <string name="nombre_del_distintivo">Nombre del Distintivo</string>
+    <string name="nombre_distintivo">Nombre Distintivo</string>
+    <string name="historial_de_distintivos_guardados">Historial de Distintivos guardados:</string>
+
+    <!-- Modulo Aptitudes -->
+    <string name="nombre_de_la_aptitud">Nombre de la Aptitud</string>
+    <string name="nombre_aptitud">Nombre Aptitud</string>
+    <string name="historial_de_aptitudes_guardadas">Historial de Aptitudes guardadas:</string>
+
+    <!-- Modulo Cuerpo y Escala o Especialidad -->
+    <string name="cee_fundamental">Cuerpo y Escala</string>
+    <string name="nombre_del_ceef">Cuerpo, Escala o Especialidad</string>
+    <string name="nombre_ceef">Cuerpo / Escala</string>
+    <string name="historial_de_ceef_guardados">Historial de registros guardados:</string>
+
+    <!-- Modulo Cursos Militares -->
+    <string name="nombre_del_curso">Nombre del Curso</string>
+    <string name="nombre_curso">Nombre Curso</string>
+    <string name="historial_de_cursos_guardados">Historial de Cursos guardados:</string>
+
+    <!-- Modulo Titulos Civiles -->
+    <string name="nombre_del_titulo_civil">Nombre del Título Civil</string>
+    <string name="nombre_titulo">Nombre Título</string>
+    <string name="historial_de_titulos_guardados">Historial de Títulos guardados:</string>
+    <string name="titulos_civiles_pantalla">Títulos Civiles</string>
+
+    <!-- Modulo Evaluacion Ascenso -->
+    <string name="nombre_de_la_evaluacion">Nombre de la Evaluación</string>
+    <string name="nombre_evaluacion">Nombre Evaluación</string>
+    <string name="historial_de_evaluaciones_guardadas">Historial de Evaluaciones guardadas:</string>
+    <string name="resultado_evaluacion">Resultado (Ej: Apto, No Apto...)</string>
+    <string name="resultado">Resultado</string>
+
+    <!-- Modulo Habilitación de Seguridad -->
+    <string name="hps_pantalla">Habilitación de Seguridad</string>
+    <string name="nombre_habilitacion">Nombre de la Habilitación</string>
+    <string name="fecha_concesion">Fecha Concesión</string>
+    <string name="fecha_caducidad">Fecha Caducidad</string>
+    <string name="historial_hps_guardadas">Historial de HPS guardadas:</string>
+
+    <!-- Modulo Tarjeta Militar de Identificacion -->
+    <string name="tmi_pantalla">Tarjeta Militar (TMI)</string>
+    <string name="numero_tarjeta_tmi">Nº de Tarjeta</string>
+    <string name="fecha_caducidad_tmi">Fecha de Caducidad</string>
+    <string name="historial_tmi_guardadas">Historial de Tarjetas guardadas:</string>
+
+    <!-- Modulo Armas Particulares -->
+    <string name="armas_particulares_pantalla">Armas Particulares</string>
+    <string name="nombre_del_arma">Nombre/Modelo del Arma</string>
+    <string name="nombre_arma">Nombre Arma</string>
+    <string name="numero_serie_arma">Nº de Serie</string>
+    <string name="fecha_caducidad_arma">Fecha de Caducidad</string>
+    <string name="historial_armas_guardadas">Historial de Armas guardadas:</string>
+ -->
+
 </resources>

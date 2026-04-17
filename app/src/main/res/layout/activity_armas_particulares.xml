@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gris_fondo_abajo">
+
+    <View
+        android:id="@+id/viewHeaderArmas"
+        style="@style/EstiloCabeceraAzul"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnVolverArmas"
+        style="@style/EstiloBotonVolver"
+        android:contentDescription="@string/volver"
+        android:src="@drawable/abc_ic_ab_back_material"
+        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTituloArmas"
+        style="@style/EstiloTituloPantalla"
+        android:text="@string/armas_particulares_pantalla"
+        app:layout_constraintBottom_toBottomOf="@+id/btnVolverArmas"
+        app:layout_constraintStart_toEndOf="@+id/btnVolverArmas"
+        app:layout_constraintTop_toTopOf="@+id/btnVolverArmas" />
+
+    <LinearLayout
+        android:id="@+id/layoutFormularioInferiorArmas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:background="@color/blanco_insercion"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/nombre_del_arma"
+            app:boxStrokeColor="@color/bbva_blue">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombreArma"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:hint="@string/numero_serie_arma"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNumeroSerieArma"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:hint="@string/fecha_caducidad_arma"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFechaCaducidadArma"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAnadirArma"
+                style="@style/EstiloBotonAnadir"
+                android:text="@string/anadir" />
+
+            <Button
+                android:id="@+id/btnModificarArma"
+                style="@style/EstiloBotonEditar"
+                android:text="@string/editar" />
+
+            <Button
+                android:id="@+id/btnEliminarArma"
+                style="@style/EstiloBotonBorrar"
+                android:text="@string/borrar" />
+
+            <Button
+                android:id="@+id/btnLimpiarArma"
+                style="@style/EstiloBotonLimpiar"
+                android:text="@string/limpiar" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvTituloListaArmas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/historial_armas_guardadas"
+        android:textColor="@color/bbva_blue"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewHeaderArmas" />
+
+    <LinearLayout
+        android:id="@+id/layoutTitulosColumnasArmas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        app:layout_constraintTop_toBottomOf="@+id/tvTituloListaArmas">
+
+        <TextView
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="0.5"
+            android:text="@string/nº"/>
+
+        <TextView
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="2"
+            android:text="@string/nombre_arma"/>
+
+        <TextView
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="1.5"
+            android:text="@string/numero_serie_arma"/>
+
+        <TextView
+            style="@style/EstiloTextoColumna"
+            android:layout_weight="1.2"
+            android:text="@string/fecha_caducidad_arma"
+            android:textAlignment="viewEnd"/>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvArmas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/layoutTitulosColumnasArmas"
+        app:layout_constraintBottom_toTopOf="@+id/layoutFormularioInferiorArmas"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/item_arma_particular" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

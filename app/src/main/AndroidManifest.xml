@@ -40,6 +40,16 @@
             android:name=".MenuDatosPer"
             android:exported="false" />
 
+            <!-- Activity SubMenus de  Datos Personales -->
+
+                <activity android:name=".CeeFundamental"
+                 android:exported="false" />
+                <activity android:name=".TarjetaMilitar"
+                 android:exported="false" />
+
+
+
+
         <!-- Activity Menu Historial Militar -->
         <activity
             android:name=".MenuHistoProfe"
@@ -64,22 +74,49 @@
                 <activity android:name=".SituacionesAdmin"
                 android:exported="false" />
 
+                <activity android:name=".EvaluacionAscenso"
+                android:exported="false" />
 
-
-
-
-
-
+                <activity android:name=".HabilitacionSeguridad"
+                android:exported="false" />
 
         <!-- Activity Menu Meritos y Formaciones -->
         <activity
             android:name=".MenuMeritoFor"
             android:exported="false" />
 
+            <!-- Activity SubMenus de  Meritos y Formaciones -->
+                <activity android:name=".Trienios"
+                 android:exported="false" />
+
+                <activity android:name=".Recompensas"
+                    android:exported="false" />
+
+                <activity android:name=".Distintivos"
+                    android:exported="false" />
+
+                <activity android:name=".Aptitudes"
+                    android:exported="false" />
+
+                <activity android:name=".CursosMilitares"
+                android:exported="false" />
+
+                <activity android:name=".TitulosCiviles"
+                android:exported="false" />
+
+
+
+
         <!-- Activity Menu Otros Registros -->
         <activity
             android:name=".MenuOtrosRegi"
             android:exported="false" />
+
+        <!-- Activity SubMenus de  Otros Registros -->
+
+        <activity android:name=".ArmasParticulares"
+            android:exported="false" />
+
 
 
 

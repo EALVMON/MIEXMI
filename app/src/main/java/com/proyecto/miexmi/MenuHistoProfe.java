@@ -27,7 +27,7 @@ public class MenuHistoProfe extends AppCompatActivity {
 
 
 
-        // 2. Programamos el clic
+        // 2. Programamos el clic de cada tarjeta
         cardSubMisiones.setOnClickListener(v -> {
             Intent intent = new Intent(MenuHistoProfe.this, Misiones.class);
             startActivity(intent);
@@ -57,6 +57,15 @@ public class MenuHistoProfe extends AppCompatActivity {
             startActivity(intent);
         });
 
+        cardSubEvaluacion.setOnClickListener(v -> {
+            Intent intent = new Intent(MenuHistoProfe.this, EvaluacionAscenso.class);
+            startActivity(intent);
+        });
+
+        cardSubHps.setOnClickListener(v -> {
+            Intent intent = new Intent(MenuHistoProfe.this, HabilitacionSeguridad.class);
+            startActivity(intent);
+        });
 
         // Botón volver
         Utilidades.configurarBotonVolver(this, R.id.btnVolverHistorial);
