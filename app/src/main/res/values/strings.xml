@@ -198,4 +198,13 @@
     <string name="num_escalafon">Nº Escalafón</string>
     <string name="guardar_datos">Guardar Datos</string>
 
+    <!-- Seguridad reseteo de clave-->
+
+    <string name="seguridad_pantalla">Seguridad y Accesos</string>
+    <string name="dni_usuario">DNI / NIF</string>
+    <string name="pass_actual">Contraseña Actual (Obligatorio para guardar)</string>
+    <string name="pass_nueva">Nueva Contraseña</string>
+    <string name="pass_repetir">Repetir Nueva Contraseña</string>
+    <string name="guardar_cambios">Guardar Cambios</string>
+
 </resources>

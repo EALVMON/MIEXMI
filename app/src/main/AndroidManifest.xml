@@ -131,6 +131,13 @@
         <activity android:name=".LogActividad"
             android:exported="false" />
 
+        <!-- Activity Seguridad -->
+
+        <activity android:name=".Seguridad"
+            android:exported="false" />
+
+
+
     </application>
 
 </manifest>

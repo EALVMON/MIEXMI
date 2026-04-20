@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gris_fondo_abajo">
+
+    <View
+        android:id="@+id/viewHeaderSeguridad"
+        style="@style/EstiloCabeceraAzul"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnVolverSeguridad"
+        style="@style/EstiloBotonVolver"
+        android:contentDescription="@string/volver"
+        android:src="@drawable/abc_ic_ab_back_material"
+        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTituloSeguridad"
+        style="@style/EstiloTituloPantalla"
+        android:text="@string/seguridad_pantalla"
+        app:layout_constraintBottom_toBottomOf="@+id/btnVolverSeguridad"
+        app:layout_constraintStart_toEndOf="@+id/btnVolverSeguridad"
+        app:layout_constraintTop_toTopOf="@+id/btnVolverSeguridad" />
+
+    <LinearLayout
+        android:id="@+id/layoutFormularioSeguridad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="@color/blanco_insercion"
+        android:elevation="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/viewHeaderSeguridad"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dni_usuario"
+            app:boxStrokeColor="@color/bbva_blue">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDniSeguridad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapCharacters" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="12dp"
+            android:background="@color/gris_claro" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/pass_actual"
+            app:passwordToggleEnabled="true"
+            app:boxStrokeColor="@color/bbva_blue">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPassActual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:hint="@string/pass_nueva"
+                app:passwordToggleEnabled="true"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassNueva"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:hint="@string/pass_repetir"
+                app:passwordToggleEnabled="true"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassRepetir"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnGuardarSeguridad"
+                style="@style/EstiloBotonAnadir"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="@string/guardar_cambios" />
+
+            <Button
+                android:id="@+id/btnLimpiarSeguridad"
+                style="@style/EstiloBotonLimpiar"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="@string/limpiar" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
