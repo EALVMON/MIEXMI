@@ -10,7 +10,7 @@ import androidx.cardview.widget.CardView;
 
 public class MenuPrincipal extends AppCompatActivity {
 
-    // Método principal que se ejecuta al abrir la pantalla
+    // Metodo principal que se ejecuta al abrir la pantalla
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
