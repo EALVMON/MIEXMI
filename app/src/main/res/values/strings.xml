@@ -188,4 +188,14 @@
     <string name="fecha_hora_log">Fecha y Hora de Acceso</string>
     <string name="lista_vacia_log">No hay registros de actividad aún.</string>
 
+
+    <!-- Filiciacion-->
+    <string name="filiacion_pantalla">Datos de Filiación</string>
+    <string name="nombre_filiacion">Nombre</string>
+    <string name="apellidos_filiacion">Apellidos</string>
+    <string name="tmi_filiacion">Nº de TMI</string>
+    <string name="fecha_incorp_filiacion">Fecha Incorporación</string>
+    <string name="num_escalafon">Nº Escalafón</string>
+    <string name="guardar_datos">Guardar Datos</string>
+
 </resources>

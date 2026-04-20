@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gris_fondo_abajo">
+
+    <View
+        android:id="@+id/viewHeaderFiliacion"
+        style="@style/EstiloCabeceraAzul"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnVolverFiliacion"
+        style="@style/EstiloBotonVolver"
+        android:contentDescription="@string/volver"
+        android:src="@drawable/abc_ic_ab_back_material"
+        app:tint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTituloFiliacion"
+        style="@style/EstiloTituloPantalla"
+        android:text="@string/filiacion_pantalla"
+        app:layout_constraintBottom_toBottomOf="@+id/btnVolverFiliacion"
+        app:layout_constraintStart_toEndOf="@+id/btnVolverFiliacion"
+        app:layout_constraintTop_toTopOf="@+id/btnVolverFiliacion" />
+
+    <LinearLayout
+        android:id="@+id/layoutFormularioFiliacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="@drawable/fondo_redondeado_blanco"
+        android:elevation="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/viewHeaderFiliacion"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/nombre_filiacion"
+            app:boxStrokeColor="@color/bbva_blue">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombreFiliacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName|textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/apellidos_filiacion"
+            app:boxStrokeColor="@color/bbva_blue">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etApellidosFiliacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName|textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:hint="@string/tmi_filiacion"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTmiFiliacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:hint="@string/num_escalafon"
+                app:boxStrokeColor="@color/bbva_blue">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEscalafonFiliacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/fecha_incorp_filiacion"
+            app:boxStrokeColor="@color/bbva_blue">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFechaIncorpFiliacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnGuardarFiliacion"
+                style="@style/EstiloBotonAnadir"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="@string/guardar_datos" />
+
+            <Button
+                android:id="@+id/btnLimpiarFiliacion"
+                style="@style/EstiloBotonLimpiar"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="@string/limpiar" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

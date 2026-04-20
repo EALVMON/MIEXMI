@@ -18,6 +18,7 @@ public class MenuDatosPer extends AppCompatActivity {
         // 1. Enlazamos las tarjetas del XML con variables en Java
         CardView CardSubcee = findViewById(R.id.cardSubCuerpoEscala);
         CardView CardSubtmi = findViewById(R.id.cardSubTmi);
+        CardView cardSubFiliacion = findViewById(R.id.cardSubFiliacion);
 
 
 
@@ -29,6 +30,11 @@ public class MenuDatosPer extends AppCompatActivity {
 
         CardSubtmi.setOnClickListener(v -> {
             Intent intent = new Intent(MenuDatosPer.this, TarjetaMilitar.class);
+            startActivity(intent);
+        });
+
+        cardSubFiliacion.setOnClickListener(v -> {
+            Intent intent = new Intent(MenuDatosPer.this, Filiacion.class);
             startActivity(intent);
         });
 

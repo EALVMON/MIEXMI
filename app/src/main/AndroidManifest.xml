@@ -44,9 +44,12 @@
 
                 <activity android:name=".CeeFundamental"
                  android:exported="false" />
+
                 <activity android:name=".TarjetaMilitar"
                  android:exported="false" />
 
+                <activity android:name=".Filiacion"
+                android:exported="false" />
 
 
 
