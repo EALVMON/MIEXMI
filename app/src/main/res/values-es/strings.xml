@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" >MIEXMI</string>
-    <string name="hola_edu" >HOLA EDU!</string>
     <string name="In_Se" >Iniciar sesión</string>
     <string name="dni" >DNI</string>
     <string name="contrasena" >Contraseña</string>
