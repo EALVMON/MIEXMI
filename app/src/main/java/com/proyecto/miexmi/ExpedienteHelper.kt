@@ -1,0 +1,338 @@
+package com.proyecto.miexmi
+
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+
+class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    companion object {
+        const val DATABASE_NAME = "MiExpediente.db"
+        const val DATABASE_VERSION = 1
+
+        // ====================================================================
+        // === DEFINICIÓN DE TABLAS PRINCIPALES (USUARIO Y LOG)             ===
+        // ====================================================================
+
+        private const val SQL_CREATE_USUARIO = """
+            CREATE TABLE USUARIO (
+                Id_Usuario INTEGER PRIMARY KEY AUTOINCREMENT,
+                Dni TEXT UNIQUE NOT NULL,
+                Contraseña TEXT NOT NULL
+            )
+        """
+
+        private const val SQL_CREATE_FILIACION = """
+            CREATE TABLE FILIACION (
+                Id_Filia INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER UNIQUE,
+                Nombre TEXT NOT NULL,
+                Apellidos TEXT NOT NULL,
+                TMI TEXT,
+                Fech_Incorp TEXT,
+                Nun_Escalafon INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_REGISTRO_ACTIVIDAD = """
+            CREATE TABLE REGISTRO_ACTIVIDAD (
+                Id_Log INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                DNI TEXT,
+                Fecha_Hora TEXT,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        // ====================================================================
+        // === TABLAS DE MÓDULOS (RELACIONES 1:N)                           ===
+        // ====================================================================
+
+        private const val SQL_CREATE_DESTINOS = """
+            CREATE TABLE MOD_DESTINOS (
+                Id_M_Dest INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Destino TEXT NOT NULL,
+                M_Dest_Fecha_Bod TEXT,
+                M_Dest_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_EMPLEOS = """
+            CREATE TABLE MOD_EMPLEOS (
+                Id_M_Empl INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Empleo TEXT NOT NULL,
+                M_Empl_Fecha_Bod TEXT,
+                M_Empl_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_MISIONES = """
+            CREATE TABLE MOD_MISIONES (
+                Id_M_Misi INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Mision TEXT NOT NULL,
+                M_Misi_Fecha_Bod TEXT,
+                M_Misi_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_COMISION_SER = """
+            CREATE TABLE MOD_COMISION_SER (
+                Id_M_Cser INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Comision TEXT NOT NULL,
+                M_Cser_Fecha_Bod TEXT,
+                M_Cser_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_SITUA_ADMIN = """
+            CREATE TABLE MOD_SITUA_ADMIN (
+                Id_M_Sadm INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Sit_Admini TEXT NOT NULL,
+                M_Sadm_Fecha_Bod TEXT,
+                M_Sadm_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_TRIENIOS = """
+            CREATE TABLE MOD_TRIENIOS (
+                Id_M_Trie INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Num_Trienio INTEGER NOT NULL,
+                M_Trie_Fecha_Bod TEXT,
+                M_Trie_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_RECOMPENSAS = """
+            CREATE TABLE MOD_RECOMPENSAS (
+                Id_M_Reco INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Recompensa TEXT NOT NULL,
+                M_Reco_Fecha_Bod TEXT,
+                M_Reco_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_DISTINTIVOS = """
+            CREATE TABLE MOD_DISTINTIVOS (
+                Id_M_Dist INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Distintivo TEXT NOT NULL,
+                M_Dist_Fecha_Bod TEXT,
+                M_Dist_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_APTITUDES = """
+            CREATE TABLE MOD_APTITUDES (
+                Id_M_Apti INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Aptitud TEXT NOT NULL,
+                M_Apti_Fecha_Bod TEXT,
+                M_Apti_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_CEE_FUNDAMENTAL = """
+            CREATE TABLE MOD_CEE_FUNDAMENTAL (
+                Id_M_CEEF INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_CEEF TEXT NOT NULL,
+                M_Ceef_Fecha_Bod TEXT,
+                M_Ceef_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_RELA_ADMINISTRACION = """
+            CREATE TABLE MOD_RELA_ADMINISTRACION (
+                Id_M_Radm INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Rel_Admin TEXT NOT NULL,
+                M_Radm_Fecha_Bod TEXT,
+                M_Radm_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_CUR_MILITAR = """
+            CREATE TABLE MOD_CUR_MILITAR (
+                Id_M_Cmili INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Cur_Mili TEXT NOT NULL,
+                M_Cmili_Fecha_Bod TEXT,
+                M_Cmili_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_TITULOS_CIVILES = """
+            CREATE TABLE MOD_TITULOS_CIVILES (
+                Id_M_Tcivi INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Titulo TEXT NOT NULL,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_EVALUACION_ASCENSO = """
+            CREATE TABLE MOD_EVALUACION_ASCENSO (
+                Id_M_Eva INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Evaluacion TEXT NOT NULL,
+                Resultado TEXT,
+                M_Eva_Fecha_Bod TEXT,
+                M_Eva_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_HPS = """
+            CREATE TABLE MOD_HPS (
+                Id_M_Hps INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Habilitacion TEXT NOT NULL,
+                Fecha_M_Concesion TEXT,
+                Fecha_M_Caducidad TEXT,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_TMI = """
+            CREATE TABLE MOD_TMI (
+                Id_M_Tmi INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                N_Tarjeta TEXT NOT NULL,
+                M_Tmi_Fecha_Cadu TEXT,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_EXP_ARMAS = """
+            CREATE TABLE MOD_EXP_ARMAS (
+                Id_M_EArm INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_Arma TEXT NOT NULL,
+                M_EArm_Nserie TEXT UNIQUE,
+                M_EArm_Fecha_Cad TEXT,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_TCGF = """
+            CREATE TABLE MOD_TCGF (
+                Id_M_TCGF INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                M_Tcgf_Fecha TEXT,
+                M_Tcgf_Puntuacion TEXT,
+                M_Tcgf_Apto TEXT,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_CARNET = """
+            CREATE TABLE MOD_CARNET (
+                Id_M_Carnet INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Tipo_Carnet TEXT NOT NULL,
+                M_Carn_Fecha_Concesion TEXT,
+                M_Carn_Fecha_Caducidad TEXT,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+
+        private const val SQL_CREATE_IDIOMA = """
+            CREATE TABLE MOD_IDIOMA (
+                Id_M_Idi INTEGER PRIMARY KEY AUTOINCREMENT,
+                Id_Usuario INTEGER,
+                Nom_idioma TEXT NOT NULL,
+                Resultado TEXT,
+                M_Idi_Fecha_Bod TEXT,
+                M_Idi_Nbod INTEGER,
+                FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
+            )
+        """
+    }
+
+    // ====================================================================
+    // === MÉTODOS OBLIGATORIOS DE SQLiteOpenHelper                     ===
+    // ====================================================================
+
+    override fun onConfigure(db: SQLiteDatabase) {
+        super.onConfigure(db)
+        // Activar el soporte para Foreign Keys (importante para el CASCADE)
+        db.setForeignKeyConstraintsEnabled(true)
+    }
+
+    override fun onCreate(db: SQLiteDatabase) {
+        // Ejecutamos la creación de todas las tablas
+        db.execSQL(SQL_CREATE_USUARIO)
+        db.execSQL(SQL_CREATE_FILIACION)
+        db.execSQL(SQL_CREATE_REGISTRO_ACTIVIDAD)
+        db.execSQL(SQL_CREATE_DESTINOS)
+        db.execSQL(SQL_CREATE_EMPLEOS)
+        db.execSQL(SQL_CREATE_MISIONES)
+        db.execSQL(SQL_CREATE_COMISION_SER)
+        db.execSQL(SQL_CREATE_SITUA_ADMIN)
+        db.execSQL(SQL_CREATE_TRIENIOS)
+        db.execSQL(SQL_CREATE_RECOMPENSAS)
+        db.execSQL(SQL_CREATE_DISTINTIVOS)
+        db.execSQL(SQL_CREATE_APTITUDES)
+        db.execSQL(SQL_CREATE_CEE_FUNDAMENTAL)
+        db.execSQL(SQL_CREATE_RELA_ADMINISTRACION)
+        db.execSQL(SQL_CREATE_CUR_MILITAR)
+        db.execSQL(SQL_CREATE_TITULOS_CIVILES)
+        db.execSQL(SQL_CREATE_EVALUACION_ASCENSO)
+        db.execSQL(SQL_CREATE_HPS)
+        db.execSQL(SQL_CREATE_TMI)
+        db.execSQL(SQL_CREATE_EXP_ARMAS)
+        db.execSQL(SQL_CREATE_TCGF)
+        db.execSQL(SQL_CREATE_CARNET)
+        db.execSQL(SQL_CREATE_IDIOMA)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // Se borran las tablas antiguas en orden inverso a sus dependencias
+        db.execSQL("DROP TABLE IF EXISTS MOD_IDIOMA")
+        db.execSQL("DROP TABLE IF EXISTS MOD_CARNET")
+        db.execSQL("DROP TABLE IF EXISTS MOD_TCGF")
+        db.execSQL("DROP TABLE IF EXISTS MOD_EXP_ARMAS")
+        db.execSQL("DROP TABLE IF EXISTS MOD_TMI")
+        db.execSQL("DROP TABLE IF EXISTS MOD_HPS")
+        db.execSQL("DROP TABLE IF EXISTS MOD_EVALUACION_ASCENSO")
+        db.execSQL("DROP TABLE IF EXISTS MOD_TITULOS_CIVILES")
+        db.execSQL("DROP TABLE IF EXISTS MOD_CUR_MILITAR")
+        db.execSQL("DROP TABLE IF EXISTS MOD_RELA_ADMINISTRACION")
+        db.execSQL("DROP TABLE IF EXISTS MOD_CEE_FUNDAMENTAL")
+        db.execSQL("DROP TABLE IF EXISTS MOD_APTITUDES")
+        db.execSQL("DROP TABLE IF EXISTS MOD_DISTINTIVOS")
+        db.execSQL("DROP TABLE IF EXISTS MOD_RECOMPENSAS")
+        db.execSQL("DROP TABLE IF EXISTS MOD_TRIENIOS")
+        db.execSQL("DROP TABLE IF EXISTS MOD_SITUA_ADMIN")
+        db.execSQL("DROP TABLE IF EXISTS MOD_COMISION_SER")
+        db.execSQL("DROP TABLE IF EXISTS MOD_MISIONES")
+        db.execSQL("DROP TABLE IF EXISTS MOD_EMPLEOS")
+        db.execSQL("DROP TABLE IF EXISTS MOD_DESTINOS")
+        db.execSQL("DROP TABLE IF EXISTS REGISTRO_ACTIVIDAD")
+        db.execSQL("DROP TABLE IF EXISTS FILIACION")
+        db.execSQL("DROP TABLE IF EXISTS USUARIO")
+
+        // Se vuelven a crear
+        onCreate(db)
+    }
+}
