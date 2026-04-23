@@ -335,4 +335,97 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         // Se vuelven a crear
         onCreate(db)
     }
+
+
+    // ====================================================================
+    // === MÉTODOS DE USUARIO (LOGIN Y REGISTRO)                        ===
+    // ====================================================================
+
+    // Devuelve el ID del nuevo usuario, o -1 si el DNI ya existe (por el UNIQUE)
+    fun registrarUsuario(dni: String, contrasena: String): Long {
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Dni", dni)
+            put("Contraseña", contrasena)
+        }
+        // El insert devuelve -1 si falla (ej: DNI repetido)
+        return db.insert("USUARIO", null, values)
+    }
+
+
+
+    // Comprueba si un usuario existe en la base de datos y si su contraseña es correcta.
+    // Devuelve el Id_Usuario (ej: 1, 2, 3...) si totalidad  es correcto, o -1 si falla.
+    fun comprobarLogin(dni: String, contrasena: String): Int {
+
+        // 1. Abrimos la base de datos en modo LECTURA (readableDatabase).
+        // Usamos lectura porque solo vamos a buscar información, no a guardar nada nuevo.
+        val db = this.readableDatabase
+
+        // 2. Lanzamos la pregunta (Query) a la base de datos usando el 'Cursor'.
+        // Las interrogaciones (?) son un escudo de seguridad: evitan que hackers
+        // inyecten código malicioso. Android pondrá el DNI en la primera '?' y la clave en la segunda.
+        val cursor = db.rawQuery(
+            "SELECT Id_Usuario FROM USUARIO WHERE Dni = ? AND Contraseña = ?",
+            arrayOf(dni, contrasena)
+        )
+
+        // 3. Preparamos una variable con valor -1 (pesimista: asumimos que no existe por defecto).
+        var idUsuario = -1
+
+        // 4. El cursor intenta moverse al primer resultado que encontró en la tabla.
+        // Si 'moveToFirst()' es verdadero (true), significa que SÍ encontró a ese usuario.
+        if (cursor.moveToFirst()) {
+
+            // Como sí lo encontró, leemos el dato de la columna 0.
+            // La columna 0 es la primera que pedimos arriba en el SELECT (Id_Usuario).
+            idUsuario = cursor.getInt(0)
+        }
+
+        // 5. Siempre hay que cerrar el cursor al terminar.
+        // Si no lo hacemos, la memoria RAM del móvil se quedará bloqueada y la app irá lenta.
+        cursor.close()
+
+        // 6. Devolvemos la respuesta final a la pantalla de Login (el ID real o él -1).
+        return idUsuario
+    }
+
+    // Obtiene el DNI de un usuario a partir de su ID
+    fun obtenerDniPorId(idUsuario: Int): String? {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT Dni FROM USUARIO WHERE Id_Usuario = ?", arrayOf(idUsuario.toString()))
+
+        var dni: String? = null
+        if (cursor.moveToFirst()) {
+            dni = cursor.getString(0)
+        }
+        cursor.close()
+        return dni
+    }
+
+    // Cambia la contraseña si la actual es correcta. Devuelve true si tiene éxito, false si falla.
+    fun cambiarContrasena(idUsuario: Int, passActual: String, passNueva: String): Boolean {
+        val db = this.writableDatabase
+
+        // 1. Primero comprobamos que la clave actual es la correcta
+        val cursor = db.rawQuery(
+            "SELECT Id_Usuario FROM USUARIO WHERE Id_Usuario = ? AND Contraseña = ?",
+            arrayOf(idUsuario.toString(), passActual)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        // 2. Si la contraseña actual es correcta, guardamos la nueva
+        if (existe) {
+            val values = android.content.ContentValues().apply {
+                put("Contraseña", passNueva)
+            }
+            // Actualizamos la fila del usuario
+            val filasAfectadas = db.update("USUARIO", values, "Id_Usuario = ?", arrayOf(idUsuario.toString()))
+            return filasAfectadas > 0
+        }
+
+        // Si la clave actual no era correcta, devolvemos falso
+        return false
+    }
 }

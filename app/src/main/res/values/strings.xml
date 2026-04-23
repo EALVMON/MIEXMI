@@ -92,7 +92,7 @@
     <string name="historial_de_situaciones_guardadas">Historial de Situaciones guardadas:</string>
 
     <!-- Modulo Trienio -->
-    <string name="numero_de_trienio">Número de Trienio (Ej: 1, 2, 3...)</string>
+    <string name="numero_de_trienio">Número de Trienio (Ej: 1, 2, 3…)</string>
     <string name="num_trienio">Nº Trienio</string>
     <string name="historial_de_trienios_guardados">Historial de Trienios guardados:</string>
 
@@ -132,7 +132,7 @@
     <string name="nombre_de_la_evaluacion">Nombre de la Evaluación</string>
     <string name="nombre_evaluacion">Nombre Evaluación</string>
     <string name="historial_de_evaluaciones_guardadas">Historial de Evaluaciones guardadas:</string>
-    <string name="resultado_evaluacion">Resultado (Ej: Apto, No Apto...)</string>
+    <string name="resultado_evaluacion">Resultado (Ej: Apto, No Apto…)</string>
     <string name="resultado">Resultado</string>
 
     <!-- Modulo Habilitación de Seguridad -->
@@ -206,5 +206,13 @@
     <string name="pass_nueva">Nueva Contraseña</string>
     <string name="pass_repetir">Repetir Nueva Contraseña</string>
     <string name="guardar_cambios">Guardar Cambios</string>
+
+    <!-- Para mostrar Datos %1$s es un comodín le digo a Android
+    "aquí te voy a meter una palabra desde Java", que en nuestro caso será el DNI -->
+    <string name="usuario_conectado">Usuario: %1$s</string>
+
+    <!-- Boton Cerrar sesionn del menu principal-->
+    <string name="cerrar_sesi_n">Cerrar Sesión</string>
+    <string name="ajustes_de_seguridad">Ajustes de Seguridad</string>
 
 </resources>

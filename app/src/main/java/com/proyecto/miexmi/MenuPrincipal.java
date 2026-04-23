@@ -1,8 +1,11 @@
 package com.proyecto.miexmi;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +20,39 @@ public class MenuPrincipal extends AppCompatActivity {
 
         // Conectamos esta clase con el XML (activity_menu_principal.xml)
         setContentView(R.layout.activity_menu_principal);
+
+        //  Enlazamos el texto de la cabecera donde mostraremos el usuario
+        TextView tvNombreMilitar = findViewById(R.id.tvNombreMilitar);
+
+        // RECUPERAMOS LA SESIÓN (El ID del usuario que hizo login)
+        SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
+        int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
+
+        // Si hay un usuario logueado (el ID es diferente de -1)
+        if (idUsuarioActual != -1) {
+
+            // 1. Inicializamos la conexión con la Base de Datos como variable LOCAL
+            // Usamos un bloque try-with-resources para que se cierre sola al terminar
+            try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
+
+                // Buscamos el DNI en la base de datos
+                String dniUsuario = dbHelper.obtenerDniPorId(idUsuarioActual);
+
+                if (dniUsuario != null) {
+                    // Mostramos el DNI en la pantalla usando el recurso String
+                    tvNombreMilitar.setText(getString(R.string.usuario_conectado, dniUsuario));
+                }
+            }
+
+        } else {
+            // Si por algún error no hay sesión (alguien intentó saltarse el Login),
+            // lo devolvemos al Login por seguridad.
+            Toast.makeText(this, "Error de sesión. Vuelve a iniciar sesión.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            finish(); // Cerramos el MenuPrincipal
+            return;   // Detenemos la ejecución del resto del código
+        }
 
         // Enlazamos las tarjetas y botones del XML con variables en Java
         CardView cardDatosPersonales = findViewById(R.id.cardDatosPersonales);
@@ -33,6 +69,26 @@ public class MenuPrincipal extends AppCompatActivity {
         btnAjustes.setOnClickListener(v -> {
             Intent intent = new Intent(MenuPrincipal.this, Seguridad.class);
             startActivity(intent);
+        });
+
+        // Enlazamos el nuevo botón de cerrar sesión
+        ImageButton btnCerrarSesion = findViewById(R.id.btnCerrarSesion);
+
+        // Programamos el clic para "Cerrar Sesión"
+        btnCerrarSesion.setOnClickListener(v -> {
+            // 1. Borramos la "memoria" de quién estaba logueado
+            SharedPreferences prefsSalir = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefsSalir.edit();
+            editor.clear(); // Esto vacía el archivo SharedPreferences por completo
+            editor.apply();
+
+            // 2. Avisamos al usuario
+            Toast.makeText(MenuPrincipal.this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show();
+
+            // 3. Lo mandamos de vuelta al Login y cerramos el menú
+            Intent intentSalir = new Intent(MenuPrincipal.this, LoginActivity.class);
+            startActivity(intentSalir);
+            finish();
         });
 
         // Programamos el clic para "Datos Personales"

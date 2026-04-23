@@ -40,16 +40,29 @@
         app:layout_constraintTop_toBottomOf="@+id/tvBienvenida" />
 
     <ImageButton
-        android:id="@+id/btnAjustesSeguridad"
+        android:id="@+id/btnCerrarSesion"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Ajustes de Seguridad"
-        android:src="@drawable/ic_ajustes"
+        android:contentDescription="@string/cerrar_sesi_n"
+        android:src="@drawable/ic_salir"
         app:tint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnAjustesSeguridad"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/ajustes_de_seguridad"
+        android:src="@drawable/ic_ajustes"
+        app:tint="@android:color/white"
+        app:layout_constraintEnd_toStartOf="@+id/btnCerrarSesion"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
