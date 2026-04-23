@@ -32,16 +32,17 @@ public class Registro extends AppCompatActivity {
         // 2. Inicializamos la conexión con la Base de Datos
         dbHelper = new ExpedienteHelper(this);
 
-        // Asociamos las variables con los elementos del XML usando su ID
-        etDniRegistro = findViewById(R.id.etDniRegistro);
-        etPasswordRegistro = findViewById(R.id.etPasswordRegistro);
-        btnRegistro = findViewById(R.id.btnRegistro);
+        // ¡AQUÍ ESTABA EL ERROR!
+        // Hemos cambiado los R.id para que coincidan exactamente con tu activity_registro.xml
+        etDniRegistro = findViewById(R.id.etDni);
+        etPasswordRegistro = findViewById(R.id.etContrasena);
+        btnRegistro = findViewById(R.id.btnLogin); // Aunque en el XML se llame btnLogin, aquí hace de Registro
 
-        // Acción cuando se pulsa el botón "Registrarse"
+        // Acción cuando se pulsa el botón
         btnRegistro.setOnClickListener(v -> {
 
-            // Guardamos lo que escribe el usuario (usamos trim() para quitar espacios accidentales al principio o final)
-            String dni = etDniRegistro.getText().toString().trim();
+            // Guardamos lo que escribe el usuario (¡Genial ese toUpperCase() que pusiste!)
+            String dni = etDniRegistro.getText().toString().trim().toUpperCase();
             String pass = etPasswordRegistro.getText().toString().trim();
 
             // Comprobamos si hay campos vacíos
@@ -64,7 +65,7 @@ public class Registro extends AppCompatActivity {
                     // Cerramos esta pantalla y volvemos al login
                     finish();
                 } else {
-                    // Si resultado es -1, es porque el DNI ya existe (saltó la restricción UNIQUE del SQL)
+                    // Si resultado es -1, es porque el DNI ya existe
                     Toast.makeText(this, "Error: Este DNI ya tiene una cuenta", Toast.LENGTH_LONG).show();
                 }
             }

@@ -45,7 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
 
             // Obtenemos lo que escribe el usuario (con .trim() para quitar espacios inútiles)
-            String dni = etDni.getText().toString().trim();
+            // ¡NUEVO!: Añadimos .toUpperCase() para que las minúsculas no den problemas al iniciar sesión
+            String dni = etDni.getText().toString().trim().toUpperCase();
             String pass = etPassword.getText().toString().trim();
 
             // 3. Comprobamos si hay campos vacíos

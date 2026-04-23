@@ -428,4 +428,43 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         // Si la clave actual no era correcta, devolvemos falso
         return false
     }
+
+    // ====================================================================
+    // === MÉTODOS DEL MODULO DE FILIACIÓN                              ===
+    // ====================================================================
+
+    // Guarda o actualiza los datos personales del militar
+    fun guardarFiliacion(idUsuario: Int, nombre: String, apellidos: String, tmi: String, fechaIncorp: String, numEscalafon: Int): Boolean {
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nombre", nombre)
+            put("Apellidos", apellidos)
+            put("TMI", tmi)
+            put("Fech_Incorp", fechaIncorp)
+            put("Nun_Escalafon", numEscalafon)
+        }
+
+        // Primero comprobamos si este usuario ya tiene datos guardados
+        val cursor = db.rawQuery("SELECT Id_Filia FROM FILIACION WHERE Id_Usuario = ?", arrayOf(idUsuario.toString()))
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) {
+            // Si ya existen, ACTUALIZAMOS los datos (UPDATE)
+            val filasAfectadas = db.update("FILIACION", values, "Id_Usuario = ?", arrayOf(idUsuario.toString()))
+            return filasAfectadas > 0
+        } else {
+            // Si no existen, CREAMOS el nuevo registro (INSERT)
+            val resultado = db.insert("FILIACION", null, values)
+            return resultado != -1L
+        }
+    }
+
+    // Recupera los datos de filiación para mostrarlos en pantalla
+    fun obtenerFiliacion(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        // Devuelve todas las columnas de la tabla FILIACION para ese usuario
+        return db.rawQuery("SELECT * FROM FILIACION WHERE Id_Usuario = ?", arrayOf(idUsuario.toString()))
+    }
 }

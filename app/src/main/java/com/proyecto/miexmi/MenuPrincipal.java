@@ -3,6 +3,7 @@ package com.proyecto.miexmi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor; // Añadido para poder leer la base de datos
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -35,13 +36,26 @@ public class MenuPrincipal extends AppCompatActivity {
             // Usamos un bloque try-with-resources para que se cierre sola al terminar
             try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
 
-                // Buscamos el DNI en la base de datos
-                String dniUsuario = dbHelper.obtenerDniPorId(idUsuarioActual);
+                // --- NUEVA LÓGICA PLAN A (Nombre) y PLAN B (DNI) ---
+                // Intentamos buscar sus datos en la tabla FILIACION primero
+                Cursor cursorFilia = dbHelper.obtenerFiliacion(idUsuarioActual);
 
-                if (dniUsuario != null) {
-                    // Mostramos el DNI en la pantalla usando el recurso String
-                    tvNombreMilitar.setText(getString(R.string.usuario_conectado, dniUsuario));
+                if (cursorFilia.moveToFirst()) {
+                    // PLAN A: Si ya rellenó sus datos, mostramos Nombre y Apellidos
+                    String nombre = cursorFilia.getString(cursorFilia.getColumnIndexOrThrow("Nombre"));
+                    String apellidos = cursorFilia.getString(cursorFilia.getColumnIndexOrThrow("Apellidos"));
+                    tvNombreMilitar.setText(getString(R.string.nombre_completo, nombre, apellidos));
+                } else {
+                    // PLAN B: Si no tiene filiación, buscamos el DNI en la base de datos
+                    String dniUsuario = dbHelper.obtenerDniPorId(idUsuarioActual);
+
+                    if (dniUsuario != null) {
+                        // Mostramos el DNI en la pantalla usando el recurso String
+                        tvNombreMilitar.setText(getString(R.string.usuario_conectado, dniUsuario));
+                    }
                 }
+
+                cursorFilia.close(); // Siempre cerramos el cursor al terminar
             }
 
         } else {
@@ -126,5 +140,15 @@ public class MenuPrincipal extends AppCompatActivity {
             Toast.makeText(this, "Módulo de Exportación en construcción", Toast.LENGTH_SHORT).show();
         });
 
+    }
+
+
+    // Este metodo se ejecuta automáticamente cuando vuelves al Menú Principal
+    // desde otra pantalla (por ejemplo, después de guardar la Filiación).
+    // Lo usamos para refrescar la pantalla y que el nombre se actualice al instante.
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        recreate();
     }
 }

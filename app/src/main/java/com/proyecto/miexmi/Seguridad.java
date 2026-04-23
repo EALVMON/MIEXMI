@@ -1,7 +1,6 @@
 package com.proyecto.miexmi;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -22,8 +21,7 @@ public class Seguridad extends AppCompatActivity {
         Utilidades.configurarBotonVolver(this, R.id.btnVolverSeguridad);
 
         // RECUPERAMOS LA SESIÓN
-        SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
-        int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
+        int idUsuarioActual = Utilidades.obtenerUsuarioActual(this);
 
         if (idUsuarioActual == -1) {
             Toast.makeText(this, "Error de sesión", Toast.LENGTH_SHORT).show();

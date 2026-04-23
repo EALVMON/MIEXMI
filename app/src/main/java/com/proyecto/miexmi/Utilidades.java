@@ -1,7 +1,13 @@
 package com.proyecto.miexmi;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.ImageButton;
+import com.google.android.material.textfield.TextInputEditText;
+import java.util.Calendar; // Importación para manejar fechas
+import java.util.Locale;   // Importación para el formato del texto
 
 public class Utilidades {
 
@@ -15,5 +21,32 @@ public class Utilidades {
         if (btnVolver != null) {
             btnVolver.setOnClickListener(v -> activity.finish());
         }
+    }
+
+
+     // Funcion Recupera el ID del usuario que tiene la sesión iniciada.
+
+    public static int obtenerUsuarioActual(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
+        return prefs.getInt("ID_USUARIO_ACTUAL", -1);
+    }
+
+
+     // FUNCIÓN MAESTRA DE CALENDARIO YA QUE LA VAMOS A UTILIZAR EN VAROS MODULOS LA PETICION DE FEHCA
+    public static void configurarCalendario(Context context, TextInputEditText editText) {
+        editText.setOnClickListener(v -> {
+            Calendar calendario = Calendar.getInstance();
+            int anio = calendario.get(Calendar.YEAR);
+            int mes = calendario.get(Calendar.MONTH);
+            int dia = calendario.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog dialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
+                // Formateamos la fecha siempre igual: dd/mm/yyyy
+                String fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, (month + 1), year);
+                editText.setText(fechaSeleccionada);
+            }, anio, mes, dia);
+
+            dialog.show();
+        });
     }
 }

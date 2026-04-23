@@ -181,13 +181,11 @@
     <string name="resultado_columna">SLP</string>
     <string name="historial_idiomas_guardados">Historial de idiomas guardados:</string>
 
-
     <!-- Modulo Modulo Registro de Actividad-->
     <string name="titulo_registro_actividad">Registro de Actividad</string>
     <string name="dni_log">DNI Usuario</string>
     <string name="fecha_hora_log">Fecha y Hora de Acceso</string>
     <string name="lista_vacia_log">No hay registros de actividad aún.</string>
-
 
     <!-- Filiciacion-->
     <string name="filiacion_pantalla">Datos de Filiación</string>
@@ -199,7 +197,6 @@
     <string name="guardar_datos">Guardar Datos</string>
 
     <!-- Seguridad reseteo de clave-->
-
     <string name="seguridad_pantalla">Seguridad y Accesos</string>
     <string name="dni_usuario">DNI / NIF</string>
     <string name="pass_actual">Contraseña Actual (Obligatorio para guardar)</string>
@@ -210,8 +207,9 @@
     <!-- Para mostrar Datos %1$s es un comodín le digo a Android
     "aquí te voy a meter una palabra desde Java", que en nuestro caso será el DNI -->
     <string name="usuario_conectado">Usuario: %1$s</string>
+    <string name="nombre_completo">%1$s %2$s</string>
 
-    <!-- Boton Cerrar sesionn del menu principal-->
+    <!-- Boton Cerrar sesion del menu principal-->
     <string name="cerrar_sesi_n">Cerrar Sesión</string>
     <string name="ajustes_de_seguridad">Ajustes de Seguridad</string>
 

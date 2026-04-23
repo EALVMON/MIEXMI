@@ -30,6 +30,7 @@
         android:minHeight="48dp"
         android:textColor="@android:color/white"
         android:textColorHint="#B3FFFFFF"
+        android:inputType="textCapCharacters"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitulo" />
