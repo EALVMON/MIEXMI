@@ -167,7 +167,7 @@
 
     <!-- Modulo Permisos de Conducción -->
     <string name="carnets_pantalla">Permisos de Conducción</string>
-    <string name="tipo_carnet_hint">Tipo de Permiso (ej. B, C, C+E...)</string>
+    <string name="tipo_carnet_hint">Tipo de Permiso (ej. B, C, C+E…)</string>
     <string name="tipo_carnet_columna">Permiso</string>
     <string name="concesion_columna">Concesión</string>
     <string name="caducidad_columna">Caducidad</string>
@@ -175,7 +175,7 @@
 
     <!-- Modulo Modulo de Idiomas -->
     <string name="idiomas_pantalla">Idiomas (SLP)</string>
-    <string name="nombre_del_idioma">Idioma (ej. Inglés, Francés...)</string>
+    <string name="nombre_del_idioma">Idioma (ej. Inglés, Francés…)</string>
     <string name="nombre_idioma_columna">Idioma</string>
     <string name="resultado_slp_hint">Perfil SLP (ej. 2.2.2.2)</string>
     <string name="resultado_columna">SLP</string>
