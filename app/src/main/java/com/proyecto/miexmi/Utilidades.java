@@ -49,4 +49,23 @@ public class Utilidades {
             dialog.show();
         });
     }
+
+    // ========================================================================
+    // === CONFIGURAR MENÚ DESPLEGABLE DE EMPLEOS (EJÉRCITO DE TIERRA)      ===
+    // ========================================================================
+    public static void configurarDesplegableEmpleos(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] escalafonTierra = new String[]{
+                "Soldado", "Cabo", "Cabo 1º", "Cabo Mayor",
+                "Sargento", "Sargento 1º", "Brigada", "Subteniente", "Suboficial Mayor",
+                "Alférez", "Teniente", "Capitán", "Comandante", "Teniente Coronel", "Coronel",
+                "General de Brigada", "General de División", "Teniente General"
+        };
+
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(
+                context,
+                android.R.layout.simple_dropdown_item_1line,
+                escalafonTierra
+        );
+        autoCompleteTextView.setAdapter(adapter);
+    }
 }

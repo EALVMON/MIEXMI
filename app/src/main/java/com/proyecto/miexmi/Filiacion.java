@@ -34,7 +34,6 @@ public class Filiacion extends AppCompatActivity {
         TextInputEditText etTmi = findViewById(R.id.etTmiFiliacion);
         TextInputEditText etEscalafon = findViewById(R.id.etEscalafonFiliacion);
         TextInputEditText etFechaIncorp = findViewById(R.id.etFechaIncorpFiliacion);
-
         Button btnGuardar = findViewById(R.id.btnGuardarFiliacion);
         Button btnLimpiar = findViewById(R.id.btnLimpiarFiliacion);
 

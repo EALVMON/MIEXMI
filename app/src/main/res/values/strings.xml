@@ -14,6 +14,8 @@
     <string name="bienvenido">Bienvenido,</string>
     <string name="nombre_ejemplo">Eduardo Álvarez</string> /* quitar luego*/
     <string name="empleo_ejemplo">Empleo: Sargento Primero</string> /* quitar luego*/
+    <string name="detalle_empleo">Empleo: %1$s</string>
+    <string name="detalle_destino">Destino: %1$s</string>
     <string name="destino_ejemplo">Destino: CIFP Avilés (PMDM)</string> /* quitar luego*/
     <string name="resumen_expediente">Resumen del Expediente</string>
     <string name="cat_datos_personales">Datos\nPersonales</string>

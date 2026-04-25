@@ -22,45 +22,13 @@ public class MenuPrincipal extends AppCompatActivity {
         // Conectamos esta clase con el XML (activity_menu_principal.xml)
         setContentView(R.layout.activity_menu_principal);
 
-        //  Enlazamos el texto de la cabecera donde mostraremos el usuario
-        TextView tvNombreMilitar = findViewById(R.id.tvNombreMilitar);
-
         // RECUPERAMOS LA SESIÓN (El ID del usuario que hizo login)
         SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
         int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
 
-        // Si hay un usuario logueado (el ID es diferente de -1)
-        if (idUsuarioActual != -1) {
-
-            // 1. Inicializamos la conexión con la Base de Datos como variable LOCAL
-            // Usamos un bloque try-with-resources para que se cierre sola al terminar
-            try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
-
-                // --- NUEVA LÓGICA PLAN A (Nombre) y PLAN B (DNI) ---
-                // Intentamos buscar sus datos en la tabla FILIACION primero
-                Cursor cursorFilia = dbHelper.obtenerFiliacion(idUsuarioActual);
-
-                if (cursorFilia.moveToFirst()) {
-                    // PLAN A: Si ya rellenó sus datos, mostramos Nombre y Apellidos
-                    String nombre = cursorFilia.getString(cursorFilia.getColumnIndexOrThrow("Nombre"));
-                    String apellidos = cursorFilia.getString(cursorFilia.getColumnIndexOrThrow("Apellidos"));
-                    tvNombreMilitar.setText(getString(R.string.nombre_completo, nombre, apellidos));
-                } else {
-                    // PLAN B: Si no tiene filiación, buscamos el DNI en la base de datos
-                    String dniUsuario = dbHelper.obtenerDniPorId(idUsuarioActual);
-
-                    if (dniUsuario != null) {
-                        // Mostramos el DNI en la pantalla usando el recurso String
-                        tvNombreMilitar.setText(getString(R.string.usuario_conectado, dniUsuario));
-                    }
-                }
-
-                cursorFilia.close(); // Siempre cerramos el cursor al terminar
-            }
-
-        } else {
-            // Si por algún error no hay sesión (alguien intentó saltarse el Login),
-            // lo devolvemos al Login por seguridad.
+        // Si por algún error no hay sesión (alguien intentó saltarse el Login),
+        // lo devolvemos al Login por seguridad.
+        if (idUsuarioActual == -1) {
             Toast.makeText(this, "Error de sesión. Vuelve a iniciar sesión.", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -139,16 +107,87 @@ public class MenuPrincipal extends AppCompatActivity {
         cardExportar.setOnClickListener(v -> {
             Toast.makeText(this, "Módulo de Exportación en construcción", Toast.LENGTH_SHORT).show();
         });
-
     }
 
+    // ========================================================================
+    // === CICLO DE VIDA PARA REFRESCO DE PANTALLA                          ===
+    // ========================================================================
 
-    // Este metodo se ejecuta automáticamente cuando vuelves al Menú Principal
-    // desde otra pantalla (por ejemplo, después de guardar la Filiación).
-    // Lo usamos para refrescar la pantalla y que el nombre se actualice al instante.
+    // Este metodo se ejecuta automáticamente cuando volvemos al Menú Principal
+    // desde otra pantalla (por ejemplo, después de guardar la Filiación o el Empleo).
+
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        recreate();
+    protected void onResume() {
+        super.onResume();
+        // Disparamos la actualización del Dashboard
+        actualizarResumen();
+    }
+
+    // ========================================================================
+    // === METODO PARA LLENAR EL DASHBOARD CON DATOS FRESCOS                ===
+    // ========================================================================
+    private void actualizarResumen() {
+        // RECUPERAMOS LA SESIÓN de nuevo para saber a quién buscar en la Base de Datos
+        SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
+        int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
+
+        if (idUsuarioActual == -1) return; // Si no hay usuario, abortamos
+
+        // Enlazamos el texto de la cabecera donde mostraremos el usuario
+        TextView tvNombreMilitar = findViewById(R.id.tvNombreMilitar);
+
+        // ---  ENLACES PARA EL DASHBOARD ---
+        TextView tvDetalleEmpleo = findViewById(R.id.tvDetalleEmpleo);
+        TextView tvDetalleDestino = findViewById(R.id.tvDetalleDestino);
+
+        // Vaciamos los textos del panel por si el usuario borró sus datos
+        tvDetalleEmpleo.setText("");
+        tvDetalleDestino.setText("");
+
+        // 1. Inicializamos la conexión con la Base de Datos como variable LOCAL
+        // Usamos un bloque try-with-resources para que se cierre sola al terminar
+        try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
+
+            // Intentamos buscar sus datos en la tabla FILIACION primero
+            Cursor cursorFilia = dbHelper.obtenerFiliacion(idUsuarioActual);
+
+            if (cursorFilia.moveToFirst()) {
+                //  Si ya rellenó sus datos, mostramos Nombre y Apellidos
+                String nombre = cursorFilia.getString(cursorFilia.getColumnIndexOrThrow("Nombre"));
+                String apellidos = cursorFilia.getString(cursorFilia.getColumnIndexOrThrow("Apellidos"));
+                tvNombreMilitar.setText(getString(R.string.nombre_completo, nombre, apellidos));
+            } else {
+                // Si no tiene filiación, buscamos el DNI en la base de datos
+                String dniUsuario = dbHelper.obtenerDniPorId(idUsuarioActual);
+
+                if (dniUsuario != null) {
+                    // Mostramos el DNI en la pantalla usando el recurso String
+                    tvNombreMilitar.setText(getString(R.string.usuario_conectado, dniUsuario));
+                }
+            }
+            cursorFilia.close(); // Siempre cerramos el cursor al terminar
+
+            // --- LÓGICA PARA CARGAR EL ÚLTIMO EMPLEO ---
+            // Llamamos a la base de datos
+            Cursor cursorEmpleo = dbHelper.obtenerEmpleos(idUsuarioActual);
+
+            // Si el cursor encuentra datos (true), leemos la primera fila (el último empleo)
+            if (cursorEmpleo.moveToFirst()) {
+                String ultimoEmpleo = cursorEmpleo.getString(cursorEmpleo.getColumnIndexOrThrow("Nom_Empleo"));
+                tvDetalleEmpleo.setText(getString(R.string.detalle_empleo, ultimoEmpleo));
+            }
+            cursorEmpleo.close(); // Cerramos el cursor de empleos
+
+            // --- LÓGICA PARA CARGAR EL ÚLTIMO DESTINO ---
+            // Llamamos a la base de datos para obtener los destinos (ya vienen ordenados por id DESC)
+            Cursor cursorDestino = dbHelper.obtenerDestinos(idUsuarioActual);
+
+            // Si encontramos algún destino, cogemos el primero de la lista (que es el más reciente)
+            if (cursorDestino.moveToFirst()) {
+                String ultimoDestino = cursorDestino.getString(cursorDestino.getColumnIndexOrThrow("Nom_Destino"));
+                tvDetalleDestino.setText(getString(R.string.detalle_destino, ultimoDestino));
+            }
+            cursorDestino.close(); // Cerramos el cursor de destinos
+        }
     }
 }

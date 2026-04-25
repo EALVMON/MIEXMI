@@ -32,7 +32,7 @@
         android:id="@+id/tvNombreMilitar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nombre_ejemplo"
+        tools:text="Juan Pérez"
         android:textColor="@android:color/white"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -97,8 +97,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/empleo_ejemplo"
+                tools:text="Sargento 1º"
                 android:textColor="@color/texto_resumen"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTituloResumen" />
 
@@ -107,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/destino_ejemplo"
+                tools:text="Destino actual..."
                 android:textColor="@color/texto_resumen"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvDetalleEmpleo" />

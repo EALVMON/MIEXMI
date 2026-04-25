@@ -355,7 +355,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
 
     // Comprueba si un usuario existe en la base de datos y si su contraseña es correcta.
-    // Devuelve el Id_Usuario (ej: 1, 2, 3...) si totalidad  es correcto, o -1 si falla.
+    // Devuelve el Id_Usuario (ej.: 1, 2, 3...) si totalidad es correcto, o -1 si falla.
     fun comprobarLogin(dni: String, contrasena: String): Int {
 
         // 1. Abrimos la base de datos en modo LECTURA (readableDatabase).
@@ -364,7 +364,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
         // 2. Lanzamos la pregunta (Query) a la base de datos usando el 'Cursor'.
         // Las interrogaciones (?) son un escudo de seguridad: evitan que hackers
-        // inyecten código malicioso. Android pondrá el DNI en la primera '?' y la clave en la segunda.
+        // inyecten código malicioso. Android pondrá el DNI en la primera '?', y la clave en la segunda.
         val cursor = db.rawQuery(
             "SELECT Id_Usuario FROM USUARIO WHERE Dni = ? AND Contraseña = ?",
             arrayOf(dni, contrasena)
@@ -466,5 +466,221 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         val db = this.readableDatabase
         // Devuelve todas las columnas de la tabla FILIACION para ese usuario
         return db.rawQuery("SELECT * FROM FILIACION WHERE Id_Usuario = ?", arrayOf(idUsuario.toString()))
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE TMI (TARJETA MILITAR DE IDENTIDAD)     ===
+    // ====================================================================
+
+    // AÑADIR una nueva TMI
+    // 1. AÑADIR una nueva TMI (Con protección anti-duplicados)
+    fun anadirTMI(idUsuario: Int, numTarjeta: String, fechaCaducidad: String): Boolean {
+        val db = this.readableDatabase
+
+        // PRIMERO: Comprobamos si esta tarjeta ya existe para este usuario
+        val cursor = db.rawQuery(
+            "SELECT Id_M_Tmi FROM MOD_TMI WHERE Id_Usuario = ? AND N_Tarjeta = ?",
+            arrayOf(idUsuario.toString(), numTarjeta)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        // Si ya existe, devolvemos false para que no la guarde
+        if (existe) {
+            return false
+        }
+
+        // SEGUNDO: Si no existe, la guardamos normalmente
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("N_Tarjeta", numTarjeta)
+            put("M_Tmi_Fecha_Cadu", fechaCaducidad)
+        }
+        val resultado = dbWrite.insert("MOD_TMI", null, values)
+        return resultado != -1L
+    }
+
+    // LEER todas las TMI de un usuario
+    fun obtenerTMIs(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        // Ordenamos por Id_M_Tmi descendente para ver la más reciente primero
+        return db.rawQuery(
+            "SELECT * FROM MOD_TMI WHERE Id_Usuario = ? ORDER BY Id_M_Tmi DESC",
+            arrayOf(idUsuario.toString())
+        )
+    }
+
+    // MODIFICAR una TMI existente
+    fun modificarTMI(idTmi: Int, numTarjeta: String, fechaCaducidad: String): Boolean {
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("N_Tarjeta", numTarjeta)
+            put("M_Tmi_Fecha_Cadu", fechaCaducidad)
+        }
+        val filasAfectadas = db.update("MOD_TMI", values, "Id_M_Tmi = ?", arrayOf(idTmi.toString()))
+        return filasAfectadas > 0
+    }
+
+    // ELIMINAR una TMI
+    fun eliminarTMI(idTmi: Int): Boolean {
+        val db = this.writableDatabase
+        val filasAfectadas = db.delete("MOD_TMI", "Id_M_Tmi = ?", arrayOf(idTmi.toString()))
+        return filasAfectadas > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE CEE FUNDAMENTAL                        ===
+    // ====================================================================
+
+    fun anadirCEEF(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val db = this.readableDatabase
+        // Comprobamos si ya existe esta especialidad para este usuario
+        val cursor = db.rawQuery(
+            "SELECT Id_M_CEEF FROM MOD_CEE_FUNDAMENTAL WHERE Id_Usuario = ? AND Nom_CEEF = ?",
+            arrayOf(idUsuario.toString(), nombre)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false // Si ya existe, bloqueamos el guardado
+
+        // Convertimos el número de BOD a entero (si está vacío, guardamos un 0)
+        val numBod = numBodStr.toIntOrNull() ?: 0
+
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_CEEF", nombre)
+            put("M_Ceef_Fecha_Bod", fechaBod)
+            put("M_Ceef_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_CEE_FUNDAMENTAL", null, values) != -1L
+    }
+
+    fun obtenerCEEFs(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT * FROM MOD_CEE_FUNDAMENTAL WHERE Id_Usuario = ? ORDER BY Id_M_CEEF DESC",
+            arrayOf(idUsuario.toString())
+        )
+    }
+
+    fun modificarCEEF(idCeef: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_CEEF", nombre)
+            put("M_Ceef_Fecha_Bod", fechaBod)
+            put("M_Ceef_Nbod", numBod)
+        }
+        return db.update("MOD_CEE_FUNDAMENTAL", values, "Id_M_CEEF = ?", arrayOf(idCeef.toString())) > 0
+    }
+
+    fun eliminarCEEF(idCeef: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_CEE_FUNDAMENTAL", "Id_M_CEEF = ?", arrayOf(idCeef.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE EMPLEOS                                ===
+    // ====================================================================
+
+    fun anadirEmpleo(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT Id_M_Empl FROM MOD_EMPLEOS WHERE Id_Usuario = ? AND Nom_Empleo = ?",
+            arrayOf(idUsuario.toString(), nombre)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false
+
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_Empleo", nombre)
+            put("M_Empl_Fecha_Bod", fechaBod)
+            put("M_Empl_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_EMPLEOS", null, values) != -1L
+    }
+
+    fun obtenerEmpleos(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT * FROM MOD_EMPLEOS WHERE Id_Usuario = ? ORDER BY Id_M_Empl DESC",
+            arrayOf(idUsuario.toString())
+        )
+    }
+
+    fun modificarEmpleo(idEmpleo: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_Empleo", nombre)
+            put("M_Empl_Fecha_Bod", fechaBod)
+            put("M_Empl_Nbod", numBod)
+        }
+        return db.update("MOD_EMPLEOS", values, "Id_M_Empl = ?", arrayOf(idEmpleo.toString())) > 0
+    }
+
+    fun eliminarEmpleo(idEmpleo: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_EMPLEOS", "Id_M_Empl = ?", arrayOf(idEmpleo.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE DESTINOS                               ===
+    // ====================================================================
+
+    fun anadirDestino(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val db = this.readableDatabase
+        // Filtro anti-duplicados
+        val cursor = db.rawQuery(
+            "SELECT Id_M_Dest FROM MOD_DESTINOS WHERE Id_Usuario = ? AND Nom_Destino = ?",
+            arrayOf(idUsuario.toString(), nombre)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false
+
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_Destino", nombre)
+            put("M_Dest_Fecha_Bod", fechaBod)
+            put("M_Dest_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_DESTINOS", null, values) != -1L
+    }
+
+    fun obtenerDestinos(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        // Ordenamos DESC para que el último destino añadido salga el primero
+        return db.rawQuery(
+            "SELECT * FROM MOD_DESTINOS WHERE Id_Usuario = ? ORDER BY Id_M_Dest DESC",
+            arrayOf(idUsuario.toString())
+        )
+    }
+
+    fun modificarDestino(idDestino: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_Destino", nombre)
+            put("M_Dest_Fecha_Bod", fechaBod)
+            put("M_Dest_Nbod", numBod)
+        }
+        return db.update("MOD_DESTINOS", values, "Id_M_Dest = ?", arrayOf(idDestino.toString())) > 0
+    }
+
+    fun eliminarDestino(idDestino: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_DESTINOS", "Id_M_Dest = ?", arrayOf(idDestino.toString())) > 0
     }
 }
