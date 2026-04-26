@@ -124,7 +124,7 @@ public class MenuPrincipal extends AppCompatActivity {
     }
 
     // ========================================================================
-    // === METODO PARA LLENAR EL DASHBOARD CON DATOS FRESCOS                ===
+    // === METODO PARA LLENAR EL TABLERO CON DATOS FRESCOS                ===
     // ========================================================================
     private void actualizarResumen() {
         // RECUPERAMOS LA SESIÓN de nuevo para saber a quién buscar en la Base de Datos

@@ -68,4 +68,17 @@ public class Utilidades {
         );
         autoCompleteTextView.setAdapter(adapter);
     }
+
+    // ========================================================================
+    // === CONFIGURAR DESPLEGABLE DE HABILITACIONES DE SEGURIDAD (HPS)      ===
+    // ====================================================================
+    public static void configurarDesplegableHPS(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] habilitaciones = new String[]{
+                "Nacional-Alto Secreto", "Nacional-Secreto", "Nacional-Confidencial", "Nacional-Difusión Limitada",
+                "NATO -COSMIC TOP SECRET", "NATO SECRET", "NATO CONFIDENTIAL", "NATO RESTRICTED",
+                "EU TOP SECRET", "EU SECRET", "EU CONFIDENTIAL", "EU RESTRICTED"
+        };
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, habilitaciones);
+        autoCompleteTextView.setAdapter(adapter);
+    }
 }

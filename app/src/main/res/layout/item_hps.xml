@@ -33,6 +33,7 @@
             style="@style/EstiloItemSecundario"
             android:layout_weight="1"
             android:textAlignment="viewEnd"
+            tools:ignore="VisualLintSystemNav"
             tools:text="10/01/2027" />
 
     </LinearLayout>
