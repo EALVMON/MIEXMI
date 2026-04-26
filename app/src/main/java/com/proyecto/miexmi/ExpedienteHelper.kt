@@ -1026,4 +1026,400 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         val db = this.writableDatabase
         return db.delete("MOD_TRIENIOS", "Id_M_Trie = ?", arrayOf(idTrienio.toString())) > 0
     }
+
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE APTITUDES                              ===
+    // ====================================================================
+
+    fun anadirAptitud(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT Id_M_Apti FROM MOD_APTITUDES WHERE Id_Usuario = ? AND Nom_Aptitud = ?",
+            arrayOf(idUsuario.toString(), nombre)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false
+
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_Aptitud", nombre)
+            put("M_Apti_Fecha_Bod", fechaBod)
+            put("M_Apti_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_APTITUDES", null, values) != -1L
+    }
+
+    fun obtenerAptitudes(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT * FROM MOD_APTITUDES WHERE Id_Usuario = ? ORDER BY Id_M_Apti DESC",
+            arrayOf(idUsuario.toString())
+        )
+    }
+
+    fun modificarAptitud(idAptitud: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_Aptitud", nombre)
+            put("M_Apti_Fecha_Bod", fechaBod)
+            put("M_Apti_Nbod", numBod)
+        }
+        return db.update("MOD_APTITUDES", values, "Id_M_Apti = ?", arrayOf(idAptitud.toString())) > 0
+    }
+
+    fun eliminarAptitud(idAptitud: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_APTITUDES", "Id_M_Apti = ?", arrayOf(idAptitud.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE RECOMPENSAS                            ===
+    // ====================================================================
+
+    fun anadirRecompensa(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_Recompensa", nombre)
+            put("M_Reco_Fecha_Bod", fechaBod)
+            put("M_Reco_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_RECOMPENSAS", null, values) != -1L
+    }
+
+    fun obtenerRecompensas(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM MOD_RECOMPENSAS WHERE Id_Usuario = ? ORDER BY Id_M_Reco DESC", arrayOf(idUsuario.toString()))
+    }
+
+    fun modificarRecompensa(idReco: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_Recompensa", nombre)
+            put("M_Reco_Fecha_Bod", fechaBod)
+            put("M_Reco_Nbod", numBod)
+        }
+        return db.update("MOD_RECOMPENSAS", values, "Id_M_Reco = ?", arrayOf(idReco.toString())) > 0
+    }
+
+    fun eliminarRecompensa(idReco: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_RECOMPENSAS", "Id_M_Reco = ?", arrayOf(idReco.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE DISTINTIVOS                            ===
+    // ====================================================================
+
+    fun anadirDistintivo(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_Distintivo", nombre)
+            put("M_Dist_Fecha_Bod", fechaBod)
+            put("M_Dist_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_DISTINTIVOS", null, values) != -1L
+    }
+
+    fun obtenerDistintivos(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM MOD_DISTINTIVOS WHERE Id_Usuario = ? ORDER BY Id_M_Dist DESC", arrayOf(idUsuario.toString()))
+    }
+
+    fun modificarDistintivo(idDistintivo: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_Distintivo", nombre)
+            put("M_Dist_Fecha_Bod", fechaBod)
+            put("M_Dist_Nbod", numBod)
+        }
+        return db.update("MOD_DISTINTIVOS", values, "Id_M_Dist = ?", arrayOf(idDistintivo.toString())) > 0
+    }
+
+    fun eliminarDistintivo(idDistintivo: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_DISTINTIVOS", "Id_M_Dist = ?", arrayOf(idDistintivo.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE CURSOS MILITARES                       ===
+    // ====================================================================
+
+    fun anadirCursoMilitar(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_Cur_Mili", nombre)
+            put("M_Cmili_Fecha_Bod", fechaBod)
+            put("M_Cmili_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_CUR_MILITAR", null, values) != -1L
+    }
+
+    fun obtenerCursosMilitares(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM MOD_CUR_MILITAR WHERE Id_Usuario = ? ORDER BY Id_M_Cmili DESC", arrayOf(idUsuario.toString()))
+    }
+
+    fun modificarCursoMilitar(idCurso: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_Cur_Mili", nombre)
+            put("M_Cmili_Fecha_Bod", fechaBod)
+            put("M_Cmili_Nbod", numBod)
+        }
+        return db.update("MOD_CUR_MILITAR", values, "Id_M_Cmili = ?", arrayOf(idCurso.toString())) > 0
+    }
+
+    fun eliminarCursoMilitar(idCurso: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_CUR_MILITAR", "Id_M_Cmili = ?", arrayOf(idCurso.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE TÍTULOS CIVILES                        ===
+    // ====================================================================
+
+    fun anadirTituloCivil(idUsuario: Int, nombre: String): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT Id_M_Tcivi FROM MOD_TITULOS_CIVILES WHERE Id_Usuario = ? AND Nom_Titulo = ?",
+            arrayOf(idUsuario.toString(), nombre)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false
+
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_Titulo", nombre)
+        }
+        return dbWrite.insert("MOD_TITULOS_CIVILES", null, values) != -1L
+    }
+
+    fun obtenerTitulosCiviles(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT * FROM MOD_TITULOS_CIVILES WHERE Id_Usuario = ? ORDER BY Id_M_Tcivi DESC",
+            arrayOf(idUsuario.toString())
+        )
+    }
+
+    fun modificarTituloCivil(idTitulo: Int, nombre: String): Boolean {
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_Titulo", nombre)
+        }
+        return db.update("MOD_TITULOS_CIVILES", values, "Id_M_Tcivi = ?", arrayOf(idTitulo.toString())) > 0
+    }
+
+    fun eliminarTituloCivil(idTitulo: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_TITULOS_CIVILES", "Id_M_Tcivi = ?", arrayOf(idTitulo.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE IDIOMAS SLP                            ===
+    // ====================================================================
+
+    fun anadirIdioma(idUsuario: Int, nombre: String, resultadoSlp: String, fechaBod: String, numBodStr: String): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT Id_M_Idi FROM MOD_IDIOMA WHERE Id_Usuario = ? AND Nom_idioma = ?",
+            arrayOf(idUsuario.toString(), nombre)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false
+
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_idioma", nombre)
+            put("Resultado", resultadoSlp)
+            put("M_Idi_Fecha_Bod", fechaBod)
+            put("M_Idi_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_IDIOMA", null, values) != -1L
+    }
+
+    fun obtenerIdiomas(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM MOD_IDIOMA WHERE Id_Usuario = ? ORDER BY Id_M_Idi DESC", arrayOf(idUsuario.toString()))
+    }
+
+    fun modificarIdioma(idIdioma: Int, nombre: String, resultadoSlp: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_idioma", nombre)
+            put("Resultado", resultadoSlp)
+            put("M_Idi_Fecha_Bod", fechaBod)
+            put("M_Idi_Nbod", numBod)
+        }
+        return db.update("MOD_IDIOMA", values, "Id_M_Idi = ?", arrayOf(idIdioma.toString())) > 0
+    }
+
+    fun eliminarIdioma(idIdioma: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_IDIOMA", "Id_M_Idi = ?", arrayOf(idIdioma.toString())) > 0
+    }
+
+// ====================================================================
+    // === MÉTODOS DEL MÓDULO DE ARMAS PARTICULARES                     ===
+    // ====================================================================
+
+    fun anadirArma(idUsuario: Int, nombre: String, numSerie: String, fechaCaducidad: String): Boolean {
+        val db = this.readableDatabase
+        // Comprobamos si el número de serie ya existe para evitar errores bruscos de SQLite
+        val cursor = db.rawQuery(
+            "SELECT Id_M_EArm FROM MOD_EXP_ARMAS WHERE M_EArm_Nserie = ?",
+            arrayOf(numSerie)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false
+
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Nom_Arma", nombre)
+            put("M_EArm_Nserie", numSerie)
+            put("M_EArm_Fecha_Cad", fechaCaducidad)
+        }
+        return dbWrite.insert("MOD_EXP_ARMAS", null, values) != -1L
+    }
+
+    fun obtenerArmas(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM MOD_EXP_ARMAS WHERE Id_Usuario = ? ORDER BY Id_M_EArm DESC", arrayOf(idUsuario.toString()))
+    }
+
+    fun modificarArma(idArma: Int, nombre: String, numSerie: String, fechaCaducidad: String): Boolean {
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Nom_Arma", nombre)
+            put("M_EArm_Nserie", numSerie)
+            put("M_EArm_Fecha_Cad", fechaCaducidad)
+        }
+        return try {
+            db.update("MOD_EXP_ARMAS", values, "Id_M_EArm = ?", arrayOf(idArma.toString())) > 0
+        } catch (e: Exception) {
+            false // Retorna falso si intenta poner un número de serie que ya existe
+        }
+    }
+
+    fun eliminarArma(idArma: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_EXP_ARMAS", "Id_M_EArm = ?", arrayOf(idArma.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE CARNETS MILITARES                      ===
+    // ====================================================================
+
+    fun anadirCarnet(idUsuario: Int, tipo: String, fechaConcesion: String, fechaCaducidad: String): Boolean {
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT Id_M_Carnet FROM MOD_CARNET WHERE Id_Usuario = ? AND Tipo_Carnet = ?",
+            arrayOf(idUsuario.toString(), tipo)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false
+
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Tipo_Carnet", tipo)
+            put("M_Carn_Fecha_Concesion", fechaConcesion)
+            put("M_Carn_Fecha_Caducidad", fechaCaducidad)
+        }
+        return dbWrite.insert("MOD_CARNET", null, values) != -1L
+    }
+
+    fun obtenerCarnets(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM MOD_CARNET WHERE Id_Usuario = ? ORDER BY Id_M_Carnet DESC", arrayOf(idUsuario.toString()))
+    }
+
+    fun modificarCarnet(idCarnet: Int, tipo: String, fechaConcesion: String, fechaCaducidad: String): Boolean {
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Tipo_Carnet", tipo)
+            put("M_Carn_Fecha_Concesion", fechaConcesion)
+            put("M_Carn_Fecha_Caducidad", fechaCaducidad)
+        }
+        return db.update("MOD_CARNET", values, "Id_M_Carnet = ?", arrayOf(idCarnet.toString())) > 0
+    }
+
+    fun eliminarCarnet(idCarnet: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_CARNET", "Id_M_Carnet = ?", arrayOf(idCarnet.toString())) > 0
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE TCGF (PRUEBAS FÍSICAS)                 ===
+    // ====================================================================
+
+    fun anadirTcgf(idUsuario: Int, fecha: String, puntuacion: String, apto: String): Boolean {
+        val db = this.readableDatabase
+        // Comprobamos que no haya ya una prueba guardada en la misma fecha
+        val cursor = db.rawQuery(
+            "SELECT Id_M_TCGF FROM MOD_TCGF WHERE Id_Usuario = ? AND M_Tcgf_Fecha = ?",
+            arrayOf(idUsuario.toString(), fecha)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        if (existe) return false
+
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("M_Tcgf_Fecha", fecha)
+            put("M_Tcgf_Puntuacion", puntuacion)
+            put("M_Tcgf_Apto", apto)
+        }
+        return dbWrite.insert("MOD_TCGF", null, values) != -1L
+    }
+
+    fun obtenerTcgf(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM MOD_TCGF WHERE Id_Usuario = ? ORDER BY Id_M_TCGF DESC", arrayOf(idUsuario.toString()))
+    }
+
+    fun modificarTcgf(idTcgf: Int, fecha: String, puntuacion: String, apto: String): Boolean {
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("M_Tcgf_Fecha", fecha)
+            put("M_Tcgf_Puntuacion", puntuacion)
+            put("M_Tcgf_Apto", apto)
+        }
+        return db.update("MOD_TCGF", values, "Id_M_TCGF = ?", arrayOf(idTcgf.toString())) > 0
+    }
+
+    fun eliminarTcgf(idTcgf: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_TCGF", "Id_M_TCGF = ?", arrayOf(idTcgf.toString())) > 0
+    }
 }

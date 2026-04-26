@@ -92,4 +92,127 @@ public class Utilidades {
         android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, trienios);
         autoCompleteTextView.setAdapter(adapter);
     }
+
+    // ========================================================================
+    // === CONFIGURAR DESPLEGABLE DE RECOMPENSAS MILITARES                  ===
+    // ========================================================================
+    public static void configurarDesplegableRecompensas(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] recompensas = new String[]{
+                // Máximas recompensas
+                "Cruz Laureada de San Fernando", "Medalla Militar", "Cruz Laureada de San Fernando Colectiva",
+                "Medalla Militar Colectiva",
+                // Cruces al mérito
+                "Cruz al Mérito Militar (Distintivo Rojo)", "Cruz al Mérito Militar (Distintivo Azul)",
+                "Cruz al Mérito Militar (Distintivo Amarillo)", "Cruz al Mérito Militar (Distintivo Blanco)",
+                "Cruz al Mérito Naval (Distintivo Rojo)", "Cruz al Mérito Naval (Distintivo Azul)",
+                "Cruz al Mérito Naval (Distintivo Amarillo)", "Cruz al Mérito Naval (Distintivo Blanco)",
+                "Cruz al Mérito Aeronáutico (Distintivo Rojo)", "Cruz al Mérito Aeronáutico (Distintivo Azul)",
+                "Cruz al Mérito Aeronáutico (Distintivo Amarillo)", "Cruz al Mérito Aeronáutico (Distintivo Blanco)",
+                // Menciones
+                "Mención Honorífica Individual", "Mención Honorífica Colectiva",
+                "Citación como distinguido en la Orden General",
+                // Recompensas colectivas
+                "Corbata de la Orden de San Fernando", "Placa de la Orden de San Fernando",
+                // Constancia en el servicio
+                "Cruz a la Constancia en el Servicio (Bronce)", "Cruz a la Constancia en el Servicio (Plata)",
+                "Cruz a la Constancia en el Servicio (Oro)",
+                // Órdenes militares
+                "Orden de San Fernando", "Orden de San Hermenegildo (Cruz)", "Orden de San Hermenegildo (Encomienda)",
+                "Orden de San Hermenegildo (Placa)", "Orden de San Hermenegildo (Gran Cruz)",
+                // Medalla nacional de operaciones
+                "Medalla de las Operaciones - Bosnia-Herzegovina", "Medalla de las Operaciones - Kosovo",
+                "Medalla de las Operaciones - Afganistán", "Medalla de las Operaciones - Líbano", "Medalla de las Operaciones - Irak", "Medalla de las Operaciones - Mali", "Medalla de las Operaciones - Somalia", "Medalla de las Operaciones - Océano Índico", "Medalla de las Operaciones - Letonia", "Medalla de las Operaciones - Operación Balmis",
+                // OTAN
+                "OTAN Medal - IFOR (Bosnia)", "OTAN Medal - SFOR (Bosnia)", "OTAN Medal - KFOR (Kosovo)",
+                "OTAN Medal - ISAF (Afganistán)", "OTAN Medal - Resolute Support (Afganistán)",
+                // Unión Europea
+                "UE Medalla - EUFOR Althea (Bosnia)", "UE Medalla - EUTM Mali", "UE Medalla - Atalanta",
+                "UE Medalla - EUTM Somalia",
+                // ONU
+                "ONU Medalla - UNPROFOR (Bosnia)", "ONU Medalla - UNIFIL (Líbano)", "ONU Medalla - MINURSO (Sahara)",
+                //Coaliciones / otras
+                "Medalla de la Coalición - Global War on Terrorism"
+        };
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, recompensas);
+        autoCompleteTextView.setAdapter(adapter);
+    }
+
+    // ========================================================================
+    // === CONFIGURAR DESPLEGABLE DE DISTINTIVOS                            ===
+    // ========================================================================
+    public static void configurarDesplegableDistintivos(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] distintivos = new String[]{
+                // DESTINO
+                "FAMET", "Montaña", "Operaciones Especiales", "La Legión", "Paracaidista (BRIPAC)",
+                "Infantería", "Caballería", "Artillería", "Ingenieros", "Transmisiones",
+                // APTITUD
+                "Aptitud Paracaidista", "Aptitud Montaña", "Buceador de Combate", "Lanzador Paracaidista",
+                "EOD / TEDAX Militar", "Tirador Selecto", "Tripulante de Aeronaves",
+                // CURSOS
+                "Curso de Estado Mayor", "Curso de Operaciones Especiales", "Curso de Helicópteros",
+                "Observador Avanzado", "Curso NBQ",
+                // PERMANENCIA
+                "Permanencia Operaciones Especiales", "Permanencia Paracaidista", "Permanencia La Legión",
+                // FUNCIÓN
+                "Profesor", "Instructor", "Mando de Unidad", "Estado Mayor",
+                // OPERACIONES
+                "Participación en Misión Internacional"
+        };
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, distintivos);
+        autoCompleteTextView.setAdapter(adapter);
+    }
+
+    // ========================================================================
+    // === CONFIGURAR DESPLEGABLE DE CURSOS MILITARES                       ===
+    // ========================================================================
+    public static void configurarDesplegableCursosMilitares(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] cursos = new String[]{
+                "Curso de Estado Mayor", "Curso de Operaciones Especiales", "Curso Paracaidista",
+                "Curso de Montaña", "Curso de Buceador de Combate", "Curso EOD / TEDAX",
+                "Curso NBQ", "Curso de Tirador Selecto", "Curso de Observador Avanzado",
+                "Curso de Helicópteros", "Curso de Piloto Militar", "Curso de Tripulante de Aeronaves",
+                "Curso de Transmisiones", "Curso de Inteligencia Militar", "Curso de Guerra Electrónica",
+                "Curso de Ciberdefensa", "Curso de Logística Militar", "Curso de Sanidad Militar",
+                "Curso de Instructor Militar", "Curso de Combate en Zona Urbana", "Curso SERE",
+                "Curso de Policía Militar", "Curso de Conducción Táctica", "Curso de Explosivos",
+                "Curso de Defensa Personal Militar", "Curso de Idiomas"
+        };
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, cursos);
+        autoCompleteTextView.setAdapter(adapter);
+    }
+
+    // ========================================================================
+    // === CONFIGURAR DESPLEGABLE DE IDIOMAS                                ===
+    // ========================================================================
+    public static void configurarDesplegableIdiomas(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] idiomas = new String[]{
+                "Inglés", "Francés", "Portugués", "Árabe", "Ruso",
+                "Chino", "Alemán", "Italiano", "Rumano", "Japonés"
+        };
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, idiomas);
+        autoCompleteTextView.setAdapter(adapter);
+    }
+
+    // ========================================================================
+    // === CONFIGURAR DESPLEGABLE DE CARNETS MILITARES                      ===
+    // ========================================================================
+    public static void configurarDesplegableCarnets(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] carnets = new String[]{
+                "AM", "A1", "A2", "A", "B", "BE", "C1", "C", "C1E", "CE", "D1", "D", "D1E", "DE", "BTP","F"
+        };
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, carnets);
+        autoCompleteTextView.setAdapter(adapter);
+    }
+
+    // ========================================================================
+    // === CONFIGURAR DESPLEGABLE DE RESULTADOS TCGF                        ===
+    // ========================================================================
+    public static void configurarDesplegableAptoTcgf(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] opciones = new String[]{
+                "Apto", "No Apto", "No presentado", "No Apto Reco Medico"
+        };
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, opciones);
+        autoCompleteTextView.setAdapter(adapter);
+    }
+
 }

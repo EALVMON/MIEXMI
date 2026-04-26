@@ -76,11 +76,14 @@
                     android:id="@+id/etFechaTcgf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="date" />
+                    android:inputType="date"
+                    android:focusable="false"
+                    android:cursorVisible="false"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -88,11 +91,13 @@
                 android:hint="@string/apto_tcgf"
                 app:boxStrokeColor="@color/bbva_blue">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/etAptoTcgf"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapSentences" />
+                    android:inputType="none"
+                    android:focusable="false"
+                    tools:ignore="LabelFor,SpeakableTextPresentCheck" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -102,24 +107,13 @@
             android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/btnAnadirTcgf"
-                style="@style/EstiloBotonAnadir"
+            <Button android:id="@+id/btnAnadirTcgf" style="@style/EstiloBotonAnadir"
                 android:text="@string/anadir" />
-
-            <Button
-                android:id="@+id/btnModificarTcgf"
-                style="@style/EstiloBotonEditar"
+            <Button android:id="@+id/btnModificarTcgf" style="@style/EstiloBotonEditar"
                 android:text="@string/editar" />
-
-            <Button
-                android:id="@+id/btnEliminarTcgf"
-                style="@style/EstiloBotonBorrar"
+            <Button android:id="@+id/btnEliminarTcgf" style="@style/EstiloBotonBorrar"
                 android:text="@string/borrar" />
-
-            <Button
-                android:id="@+id/btnLimpiarTcgf"
-                style="@style/EstiloBotonLimpiar"
+            <Button android:id="@+id/btnLimpiarTcgf" style="@style/EstiloBotonLimpiar"
                 android:text="@string/limpiar" />
         </LinearLayout>
     </LinearLayout>
@@ -146,23 +140,16 @@
         android:baselineAligned="false"
         app:layout_constraintTop_toBottomOf="@+id/tvTituloListaTcgf">
 
-        <TextView
-            style="@style/EstiloTextoColumna"
+        <TextView style="@style/EstiloTextoColumna"
             android:layout_weight="0.5"
             android:text="@string/nº"/>
-
-        <TextView
-            style="@style/EstiloTextoColumna"
+        <TextView style="@style/EstiloTextoColumna"
             android:layout_weight="1.5"
             android:text="@string/fecha_prueba"/>
-
-        <TextView
-            style="@style/EstiloTextoColumna"
+        <TextView style="@style/EstiloTextoColumna"
             android:layout_weight="1"
             android:text="@string/puntuacion_columna"/>
-
-        <TextView
-            style="@style/EstiloTextoColumna"
+        <TextView style="@style/EstiloTextoColumna"
             android:layout_weight="1"
             android:text="@string/apto_columna"
             android:textAlignment="viewEnd"/>

@@ -76,7 +76,10 @@
                     android:id="@+id/etFechaBodAptitud"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="date" />
+                    android:inputType="date"
+                    android:focusable="false"
+                    android:cursorVisible="false"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -92,7 +95,9 @@
                     android:id="@+id/etNumBodAptitud"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    android:maxLength="3"
+                    tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 

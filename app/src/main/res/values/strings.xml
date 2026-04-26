@@ -166,7 +166,7 @@
     <string name="apto_tcgf">Resultado (Ej: Apto / No Apto)</string>
     <string name="fecha_prueba">Fecha de la Prueba</string>
     <string name="historial_tcgf_guardados">Historial de pruebas TGCF guardadas:</string>
-    <string name="apto_columna">Apto</string>
+    <string name="apto_columna">Resultado </string>
     <string name="puntuacion_columna">Ptos.</string>
 
     <!-- Modulo Permisos de Conducción -->
@@ -184,6 +184,7 @@
     <string name="resultado_slp_hint">Perfil SLP (ej. 2.2.2.2)</string>
     <string name="resultado_columna">SLP</string>
     <string name="historial_idiomas_guardados">Historial de idiomas guardados:</string>
+    <string name="ejemplo_slp">Ej: 3.3+.2.1</string>
 
     <!-- Modulo Modulo Registro de Actividad-->
     <string name="titulo_registro_actividad">Registro de Actividad</string>
@@ -216,6 +217,7 @@
     <!-- Boton Cerrar sesion del menu principal-->
     <string name="cerrar_sesi_n">Cerrar Sesión</string>
     <string name="ajustes_de_seguridad">Ajustes de Seguridad</string>
+
 
 
 </resources>

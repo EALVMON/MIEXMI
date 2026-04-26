@@ -92,7 +92,10 @@
                     android:id="@+id/etFechaCaducidadArma"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="date" />
+                    android:inputType="date"
+                    android:focusable="false"
+                    android:cursorVisible="false"
+                    tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
