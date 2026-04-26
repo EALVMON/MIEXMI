@@ -108,7 +108,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             CREATE TABLE MOD_TRIENIOS (
                 Id_M_Trie INTEGER PRIMARY KEY AUTOINCREMENT,
                 Id_Usuario INTEGER,
-                Num_Trienio INTEGER NOT NULL,
+                Tipo_Trienio TEXT NOT NULL,
                 M_Trie_Fecha_Bod TEXT,
                 M_Trie_Nbod INTEGER,
                 FOREIGN KEY(Id_Usuario) REFERENCES USUARIO(Id_Usuario) ON DELETE CASCADE
@@ -983,5 +983,47 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     fun eliminarSituacion(idSituacion: Int): Boolean {
         val db = this.writableDatabase
         return db.delete("MOD_SITUA_ADMIN", "Id_M_Sadm = ?", arrayOf(idSituacion.toString())) > 0
+    }
+
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO DE TRIENIOS                               ===
+    // ====================================================================
+
+    fun anadirTrienio(idUsuario: Int, tipoTrienio: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("Tipo_Trienio", tipoTrienio)
+            put("M_Trie_Fecha_Bod", fechaBod)
+            put("M_Trie_Nbod", numBod)
+        }
+        return dbWrite.insert("MOD_TRIENIOS", null, values) != -1L
+    }
+
+    fun obtenerTrienios(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        // ASC es importante aquí para que el número de fila coincida con el número de trienio cronológico
+        return db.rawQuery(
+            "SELECT * FROM MOD_TRIENIOS WHERE Id_Usuario = ? ORDER BY Id_M_Trie ASC",
+            arrayOf(idUsuario.toString())
+        )
+    }
+
+    fun modificarTrienio(idTrienio: Int, tipoTrienio: String, fechaBod: String, numBodStr: String): Boolean {
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val db = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Tipo_Trienio", tipoTrienio)
+            put("M_Trie_Fecha_Bod", fechaBod)
+            put("M_Trie_Nbod", numBod)
+        }
+        return db.update("MOD_TRIENIOS", values, "Id_M_Trie = ?", arrayOf(idTrienio.toString())) > 0
+    }
+
+    fun eliminarTrienio(idTrienio: Int): Boolean {
+        val db = this.writableDatabase
+        return db.delete("MOD_TRIENIOS", "Id_M_Trie = ?", arrayOf(idTrienio.toString())) > 0
     }
 }

@@ -97,6 +97,8 @@
     <string name="numero_de_trienio">Número de Trienio (Ej: 1, 2, 3…)</string>
     <string name="num_trienio">Nº Trienio</string>
     <string name="historial_de_trienios_guardados">Historial de Trienios guardados:</string>
+    <string name="grupo_del_trienio">Grupo del Trienio (Ej: A1, C1)</string>
+    <string name="grupo_trienio">Grupo</string>
 
     <!-- Modulo Recompensas -->
     <string name="nombre_de_la_recompensa">Nombre de la Recompensa</string>
@@ -214,5 +216,6 @@
     <!-- Boton Cerrar sesion del menu principal-->
     <string name="cerrar_sesi_n">Cerrar Sesión</string>
     <string name="ajustes_de_seguridad">Ajustes de Seguridad</string>
+
 
 </resources>

@@ -81,4 +81,15 @@ public class Utilidades {
         android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, habilitaciones);
         autoCompleteTextView.setAdapter(adapter);
     }
+
+    // ========================================================================
+    // === CONFIGURAR DESPLEGABLE DE TRIENIOS (GRUPOS DE CLASIFICACIÓN)     ===
+    // ========================================================================
+    public static void configurarDesplegableTrienios(android.content.Context context, android.widget.AutoCompleteTextView autoCompleteTextView) {
+        String[] trienios = new String[]{
+                "A1", "A2", "B", "C1", "C2", "AP"
+        };
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context, android.R.layout.simple_dropdown_item_1line, trienios);
+        autoCompleteTextView.setAdapter(adapter);
+    }
 }
