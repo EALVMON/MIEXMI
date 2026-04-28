@@ -9,6 +9,10 @@ import android.widget.Button;             // Botón
 import android.widget.EditText;           // Campos de texto
 import android.widget.TextView;           // Texto (como "Regístrate")
 import android.widget.Toast;              // Mensajes emergentes
+import java.text.SimpleDateFormat;        // Para utilizar con los Log,s de actividad
+import java.util.Date;                    // Para utilizar con los Log,s de actividad
+import java.util.Locale;                  // Para utilizar con los Log,s de actividad
+
 
 // Importamos la clase base de todas las Activities
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,6 +63,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Si no devuelve -1, significa que el usuario existe y la contraseña es correcta
                 if (idUsuario != -1) {
+
+                    // === REGISTRAMOS EL ACCESO EN EL LOG ===
+                    // 1. Creamos el formato de fecha: día/mes/año hora:minuto:segundo
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+                    // 2. Obtenemos la hora actual del sistema
+                    String fechaHoraActual = sdf.format(new Date());
+                    // 3. Llamamos a la base de datos para guardar este acceso
+                    dbHelper.registrarAcceso(idUsuario, dni, fechaHoraActual);
 
                     // 5. GUARDAMOS LA SESIÓN: Guardamos el ID del usuario para usarlo en otras pantallas
                     SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);

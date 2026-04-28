@@ -9,10 +9,41 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import java.nio.charset.StandardCharsets;
+
 public class MenuPrincipal extends AppCompatActivity {
+
+
+    // Aquí guardamos el texto justo antes de meterlo en el archivo
+    private String datosTemporalesParaGuardar = "";
+
+    // Este metodo Se encarga de recibir la carpeta
+    // que el usuario eligió y escribir los datos ahí.
+    private final ActivityResultLauncher<Intent> lanzadorGuardarArchivo =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+
+                // Si el usuario aceptó y eligió una ruta válida...
+                if (result.getResultCode() == RESULT_OK && result.getData() != null && result.getData().getData() != null) {
+                    try {
+                        // Abrimos un "túnel" de salida hacia el archivo recién creado en el móvil
+                        java.io.OutputStream outputStream = getContentResolver().openOutputStream(result.getData().getData());
+
+                        if (outputStream != null) {
+                            // Escribimos los datos en formato UTF-8 (vital para tildes y eñes)
+                            outputStream.write(datosTemporalesParaGuardar.getBytes(StandardCharsets.UTF_8));
+                            outputStream.close();
+                            Toast.makeText(this, "✅ Archivo guardado con éxito", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(this, "❌ Error al guardar el archivo", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
     // Metodo principal que se ejecuta al abrir la pantalla
     @Override
@@ -103,10 +134,8 @@ public class MenuPrincipal extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Programamos clic temporal para Exportar (Aún no tiene pantalla)
-        cardExportar.setOnClickListener(v -> {
-            Toast.makeText(this, "Módulo de Exportación en construcción", Toast.LENGTH_SHORT).show();
-        });
+        // Programamos clic para Exportar
+        cardExportar.setOnClickListener(v -> mostrarMenuExportacion());
     }
 
     // ========================================================================
@@ -189,5 +218,76 @@ public class MenuPrincipal extends AppCompatActivity {
             }
             cursorDestino.close(); // Cerramos el cursor de destinos
         }
+    }
+
+    // ====================================================================
+    // === LÓGICA DE EXPORTACIÓN (CSV y JSON)  Busque algo por internet ===
+    // ====================================================================
+
+    // Este metodo crea y muestra la ventanita emergente (pop-up) para elegir el formato.
+    private void mostrarMenuExportacion() {
+
+        // 1. Creamos una lista con las dos opciones de texto que verá el usuario.
+        String[] opciones = {"📊 Exportar a Excel (CSV)", "💾 Copia de Seguridad (JSON)"};
+
+        // 2. Usamos 'AlertDialog.Builder', que es la herramienta de Android para crear pop-ups en pantalla.
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+
+        // 3. Le ponemos el título principal a la ventanita.
+        builder.setTitle("¿Cómo quieres exportar tus datos?");
+
+        // 4. Añadimos los botones y le decimos qué hacer cuando el usuario toque uno.
+        // 'which' nos dirá qué número ha tocado: 0 para la primera opción, 1 para la segunda.
+        builder.setItems(opciones, (dialog, which) -> {
+
+            // Conectamos con la base de datos y averiguamos el ID del usuario que tiene la sesión abierta.
+            try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
+                int idUsuario = Utilidades.obtenerUsuarioActual(this);
+
+                if (which == 0) {
+                    // --- OPCIÓN 0: EL USUARIO ELIGIÓ EXCEL (CSV) ---
+
+                    // Pedimos a la base de datos el conjunto del texto en formato Excel y lo guardamos temporalmente.
+                    datosTemporalesParaGuardar = dbHelper.exportarACsv(idUsuario);
+
+                    // Llamamos a la pantalla de "Guardar como...".
+                    // "text/csv" es el código que usa Android para saber que esto es una hoja de cálculo.
+                    lanzarGuardarArchivo("text/csv", "Mi_Expediente_Militar.csv");
+
+                } else {
+                    // --- OPCIÓN 1: EL USUARIO ELIGIÓ COPIA DE SEGURIDAD (JSON) ---
+
+                    // Pedimos a la base de datos el conjunto del texto en formato JSON y lo guardamos temporalmente.
+                    datosTemporalesParaGuardar = dbHelper.exportarTodoAJson(idUsuario);
+
+                    // Llamamos a la pantalla de "Guardar como...".
+                    // "application/json" es el código para archivos de datos puros.
+                    lanzarGuardarArchivo("application/json", "Backup_Expediente.json");
+                }
+            }
+        });
+
+        // 5. Finalmente, con el conjunto configurado, mostramos el pop-up en la pantalla.
+        builder.show();
+    }
+
+
+    // Este metodo "despierta" el explorador de archivos nativo del móvil (el típico "Guardar como...").
+    private void lanzarGuardarArchivo(String mimeType, String nombreArchivo) {
+
+        // ACTION_CREATE_DOCUMENT es la orden al sistema operativo para crear un archivo nuevo.
+        android.content.Intent intent = new android.content.Intent(android.content.Intent.ACTION_CREATE_DOCUMENT);
+
+        // CATEGORY_OPENABLE asegura que el archivo se guarde en una carpeta accesible (no en lugares ocultos del móvil).
+        intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
+
+        // Le decimos de qué tipo es (CSV o JSON) usando la variable mimeType que recibimos.
+        intent.setType(mimeType);
+
+        // Le sugerimos un nombre de archivo por defecto (ej: "Backup_Expediente.json").
+        intent.putExtra(android.content.Intent.EXTRA_TITLE, nombreArchivo);
+
+        // Usamos el lanzador moderno (definido al principio de la clase) en lugar del obsoleto startActivityForResult
+        lanzadorGuardarArchivo.launch(intent);
     }
 }

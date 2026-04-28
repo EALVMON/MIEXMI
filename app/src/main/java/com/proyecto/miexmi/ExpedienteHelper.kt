@@ -3,7 +3,9 @@ package com.proyecto.miexmi
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-
+// imprtaciones necesarias para exportar datos
+import org.json.JSONArray
+import org.json.JSONObject
 class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
@@ -1421,5 +1423,133 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     fun eliminarTcgf(idTcgf: Int): Boolean {
         val db = this.writableDatabase
         return db.delete("MOD_TCGF", "Id_M_TCGF = ?", arrayOf(idTcgf.toString())) > 0
+    }
+
+    // ====================================================================
+    // === EXPORTACIÓN DE DATOS (CSV Y JSON) EN BASE DE DATOS           ===
+    // ====================================================================
+
+    // 1. Función para JSON. Lee una tabla y la convierte en una lista de objetos.
+    private fun cursorToJsonArray(cursor: android.database.Cursor): JSONArray {
+        // Creamos una lista JSON vacía
+        val array = JSONArray()
+
+        // Si la tabla tiene al menos un dato, empezamos a leer
+        if (cursor.moveToFirst()) {
+            // Guardamos los nombres de todas las columnas (ej: "Nombre", "Num_Bod")
+            val columnNames = cursor.columnNames
+
+            // Bucle: Repetimos esto por cada fila que haya en la tabla
+            do {
+                // Creamos un Objeto JSON nuevo para esta fila exacta
+                val obj = JSONObject()
+
+                // Repasamos una por una todas las columnas de esta fila
+                for (col in columnNames) {
+                    val colIndex = cursor.getColumnIndex(col)
+                    // Si la celda está vacía ponemos "", si tiene algo lo sacamos como texto
+                    val value = if (cursor.isNull(colIndex)) "" else cursor.getString(colIndex)
+                    // Metemos el dato en el objeto (Ej: "Nombre" -> "Carlos")
+                    obj.put(col, value)
+                }
+                // Añadimos la fila ya procesada a la lista
+                array.put(obj)
+
+            } while (cursor.moveToNext()) // Pasamos a la siguiente fila
+        }
+        cursor.close() // Siempre hay que cerrar el cursor
+        return array
+    }
+
+    // 2. Genera el texto gigante en formato JSON llamando a todas las tablas.
+    fun exportarTodoAJson(idUsuario: Int): String {
+        // Creamos el objeto "Raíz" (El contenedor principal)
+        val raiz = JSONObject()
+
+        // Llamamos a nuestra función  tabla por tabla y la metemos en la raíz con una etiqueta
+        raiz.put("Filiacion", cursorToJsonArray(obtenerFiliacion(idUsuario)))
+        raiz.put("Destinos", cursorToJsonArray(obtenerDestinos(idUsuario)))
+        // ... (así con todas las demás tablas) ...
+
+        // Convertimos  esa cantidad  de datos en texto ordenado (poniendo  4 espacios)
+        return raiz.toString(4)
+    }
+
+
+    // 3. Función para Excel (CSV). Lee una tabla y la convierte en texto con punto y coma (;).
+    private fun agregarCursorACsv(titulo: String, cursor: android.database.Cursor, sb: StringBuilder) {
+
+        // Ponemos el título de la tabla (El \n significa "Intro" o salto de línea)
+        sb.append("--- $titulo ---\n")
+
+        if (cursor.moveToFirst()) {
+            // Sacamos los nombres de las columnas para hacer la cabecera del Excel
+            val columnNames = cursor.columnNames
+            // Unimos los nombres con ";" y damos un Intro
+            sb.append(columnNames.joinToString(";")).append("\n")
+
+            // Bucle: Repetimos por cada fila
+            do {
+                val rowValues = mutableListOf<String>()
+                for (col in columnNames) {
+                    val colIndex = cursor.getColumnIndex(col)
+                    val value = if (cursor.isNull(colIndex)) "" else cursor.getString(colIndex)
+
+                    // Si el usuario escribió un ";" en la app,
+                    // rompería las columnas del Excel. Aquí reemplazamos los ";" por "," para evitarlo.
+                    val cleanValue = value.replace("\n", " ").replace(";", ",")
+
+                    rowValues.add(cleanValue)
+                }
+                // Unimos todos los datos de la fila con ";" y damos un Intro
+                sb.append(rowValues.joinToString(";")).append("\n")
+
+            } while (cursor.moveToNext())
+        } else {
+            sb.append("Sin registros\n")
+        }
+        // Damos un intro extra para separar visualmente las tablas
+        sb.append("\n")
+        cursor.close()
+    }
+
+    // 4. Generamos el texto completo en CSV para Excel
+    fun exportarACsv(idUsuario: Int): String {
+        // StringBuilder esta diseñado para unir textos gigantes muy rápido
+        val sb = StringBuilder()
+
+        // '\uFEFF' es una clave  que le dice a Excel que el archivo usa español (UTF-8)
+        // para que las tildes y las eñes se vean perfectas.
+        sb.append("\uFEFF")
+
+        // Vamos llamando a la función obrera para que escriba las tablas en el cuaderno una a una
+        agregarCursorACsv("FILIACIÓN", obtenerFiliacion(idUsuario), sb)
+        agregarCursorACsv("DESTINOS", obtenerDestinos(idUsuario), sb)
+        // ... (así con todas las demás tablas) ...
+
+        // Devolvemos el conjunto del texto del cuaderno ya terminado
+        return sb.toString()
+    }
+
+    // ====================================================================
+    // === MÉTODOS DEL MÓDULO LOG DE ACTIVIDAD                          ===
+    // ====================================================================
+
+    // Este metodo se usa en el LoginActivity justo después de que el usuario meta bien su clave
+    fun registrarAcceso(idUsuario: Int, dni: String, fechaHora: String): Boolean {
+        val dbWrite = this.writableDatabase
+        val values = android.content.ContentValues().apply {
+            put("Id_Usuario", idUsuario)
+            put("DNI", dni)
+            put("Fecha_Hora", fechaHora)
+        }
+        return dbWrite.insert("REGISTRO_ACTIVIDAD", null, values) != -1L
+    }
+
+    // Este metodo se usa para leer la lista
+    fun obtenerAccesos(idUsuario: Int): android.database.Cursor {
+        val db = this.readableDatabase
+        // Ordenamos DESC para ver la última conexión arriba del item
+        return db.rawQuery("SELECT * FROM REGISTRO_ACTIVIDAD WHERE Id_Usuario = ? ORDER BY Id_Log DESC", arrayOf(idUsuario.toString()))
     }
 }
