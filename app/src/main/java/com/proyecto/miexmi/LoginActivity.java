@@ -59,7 +59,9 @@ public class LoginActivity extends AppCompatActivity {
             } else {
 
                 // 4. Comprobamos si el usuario existe y si la contraseña es correcta
-                int idUsuario = dbHelper.comprobarLogin(dni, pass);
+                // CIFRAMOS la contraseña escrita para poder compararla con la de la Base de Datos
+                String contrasenaCifrada = Utilidades.cifrarContrasena(pass);
+                int idUsuario = dbHelper.comprobarLogin(dni, contrasenaCifrada);
 
                 // Si no devuelve -1, significa que el usuario existe y la contraseña es correcta
                 if (idUsuario != -1) {

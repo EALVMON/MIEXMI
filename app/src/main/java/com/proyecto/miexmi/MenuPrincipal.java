@@ -150,6 +150,13 @@ public class MenuPrincipal extends AppCompatActivity {
         super.onResume();
         // Disparamos la actualización del Dashboard
         actualizarResumen();
+
+        // --- LANZAMOS PARA VER LAS CADUCIDADES ---
+        SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
+        int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
+        if (idUsuarioActual != -1) {
+            verificarCaducidades(idUsuarioActual);
+        }
     }
 
     // ========================================================================
@@ -289,5 +296,115 @@ public class MenuPrincipal extends AppCompatActivity {
 
         // Usamos el lanzador moderno (definido al principio de la clase) en lugar del obsoleto startActivityForResult
         lanzadorGuardarArchivo.launch(intent);
+    }
+
+    // MEtodo privado que no devuelve nada (void). Recibe como dato el ID del usuario actual.
+    // Su trabajo es revisar carnets, armas, TMI y HPS buscando caducidades próximas.
+    private void verificarCaducidades(int idUsuario) {
+
+        // --- 1. COMPROBACIÓN DEL MODO "NO MOLESTAR" ---
+
+        // Abrimos la "memoria interna" del móvil (SharedPreferences) donde guardamos la sesión y ajustes.
+        android.content.SharedPreferences prefs = getSharedPreferences("SesionApp", android.content.Context.MODE_PRIVATE);
+
+        // Buscamos si hay una fecha guardada con el nombre "FECHA_ALERTA_ACEPTADA". Si no existe, devuelve vacío ("").
+        String ultimaVezAceptado = prefs.getString("FECHA_ALERTA_ACEPTADA", "");
+
+        // Creamos una herramienta para darle formato a la fecha de hoy (día/mes/año).
+        java.text.SimpleDateFormat formatoFecha = new java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault());
+
+        // Generamos un texto con la fecha exacta de hoy usando la herramienta anterior.
+        String hoyStr = formatoFecha.format(new java.util.Date());
+
+        // Si la última vez que el usuario le dio a "Entendido" fue hoy...
+        if (ultimaVezAceptado.equals(hoyStr)) {
+            // ... abortamos . 'return' hace que el código se detenga y salga de este metodo.
+            return;
+        }
+
+
+        // --- 2. BÚSQUEDA DE CADUCIDADES EN LA BASE DE DATOS ---
+
+        // Creamos un "Constructor de Textos" (StringBuilder) que es muy eficiente para ir pegando frases largas.
+        StringBuilder mensajeAlerta = new StringBuilder();
+
+        // Abrimos la base de datos de forma segura (con try) para que se cierre sola al terminar y no gaste batería.
+        try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
+
+            // --- A) REVISAR CARNETS ---
+            android.database.Cursor cCarnet = dbHelper.obtenerCarnets(idUsuario);
+            while (cCarnet.moveToNext()) {
+                String fec = cCarnet.getString(cCarnet.getColumnIndexOrThrow("M_Carn_Fecha_Caducidad"));
+                if (Utilidades.estaCercaDeCaducar(fec)) {
+                    mensajeAlerta.append("• Carnet ").append(cCarnet.getString(cCarnet.getColumnIndexOrThrow("Tipo_Carnet")))
+                            .append(" caduca el ").append(fec).append("\n");
+                }
+            }
+            cCarnet.close();
+
+
+            // --- B) REVISAR ARMAS PARTICULARES ---
+            android.database.Cursor cArmas = dbHelper.obtenerArmas(idUsuario);
+            while (cArmas.moveToNext()) {
+                String fec = cArmas.getString(cArmas.getColumnIndexOrThrow("M_EArm_Fecha_Cad"));
+                if (Utilidades.estaCercaDeCaducar(fec)) {
+                    mensajeAlerta.append("• Arma ").append(cArmas.getString(cArmas.getColumnIndexOrThrow("Nom_Arma")))
+                            .append(" caduca el ").append(fec).append("\n");
+                }
+            }
+            cArmas.close();
+
+
+            // --- C) REVISAR TMI (Tarjeta Militar) ---
+            android.database.Cursor cTmi = dbHelper.obtenerTMIs(idUsuario);
+            while (cTmi.moveToNext()) {
+                String fec = cTmi.getString(cTmi.getColumnIndexOrThrow("M_Tmi_Fecha_Cadu"));
+                if (Utilidades.estaCercaDeCaducar(fec)) {
+                    mensajeAlerta.append("• TMI (").append(cTmi.getString(cTmi.getColumnIndexOrThrow("N_Tarjeta")))
+                            .append(") caduca el ").append(fec).append("\n");
+                }
+            }
+            cTmi.close();
+
+
+            // --- D) REVISAR HPS (Habilitaciones de Seguridad) ---
+            android.database.Cursor cHps = dbHelper.obtenerHps(idUsuario);
+            while (cHps.moveToNext()) {
+                String fec = cHps.getString(cHps.getColumnIndexOrThrow("Fecha_M_Caducidad"));
+                if (Utilidades.estaCercaDeCaducar(fec)) {
+                    mensajeAlerta.append("• HPS (").append(cHps.getString(cHps.getColumnIndexOrThrow("Nom_Habilitacion")))
+                            .append(") caduca el ").append(fec).append("\n");
+                }
+            }
+            cHps.close();
+        }
+
+        // --- 3. MOSTRAR EL POP-UP (SOLO SI HAY ALGO QUE AVISAR) ---
+        if (mensajeAlerta.length() > 0) {
+
+            // Le pasamos el texto limpio (sin .toString()) al nuevo metodo externo para que dibuje la ventana.
+            mostrarDialogoCaducidad(mensajeAlerta.toString(), prefs, hoyStr);
+        }
+    }
+
+    // ---  METODO  se encarga de dibujar la ventanita emergente ---
+    private void mostrarDialogoCaducidad(String listaAlertas, SharedPreferences prefs, String hoyStr) {
+
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+
+        builder.setTitle("⚠️ AVISO DE CADUCIDAD");
+
+        // ¡SOLUCIÓN 1! Ya no usamos .toString(), simplemente concatenamos el String que nos llega.
+        builder.setMessage("Los siguientes elementos caducan en menos de 3 meses:\n\n" + listaAlertas);
+
+        builder.setPositiveButton("Entendido", (dialog, which) -> {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("FECHA_ALERTA_ACEPTADA", hoyStr);
+            editor.apply();
+        });
+
+        builder.setNegativeButton("Recordar más tarde", (dialog, which) -> dialog.dismiss());
+        builder.setCancelable(false);
+        builder.show();
     }
 }

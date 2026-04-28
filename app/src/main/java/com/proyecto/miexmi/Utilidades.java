@@ -215,4 +215,140 @@ public class Utilidades {
         autoCompleteTextView.setAdapter(adapter);
     }
 
+    // ========================================================================
+    // === SISTEMA DE SEGURIDAD: CIFRADO DE CONTRASEÑAS (SHA-256)           ===
+    // ========================================================================
+
+    // Metodo público y estático que recibe un texto normal (la contraseña que escribe el usuario)
+    // y nos devuelve otro texto (la contraseña ya codificada ).
+    public static String cifrarContrasena(String password) {
+
+        // Abrimos un bloque 'try-catch' porque vamos a invocar a las herramientas criptográficas
+        // de Android, y si el móvil es muy antiguo o falla, debemos capturar el error.
+        try {
+
+            // --- 1. PREPARAR LA CODIFICACION ---
+            // 'MessageDigest' es la herramienta de Java para cifrar.
+            // Le decimos que queremos usar el algoritmo "SHA-256" (uno de los más seguros del mundo).
+            java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+
+            // --- 2. CODIFICAR LA CONTRASEÑA ---
+            // Primero, convertimos el texto de la contraseña a "Bytes" (ceros y unos) usando el formato UTF-8.
+            // Luego, le pasamos esos bytes al metodo '.digest()', que es el que hace los cálculos matemáticos.
+            // El resultado ('hash') es una matriz de bytes incomprensible (símbolos raros que no se pueden leer).
+            byte[] hash = digest.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+
+            // --- 3. CONVERTIR LOS BYTES A TEXTO LEGIBLE (HEXADECIMAL) ---
+            // Como no podemos guardar "símbolos raros" en la base de datos, vamos a traducir
+            // esos bytes a un formato llamado Hexadecimal (que solo usa números del 0 al 9 y letras de la A a la F).
+
+            // Creamos un 'StringBuilder' (nuestro constructor de textos rápido) para ir uniendo las letras.
+            StringBuilder hexString = new StringBuilder();
+
+            // Iniciamos un bucle: vamos a coger la matriz de bytes ('hash') y analizarla byte por byte.
+            for (byte b : hash) {
+
+                // Un 'byte' en Java puede ser un número negativo.
+                // El truco '(0xff & b)' le quita el signo negativo para convertirlo en un número positivo limpio.
+                // Luego, 'Integer.toHexString' traduce ese número al formato Hexadecimal.
+                String hex = Integer.toHexString(0xff & b);
+
+                // A veces, la traducción da una sola letra (ej: "a").
+                // Para que el cifrado sea uniforme y perfecto, si solo tiene 1 letra, le ponemos un "0" delante (ej: "0a").
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+
+                // Añadimos ese fragmento traducido a nuestra cadena de texto principal.
+                hexString.append(hex);
+            }
+
+            // --- 4. DEVOLVER EL RESULTADO ---
+            // Una vez terminado el bucle, convertimos el StringBuilder a un texto normal (String)
+            // y lo devolvemos. Este texto será algo como: "03ac674216f3e15c761ee1a5e255f067..."
+            return hexString.toString();
+
+        } catch (Exception ex) {
+            // --- 5. SI ALGO FALLA ---
+            // Si el móvil no soporta SHA-256 (algo casi imposible hoy en día), capturamos el error.
+            // Usamos el 'Log.e' de Android para escribir el error de forma segura en la consola interna,
+            // sin que los hackers puedan verlo en la pantalla.
+            android.util.Log.e("Utilidades", "Error crítico al cifrar la contraseña", ex);
+
+            // Si el conjunto  falla, devolvemos la contraseña original para que la app no se bloquee por completo.
+            return password;
+        }
+    }
+
+    // ========================================================================
+    // === COMPROBADOR DE CADUCIDAD (3 MESES)                               ===
+    // ========================================================================
+
+    // Metodo público (accesible desde cualquier lado) y estático (se puede usar sin crear un objeto Utilidades).
+    // Devuelve un valor 'boolean' (true si caduca pronto, false si aún le queda tiempo o ya caducó).
+    // Recibe como dato 'fechaStr', que es la fecha en formato texto (String) que sacamos de la base de datos.
+    public static boolean estaCercaDeCaducar(String fechaStr) {
+
+        // --- ESCUDO ANTI-NULOS ---
+        // Si no le pasamos ninguna fecha (null) o el texto está vacío (""),
+        // devolvemos 'false' directamente para evitar que la aplicación se "cuelgue".
+        if (fechaStr == null || fechaStr.isEmpty()) return false;
+
+        // Abrimos un bloque 'try-catch' porque trabajar con fechas introducidas por usuarios
+        // es peligroso. Si el usuario escribió "hola" en vez de una fecha, esto podría explotar.
+        try {
+
+            // --- 1. CONVERTIR TEXTO A FECHA REAL ---
+
+            // Creamos una herramienta ('SimpleDateFormat') que sabe traducir textos a fechas.
+            // Le decimos el patrón exacto que usamos en España: "dd/MM/yyyy" (Día/Mes/Año).
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault());
+
+            // Usamos la herramienta para parsear (traducir) el texto 'fechaStr' y convertirlo
+            // en un objeto de tipo 'Date' (Fecha) real que Java pueda entender matemáticamente.
+            java.util.Date fechaCaducidad = sdf.parse(fechaStr);
+
+            // Creamos un nuevo objeto 'Date' vacío. Al crearlo así, Java le asigna
+            // automáticamente la fecha y hora exacta de este mismo segundo (HOY).
+            java.util.Date hoy = new java.util.Date();
+
+            // Medida de seguridad extra: si la traducción de la fecha falló y es nula, salimos.
+            if (fechaCaducidad == null) return false;
+
+
+            // --- 2. CALCULAR LA CADUCIDAD DE LOS 3 MESES ---
+
+            // La clase 'Calendar' es la calculadora de tiempo de Java. Nos permite sumar o restar días, meses o años.
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+
+            // Le decimos a la calculadora que empiece a contar desde el día de HOY.
+            cal.setTime(hoy);
+
+            // Le SUMAMOS exactamente 3 MESES a la fecha de hoy.
+            cal.add(java.util.Calendar.MONTH, 3);
+
+            // Guardamos el resultado de esa suma matemática en una nueva variable llamada 'fechaLimite'.
+            // Ejemplo: Si hoy es 1 de Enero, 'fechaLimite' será ahora el 1 de Abril.
+            java.util.Date fechaLimite = cal.getTime();
+
+
+            // --- 3. EL VEREDICTO FINAL ---
+
+            // Hacemos dos preguntas cruciales para saber si disparamos la alerta:
+            // Pregunta 1: ¿La fecha de caducidad es DESPUÉS (after) de hoy? (Para ignorar cosas que ya caducaron el año pasado).
+            // Pregunta 2: ¿La fecha de caducidad es ANTES (before) de nuestra fecha límite de 3 meses?
+
+
+            // Si ambas son ciertas, devuelve TRUE (¡Alerta!). Si alguna falla, devuelve FALSE (Todo en orden).
+            return fechaCaducidad.after(hoy) && fechaCaducidad.before(fechaLimite);
+
+        } catch (Exception e) {
+            // Si durante el proceso hubo algún error (ej: el texto no era una fecha válida),
+            // el código salta directamente aquí. Devolvemos 'false' para que no salte ninguna
+            // alarma errónea y la aplicación siga funcionando sin cerrarse de golpe.
+            return false;
+        }
+    }
+
+
 }

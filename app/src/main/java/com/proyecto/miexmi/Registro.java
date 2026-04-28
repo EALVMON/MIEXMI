@@ -49,6 +49,9 @@ public class Registro extends AppCompatActivity {
             String dni = etDniRegistro.getText().toString().trim().toUpperCase();
             String pass = etPasswordRegistro.getText().toString().trim();
 
+            // Cogemos la contraseña que ha escrito el usuario y la ciframos
+            String contrasenaCifrada = Utilidades.cifrarContrasena(pass);
+
             // Comprobamos si hay campos vacíos
             if (dni.isEmpty() || pass.isEmpty()) {
                 // Mostramos mensaje si falta algo
@@ -59,8 +62,8 @@ public class Registro extends AppCompatActivity {
                 Toast.makeText(this, "DNI incorrecto", Toast.LENGTH_SHORT).show();
 
             } else {
-                // AQUÍ HACEMOS LA MAGIA: Guardamos el usuario en la BD
-                long resultado = dbHelper.registrarUsuario(dni, pass);
+                // A Guardamos el usuario en la BD y la contraseña cifrada
+                long resultado = dbHelper.registrarUsuario(dni, contrasenaCifrada);
 
                 // Si resultado NO es -1, significa que se ha guardado bien
                 if (resultado != -1) {

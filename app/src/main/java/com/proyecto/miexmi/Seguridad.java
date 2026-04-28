@@ -80,10 +80,16 @@ public class Seguridad extends AppCompatActivity {
                 return;
             }
 
+            // === APLICAMOS EL CIFRADO ANTES DE IR A LA BASE DE DATOS ===
+            String actualCifrada = Utilidades.cifrarContrasena(actual);
+            String nuevaCifrada = Utilidades.cifrarContrasena(nueva);
+
             // Si la totalidad es correcto, actualizamos en la Base de Datos
             try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
 
-                boolean exito = dbHelper.cambiarContrasena(idUsuarioActual, actual, nueva);
+                // Le pasamos a la base de datos las contraseñas ya cifradas
+                boolean exito = dbHelper.cambiarContrasena(idUsuarioActual, actualCifrada, nuevaCifrada);
+
                 // Si hay un cambio me devuelve true o false
                 if (exito) {
                     Toast.makeText(this, "Contraseña actualizada correctamente", Toast.LENGTH_LONG).show();
