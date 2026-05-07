@@ -69,7 +69,7 @@ public class Seguridad extends AppCompatActivity {
             }
 
             // Validación 2: Coincidencia de la nueva contraseña
-            if (!nueva.equals(repetir)) {
+            if (!Utilidades.contrasenasCoinciden(nueva, repetir)) {
                 Toast.makeText(this, "Las contraseñas nuevas no coinciden", Toast.LENGTH_SHORT).show();
                 return;
             }

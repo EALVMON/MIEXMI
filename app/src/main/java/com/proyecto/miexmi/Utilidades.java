@@ -350,5 +350,16 @@ public class Utilidades {
         }
     }
 
+    // Para poder verificar las claves que sean iguales y asi tambien ver que me funcionan los test
+    public static boolean contrasenasCoinciden(String pass1, String pass2) {
+        // Si alguna es nula, no coinciden. Si no, comprobamos si son iguales.
+        if (pass1 == null || pass2 == null) return false;
+        return pass1.equals(pass2);
+    }
+    // Para poder verificar la longitud de la contraesañ y asi tambien ver que me funcionan los test
+    public static boolean esPasswordSegura(String password) {
+        // Si la contraseña es nula o tiene menos de 8 caracteres, no es segura
+        return password != null && password.length() >= 8;
+    }
 
 }

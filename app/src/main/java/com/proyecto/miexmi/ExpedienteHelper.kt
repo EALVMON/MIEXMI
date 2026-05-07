@@ -382,8 +382,8 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             idUsuario = cursor.getInt(0)
         }
 
-        // 5. Siempre hay que cerrar el cursor al terminar.
-        // Si no lo hacemos, la memoria RAM del móvil se quedará bloqueada y la app irá lenta.
+        // 5.  Hay que cerrar el cursor al terminar.
+
         cursor.close()
 
         // 6. Devolvemos la respuesta final a la pantalla de Login (el ID real o él -1 si no lo encuentra).
@@ -480,7 +480,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     fun anadirTMI(idUsuario: Int, numTarjeta: String, fechaCaducidad: String): Boolean {
         val db = this.readableDatabase
 
-        // PRIMERO: Comprobamos si esta tarjeta ya existe para este usuario
+        // PRIMERO: Comprobamos si esta TMI  ya existe para este usuario
         val cursor = db.rawQuery(
             "SELECT Id_M_Tmi FROM MOD_TMI WHERE Id_Usuario = ? AND N_Tarjeta = ?",
             arrayOf(idUsuario.toString(), numTarjeta)
@@ -514,9 +514,31 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    // MODIFICAR una TMI existente
+    // MODIFICAR una TMI existente (Con protección anti-duplicados)
     fun modificarTMI(idTmi: Int, numTarjeta: String, fechaCaducidad: String): Boolean {
         val db = this.writableDatabase
+
+        // PRIMERO: Comprobamos si este número de TMI ya lo tiene el usuario en OTRA fila distinta.
+        // Usamos Id_M_Tmi != ? para decirle que no cuente la tarjeta que estamos editando ahora mismo.
+        // Usamos una subconsulta para averiguar el Id_Usuario sin tener que pedirlo por parámetro.
+        val cursor = db.rawQuery(
+            """
+        SELECT Id_M_Tmi FROM MOD_TMI 
+        WHERE N_Tarjeta = ? 
+        AND Id_M_Tmi != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_TMI WHERE Id_M_Tmi = ?)
+        """,
+            arrayOf(numTarjeta, idTmi.toString(), idTmi.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+
+        // Si existe otra tarjeta diferente con ese mismo número, bloqueamos la modificación
+        if (existeDuplicado) {
+            return false
+        }
+
+        // SEGUNDO: Si no hay duplicados (o si es la misma tarjeta de antes), guardamos los cambios
         val values = android.content.ContentValues().apply {
             put("N_Tarjeta", numTarjeta)
             put("M_Tmi_Fecha_Cadu", fechaCaducidad)
@@ -1462,17 +1484,55 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         return array
     }
 
-    // 2. Genera el texto gigante en formato JSON llamando a todas las tablas.
+    // 2. Genera el texto  en formato JSON llamando a todas las tablas.
+    // ====================================================================
+    // === EXPORTACIÓN DE LA COPIA DE SEGURIDAD (JSON)                  ===
+    // ====================================================================
+
+    // Genera el texto en formato JSON llamando a todas las tablas del usuario.
     fun exportarTodoAJson(idUsuario: Int): String {
-        // Creamos el objeto "Raíz" (El contenedor principal)
+        // Creamos el objeto "Raíz" (El contenedor principal donde irá todos)
         val raiz = JSONObject()
 
-        // Llamamos a nuestra función  tabla por tabla y la metemos en la raíz con una etiqueta
-        raiz.put("Filiacion", cursorToJsonArray(obtenerFiliacion(idUsuario)))
-        raiz.put("Destinos", cursorToJsonArray(obtenerDestinos(idUsuario)))
-        // ... (así con todas las demás tablas) ...
+        try {
+            // Llamamos a nuestra función tabla por tabla y la metemos en la raíz con una etiqueta
 
-        // Convertimos  esa cantidad  de datos en texto ordenado (poniendo  4 espacios)
+            // 1. Datos Personales
+            raiz.put("Filiacion", cursorToJsonArray(obtenerFiliacion(idUsuario)))
+
+            // 2. Historial Profesional
+            raiz.put("Empleos", cursorToJsonArray(obtenerEmpleos(idUsuario)))
+            raiz.put("Destinos", cursorToJsonArray(obtenerDestinos(idUsuario)))
+            raiz.put("Misiones", cursorToJsonArray(obtenerMisiones(idUsuario)))
+            raiz.put("Comisiones_Servicio", cursorToJsonArray(obtenerComisiones(idUsuario)))
+            raiz.put("Situacion_Administrativa", cursorToJsonArray(obtenerSituaciones(idUsuario)))
+            raiz.put("Especialidad_Fundamental", cursorToJsonArray(obtenerCEEFs(idUsuario)))
+            raiz.put("Relaciones_Administrativas", cursorToJsonArray(obtenerRelacionesAdmin(idUsuario)))
+
+            // 3. Méritos y Formación
+            raiz.put("Trienios", cursorToJsonArray(obtenerTrienios(idUsuario)))
+            raiz.put("Recompensas", cursorToJsonArray(obtenerRecompensas(idUsuario)))
+            raiz.put("Distintivos", cursorToJsonArray(obtenerDistintivos(idUsuario)))
+            raiz.put("Aptitudes", cursorToJsonArray(obtenerAptitudes(idUsuario)))
+            raiz.put("Cursos_Militares", cursorToJsonArray(obtenerCursosMilitares(idUsuario)))
+            raiz.put("Titulos_y_Cursos_Civiles", cursorToJsonArray(obtenerTitulosCiviles(idUsuario)))
+            raiz.put("Idiomas", cursorToJsonArray(obtenerIdiomas(idUsuario)))
+            raiz.put("Evaluacion_Ascenso", cursorToJsonArray(obtenerEvaluaciones(idUsuario)))
+
+            // 4. Registros Críticos / Administrativos
+            raiz.put("TMI", cursorToJsonArray(obtenerTMIs(idUsuario)))
+            raiz.put("Habilitaciones_HPS", cursorToJsonArray(obtenerHps(idUsuario)))
+            raiz.put("Armas_Particulares", cursorToJsonArray(obtenerArmas(idUsuario)))
+            raiz.put("Carnets_Conducir", cursorToJsonArray(obtenerCarnets(idUsuario)))
+            raiz.put("Pruebas_Fisicas_TCGF", cursorToJsonArray(obtenerTcgf(idUsuario)))
+
+        } catch (e: Exception) {
+            // Si hay algún problema convirtiendo los datos, dejamos un registro interno (Log)
+            android.util.Log.e("ExportarJSON", "Error al generar la copia de seguridad", e)
+
+        }
+
+        // Convertimos  ese paquete de datos en un texto ordenado (poniendo 4 espacios de sangría para que sea legible)
         return raiz.toString(4)
     }
 
@@ -1519,14 +1579,46 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         // StringBuilder está diseñado para unir textos gigantes muy rápido
         val sb = StringBuilder()
 
-        // '\uFEFF' es una clave  que le dice a Excel que el archivo usa español (UTF-8)
+        // '\uFEFF' es una clave que le dice a Excel que el archivo usa español (UTF-8)
         // para que las tildes y las eñes se vean perfectas.
         sb.append("\uFEFF")
 
-        // Vamos llamando a la función obrera para que escriba las tablas en el cuaderno una a una
+        // ====================================================================
+        // === 1. DATOS PERSONALES                                          ===
+        // ====================================================================
         agregarCursorACsv("FILIACIÓN", obtenerFiliacion(idUsuario), sb)
+
+        // ====================================================================
+        // === 2. HISTORIAL PROFESIONAL                                     ===
+        // ====================================================================
+        agregarCursorACsv("EMPLEOS", obtenerEmpleos(idUsuario), sb)
         agregarCursorACsv("DESTINOS", obtenerDestinos(idUsuario), sb)
-        // ... (así con todas las demás tablas) ...
+        agregarCursorACsv("MISIONES", obtenerMisiones(idUsuario), sb)
+        agregarCursorACsv("COMISIONES DE SERVICIO", obtenerComisiones(idUsuario), sb)
+        agregarCursorACsv("SITUACIÓN ADMINISTRATIVA", obtenerSituaciones(idUsuario), sb)
+        agregarCursorACsv("ESPECIALIDAD FUNDAMENTAL", obtenerCEEFs(idUsuario), sb)
+        agregarCursorACsv("RELACIONES ADMINISTRATIVAS", obtenerRelacionesAdmin(idUsuario), sb)
+
+        // ====================================================================
+        // === 3. MÉRITOS Y FORMACIÓN                                       ===
+        // ====================================================================
+        agregarCursorACsv("TRIENIOS", obtenerTrienios(idUsuario), sb)
+        agregarCursorACsv("RECOMPENSAS", obtenerRecompensas(idUsuario), sb)
+        agregarCursorACsv("DISTINTIVOS", obtenerDistintivos(idUsuario), sb)
+        agregarCursorACsv("APTITUDES", obtenerAptitudes(idUsuario), sb)
+        agregarCursorACsv("CURSOS MILITARES", obtenerCursosMilitares(idUsuario), sb)
+        agregarCursorACsv("TÍTULOS Y CURSOS CIVILES", obtenerTitulosCiviles(idUsuario), sb)
+        agregarCursorACsv("IDIOMAS", obtenerIdiomas(idUsuario), sb)
+        agregarCursorACsv("EVALUACIÓN PARA EL ASCENSO", obtenerEvaluaciones(idUsuario), sb)
+
+        // ====================================================================
+        // === 4. REGISTROS CRÍTICOS / ADMINISTRATIVOS                      ===
+        // ====================================================================
+        agregarCursorACsv("TMI", obtenerTMIs(idUsuario), sb)
+        agregarCursorACsv("HABILITACIONES (HPS)", obtenerHps(idUsuario), sb)
+        agregarCursorACsv("ARMAS PARTICULARES", obtenerArmas(idUsuario), sb)
+        agregarCursorACsv("CARNETS DE CONDUCIR", obtenerCarnets(idUsuario), sb)
+        agregarCursorACsv("PRUEBAS FÍSICAS (TCGF)", obtenerTcgf(idUsuario), sb)
 
         // Devolvemos el conjunto del texto del cuaderno ya terminado
         return sb.toString()
