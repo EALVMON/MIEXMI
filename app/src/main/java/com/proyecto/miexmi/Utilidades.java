@@ -362,4 +362,17 @@ public class Utilidades {
         return password != null && password.length() >= 8;
     }
 
+    // Añado este metodo para comprobar que los campos DNI o Clave no esten vacios
+    //pongo este metodo en utilidades para poder despues realizar la pruebas unitarias
+    // String... campos . El símbolo ... le dice a Java: "Prepárate, porque te voy a pasar una lista
+    // de  textos, pero no sé cuántos serán: pueden ser 2, pueden ser 10 o puede ser 1". Se llama Variable Arguments
+    public static boolean camposRellenos(String... campos) {
+        for (String campo : campos) {
+            if (campo == null || campo.trim().isEmpty()) {
+                return false; // Si encuentra uno vacío, devuelve falso inmediatamente
+            }
+        }
+        return true; // Todos los campos tienen texto
+    }
+
 }

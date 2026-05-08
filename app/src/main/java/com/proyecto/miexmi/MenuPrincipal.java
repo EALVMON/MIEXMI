@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor; // Añadido para poder leer la base de datos
 import android.os.Bundle;
+import android.os.Handler; // [NUEVO] Para gestionar el temporizador de inactividad
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,12 @@ import java.nio.charset.StandardCharsets;
 
 public class MenuPrincipal extends AppCompatActivity {
 
+    // VARIABLES PARA EL CIERRE AUTOMÁTICO POR INACTIVIDAD
+    // Usamos un Handler para contar el tiempo en milisegundos
+    private final Handler handlerInactividad = new Handler();
+    private Runnable runnableInactividad;
+    // Definimos el tiempo límite: 3 minutos (3 * 60 segundos * 1000 milisegundos)
+    private final long TIEMPO_INACTIVIDAD = 3 * 60 * 1000;
 
     // Aquí guardamos el texto justo antes de meterlo en el archivo
     private String datosTemporalesParaGuardar = "";
@@ -52,6 +59,20 @@ public class MenuPrincipal extends AppCompatActivity {
 
         // Conectamos esta clase con el XML (activity_menu_principal.xml)
         setContentView(R.layout.activity_menu_principal);
+
+        //CONFIGURACIÓN DE LA TAREA DE CIERRE AUTOMÁTICO
+        // Se define qué pasará cuando el tiempo se agote
+        runnableInactividad = () -> {
+            // Borramos la sesión para obligar a loguearse de nuevo
+            SharedPreferences prefsSalir = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
+            prefsSalir.edit().clear().apply();
+
+            // Mostramos aviso y redirigimos al Login
+            Toast.makeText(MenuPrincipal.this, "Sesión cerrada por inactividad (3 min)", Toast.LENGTH_LONG).show();
+            Intent intentInactividad = new Intent(MenuPrincipal.this, LoginActivity.class);
+            startActivity(intentInactividad);
+            finish();
+        };
 
         // RECUPERAMOS LA SESIÓN (El ID del usuario que hizo login)
         SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
@@ -138,6 +159,21 @@ public class MenuPrincipal extends AppCompatActivity {
         cardExportar.setOnClickListener(v -> mostrarMenuExportacion());
     }
 
+    // [ METODO PARA REINICIAR EL TIEMPO DE INACTIVIDAD
+    private void reiniciarTemporizador() {
+        handlerInactividad.removeCallbacks(runnableInactividad);
+        handlerInactividad.postDelayed(runnableInactividad, TIEMPO_INACTIVIDAD);
+    }
+
+    // DETECTOR DE INTERACCIÓN DEL USUARIO
+    // Este metodo de Android se lanza cada vez que alguien toca la pantalla
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        // Si el usuario toca algo, le damos otros 3 minutos de tiempo
+        reiniciarTemporizador();
+    }
+
     // ========================================================================
     // === CICLO DE VIDA PARA REFRESCO DE PANTALLA                          ===
     // ========================================================================
@@ -151,12 +187,23 @@ public class MenuPrincipal extends AppCompatActivity {
         // Disparamos la actualización del Dashboard
         actualizarResumen();
 
+        // [NUEVO] Al volver al menú, activamos la vigilancia de inactividad
+        reiniciarTemporizador();
+
         // --- LANZAMOS PARA VER LAS CADUCIDADES ---
         SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
         int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
         if (idUsuarioActual != -1) {
             verificarCaducidades(idUsuarioActual);
         }
+    }
+
+    // CONTROL CUANDO LA APP SE QUEDA EN SEGUNDO PLANO
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Paramos el temporizador para evitar que cierre la sesión mientras no usamos la app
+        handlerInactividad.removeCallbacks(runnableInactividad);
     }
 
     // ========================================================================
@@ -394,7 +441,7 @@ public class MenuPrincipal extends AppCompatActivity {
 
         builder.setTitle("⚠️ AVISO DE CADUCIDAD");
 
-        // ¡SOLUCIÓN 1! Ya no usamos .toString(), simplemente concatenamos el String que nos llega.
+        // concatenamos el String que nos llega.
         builder.setMessage("Los siguientes elementos caducan en menos de 3 meses:\n\n" + listaAlertas);
 
         builder.setPositiveButton("Entendido", (dialog, which) -> {

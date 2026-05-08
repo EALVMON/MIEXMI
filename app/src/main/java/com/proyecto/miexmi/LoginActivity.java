@@ -49,13 +49,13 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(v -> {
 
             // Obtenemos lo que escribe el usuario (con .trim() para quitar espacios inútiles)
-            // ¡NUEVO!: Añadimos .toUpperCase() para que las minúsculas no den problemas al iniciar sesión
+            // Añado .toUpperCase() para que las minúsculas no den problemas al iniciar sesión
             String dni = etDni.getText().toString().trim().toUpperCase();
             String pass = etPassword.getText().toString().trim();
 
             // 3. Comprobamos si hay campos vacíos
-            if (dni.isEmpty() || pass.isEmpty()) {
-                Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
+            if (!Utilidades.camposRellenos(dni, pass)) {
+                Toast.makeText(this, " Debe rellenar todos los campos", Toast.LENGTH_SHORT).show();
             } else {
 
                 // 4. Comprobamos si el usuario existe y si la contraseña es correcta
