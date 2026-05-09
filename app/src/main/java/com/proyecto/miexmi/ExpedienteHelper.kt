@@ -1645,4 +1645,116 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         // Ordenamos DESC para ver la última conexión arriba del item
         return db.rawQuery("SELECT * FROM REGISTRO_ACTIVIDAD WHERE Id_Usuario = ? ORDER BY Id_Log DESC", arrayOf(idUsuario.toString()))
     }
+
+    // ====================================================================
+    // === VISOR Y BUSCADOR GLOBAL DEL EXPEDIENTE (PU.09 y PU.10)       ===
+    // ====================================================================
+
+    fun obtenerResumenExpediente(idUsuario: Int, filtroBod: String, filtroFecha: String): String {
+        val sb = StringBuilder()
+        val db = this.readableDatabase
+        val usaFiltroBod = filtroBod.isNotEmpty()
+        val usaFiltroFecha = filtroFecha.isNotEmpty()
+
+        // 1. Función interna para módulos con BOD (Empleos, Destinos, etc.)
+        fun procesarConBod(titulo: String, tabla: String, colNombre: String, colFechaBod: String, colNumBod: String) {
+            var query = "SELECT * FROM $tabla WHERE Id_Usuario = ?"
+            val args = mutableListOf(idUsuario.toString())
+
+            if (usaFiltroBod) {
+                query += " AND $colNumBod = ?"
+                args.add(filtroBod)
+            }
+            if (usaFiltroFecha) {
+                query += " AND $colFechaBod = ?"
+                args.add(filtroFecha)
+            }
+
+            val cursor = db.rawQuery(query, args.toTypedArray())
+
+            // Solo mostramos si hay resultados o si no hay filtros aplicados
+            if (cursor.count > 0 || (!usaFiltroBod && !usaFiltroFecha)) {
+                sb.append("=== $titulo ===\n")
+                if (cursor.moveToFirst()) {
+                    do {
+                        val nombre = cursor.getString(cursor.getColumnIndexOrThrow(colNombre))
+                        val fecha = cursor.getString(cursor.getColumnIndexOrThrow(colFechaBod)) ?: "N/D"
+                        val bod = cursor.getString(cursor.getColumnIndexOrThrow(colNumBod)) ?: "N/D"
+                        sb.append("• $nombre (BOD: $bod - Fecha: $fecha)\n")
+                    } while (cursor.moveToNext())
+                } else {
+                    sb.append("  Sin registros.\n")
+                }
+                sb.append("__________________________________________\n\n")
+            }
+            cursor.close()
+        }
+
+        // 2. Función interna para módulos sin BOD (TMI, Carnets, etc.)
+        fun procesarSinBod(titulo: String, tabla: String, colNombre: String, colExtra: String?) {
+            // Si el usuario busca un BOD, omitimos estas tablas (no tienen BOD)
+            if (usaFiltroBod) return
+
+            var query = "SELECT * FROM $tabla WHERE Id_Usuario = ?"
+            val args = mutableListOf(idUsuario.toString())
+
+            // Solo filtramos si la tabla tiene una columna extra de fecha y el usuario ha buscado por fecha
+            if (usaFiltroFecha && colExtra != null) {
+                query += " AND $colExtra = ?"
+                args.add(filtroFecha)
+            }
+
+            val cursor = db.rawQuery(query, args.toTypedArray())
+
+            if (cursor.count > 0 || !usaFiltroFecha) {
+                sb.append("=== $titulo ===\n")
+                if (cursor.moveToFirst()) {
+                    do {
+                        val nombre = cursor.getString(cursor.getColumnIndexOrThrow(colNombre))
+                        sb.append("• $nombre")
+                        if (colExtra != null) {
+                            val dato = cursor.getString(cursor.getColumnIndexOrThrow(colExtra)) ?: "N/D"
+                            sb.append(" (Fecha: $dato)")
+                        }
+                        sb.append("\n")
+                    } while (cursor.moveToNext())
+                } else {
+                    sb.append("  Sin registros.\n")
+                }
+                sb.append("__________________________________________\n\n")
+            }
+            cursor.close()
+        }
+
+        // --- LLAMAMOS A TODAS TUS TABLAS ---
+        // Tablas que tienen BOD
+        procesarConBod("EMPLEOS", "MOD_EMPLEOS", "Nom_Empleo", "M_Empl_Fecha_Bod", "M_Empl_Nbod")
+        procesarConBod("DESTINOS", "MOD_DESTINOS", "Nom_Destino", "M_Dest_Fecha_Bod", "M_Dest_Nbod")
+        procesarConBod("MISIONES", "MOD_MISIONES", "Nom_Mision", "M_Misi_Fecha_Bod", "M_Misi_Nbod")
+        procesarConBod("COMISIONES DE SERVICIO", "MOD_COMISION_SER", "Nom_Comision", "M_Cser_Fecha_Bod", "M_Cser_Nbod")
+        procesarConBod("SITUACIÓN ADMINISTRATIVA", "MOD_SITUA_ADMIN", "Nom_Sit_Admini", "M_Sadm_Fecha_Bod", "M_Sadm_Nbod")
+        procesarConBod("TRIENIOS", "MOD_TRIENIOS", "Tipo_Trienio", "M_Trie_Fecha_Bod", "M_Trie_Nbod")
+        procesarConBod("RECOMPENSAS", "MOD_RECOMPENSAS", "Nom_Recompensa", "M_Reco_Fecha_Bod", "M_Reco_Nbod")
+        procesarConBod("DISTINTIVOS", "MOD_DISTINTIVOS", "Nom_Distintivo", "M_Dist_Fecha_Bod", "M_Dist_Nbod")
+        procesarConBod("APTITUDES", "MOD_APTITUDES", "Nom_Aptitud", "M_Apti_Fecha_Bod", "M_Apti_Nbod")
+        procesarConBod("ESPECIALIDAD FUNDAMENTAL", "MOD_CEE_FUNDAMENTAL", "Nom_CEEF", "M_Ceef_Fecha_Bod", "M_Ceef_Nbod")
+        procesarConBod("RELACIONES ADMINISTRACIÓN", "MOD_RELA_ADMINISTRACION", "Nom_Rel_Admin", "M_Radm_Fecha_Bod", "M_Radm_Nbod")
+        procesarConBod("CURSOS MILITARES", "MOD_CUR_MILITAR", "Nom_Cur_Mili", "M_Cmili_Fecha_Bod", "M_Cmili_Nbod")
+        procesarConBod("EVALUACIÓN ASCENSO", "MOD_EVALUACION_ASCENSO", "Nom_Evaluacion", "M_Eva_Fecha_Bod", "M_Eva_Nbod")
+        procesarConBod("IDIOMAS", "MOD_IDIOMA", "Nom_idioma", "M_Idi_Fecha_Bod", "M_Idi_Nbod")
+
+        // Tablas que NO tienen BOD
+        procesarSinBod("TÍTULOS CIVILES", "MOD_TITULOS_CIVILES", "Nom_Titulo", null)
+        procesarSinBod("HABILITACIONES (HPS)", "MOD_HPS", "Nom_Habilitacion", "Fecha_M_Caducidad")
+        procesarSinBod("TARJETA MILITAR (TMI)", "MOD_TMI", "N_Tarjeta", "M_Tmi_Fecha_Cadu")
+        procesarSinBod("ARMAS PARTICULARES", "MOD_EXP_ARMAS", "Nom_Arma", "M_EArm_Fecha_Cad")
+        procesarSinBod("PRUEBAS FÍSICAS (TCGF)", "MOD_TCGF", "M_Tcgf_Puntuacion", "M_Tcgf_Fecha")
+        procesarSinBod("CARNETS DE CONDUCIR", "MOD_CARNET", "Tipo_Carnet", "M_Carn_Fecha_Caducidad")
+
+        if (sb.isEmpty()) {
+            return "No se ha encontrado ninguna información con los filtros aplicados."
+        }
+
+        return sb.toString()
+    }
 }

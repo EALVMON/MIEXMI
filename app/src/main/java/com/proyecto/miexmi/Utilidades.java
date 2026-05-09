@@ -11,7 +11,10 @@ import java.util.Locale;   // Importación para el formato del texto
 
 public class Utilidades {
 
-    // Función estática: la podemos llamar desde cualquier parte sin crear un objeto "Utilidades"
+    // ========================================================================
+    // === CONFIGURAR BOTON VOLVER DE TODAS LAS PANTALLAS      ===
+    // ========================================================================
+
     public static void configurarBotonVolver(Activity activity, int idBoton) {
 
         // 1. Buscamos el botón en la pantalla que nos pasen
@@ -20,6 +23,15 @@ public class Utilidades {
         // 2. Si el botón existe, le ponemos la acción de cerrar la pantalla
         if (btnVolver != null) {
             btnVolver.setOnClickListener(v -> activity.finish());
+        }
+    }
+
+    // Oculta el teclado de la pantalla cuando terminamos de escribir
+    public static void ocultarTeclado(Activity activity, android.view.View view) {
+        if (view != null) {
+            android.view.inputmethod.InputMethodManager imm =
+                    (android.view.inputmethod.InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
@@ -362,7 +374,7 @@ public class Utilidades {
         return password != null && password.length() >= 8;
     }
 
-    // Añado este metodo para comprobar que los campos DNI o Clave no esten vacios
+    // Añado este metodo para comprobar que los campos DNI o Clave no esten vacios, tambien me sirve para la pu12
     //pongo este metodo en utilidades para poder despues realizar la pruebas unitarias
     // String... campos . El símbolo ... le dice a Java: "Prepárate, porque te voy a pasar una lista
     // de  textos, pero no sé cuántos serán: pueden ser 2, pueden ser 10 o puede ser 1". Se llama Variable Arguments

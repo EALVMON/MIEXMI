@@ -24,6 +24,7 @@
     <string name="cat_otros_registros">Otros\nRegistros</string>
     <string name="cat_exportar_expediente">Exportar\nExpediente</string>
     <string name="cat_actividad_app">Actividad\nAPP</string>
+    <string name="consulta_todo_el_expediente">Consulta todo el Expediente</string>
 
 
     <string name="historial_profesional">Historial Profesional</string>
@@ -217,7 +218,9 @@
     <!-- Boton Cerrar sesion del menu principal-->
     <string name="cerrar_sesi_n">Cerrar Sesión</string>
     <string name="ajustes_de_seguridad">Ajustes de Seguridad</string>
-
+    <string name="buscar_en_expediente">BUSCAR EN EXPEDIENTE</string>
+    <string name="filtrar_por_n_de_bod_o_fecha_de_bod">Filtrar por Nº de bod o Fecha de Bod:</string>
+    <string name="visor_de_expediente">Visor de Expediente</string>
 
 
 </resources>

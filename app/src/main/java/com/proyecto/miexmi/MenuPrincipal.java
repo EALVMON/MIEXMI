@@ -95,6 +95,7 @@ public class MenuPrincipal extends AppCompatActivity {
         CardView cardRegistrosAdmin = findViewById(R.id.cardRegistrosAdmin);
         CardView cardExportar = findViewById(R.id.cardExportar);
         CardView cardActividad = findViewById(R.id.cardActividad);
+        CardView cardConsultaExpediente = findViewById(R.id.cardConsultaExpediente);
 
         // Enlazamos el botón de la "Rosca" de Ajustes/Seguridad
         ImageButton btnAjustes = findViewById(R.id.btnAjustesSeguridad);
@@ -157,6 +158,12 @@ public class MenuPrincipal extends AppCompatActivity {
 
         // Programamos clic para Exportar
         cardExportar.setOnClickListener(v -> mostrarMenuExportacion());
+
+        // Programamos el clic para llevar al usuario al Consulta Expediente
+        cardConsultaExpediente.setOnClickListener(v -> {
+            Intent intent = new Intent(MenuPrincipal.this, ConsultaExpedienteActivity.class);
+            startActivity(intent);
+        });
     }
 
     // [ METODO PARA REINICIAR EL TIEMPO DE INACTIVIDAD

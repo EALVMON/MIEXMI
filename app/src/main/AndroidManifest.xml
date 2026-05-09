@@ -136,6 +136,10 @@
         <activity android:name=".Seguridad"
             android:exported="false" />
 
+        <!-- Activity Consultar Expediente  -->
+
+        <activity android:name=".ConsultaExpedienteActivity"
+            android:exported="false" />
 
 
     </application>
