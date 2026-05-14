@@ -277,7 +277,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     override fun onConfigure(db: SQLiteDatabase) {
         super.onConfigure(db)
-        // Activar el soporte para Foreign Keys (importante para el CASCADE)
+        // Activar el soporte para Foreign Keys (es importante para el CASCADE)
         db.setForeignKeyConstraintsEnabled(true)
     }
 
@@ -1647,7 +1647,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     }
 
     // ====================================================================
-    // === VISOR Y BUSCADOR GLOBAL DEL EXPEDIENTE (PU.09 y PU.10)       ===
+    // === VISOR Y BUSCADOR GLOBAL DEL EXPEDIENTE       ===
     // ====================================================================
 
     fun obtenerResumenExpediente(idUsuario: Int, filtroBod: String, filtroFecha: String): String {
@@ -1757,4 +1757,6 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
         return sb.toString()
     }
+
+
 }

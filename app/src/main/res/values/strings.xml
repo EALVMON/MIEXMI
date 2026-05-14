@@ -115,6 +115,7 @@
     <string name="nombre_de_la_aptitud">Nombre de la Aptitud</string>
     <string name="nombre_aptitud">Nombre Aptitud</string>
     <string name="historial_de_aptitudes_guardadas">Historial de Aptitudes guardadas:</string>
+    <string name="numero_fila">%1$d</string>
 
     <!-- Modulo Cuerpo y Escala o Especialidad -->
     <string name="cee_fundamental">Cuerpo y Escala</string>

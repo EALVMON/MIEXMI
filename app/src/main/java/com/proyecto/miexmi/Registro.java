@@ -67,10 +67,29 @@ public class Registro extends AppCompatActivity {
 
                 // Comprobamos el resultado de la base de datos
                 if (resultado != -1) {
-                    Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
-                    finish(); // Cerramos y volvemos al login
+
+                    // ================================================================
+                    // === Para la carga masiva de datos (CON HILO SECUNDARIO) ===
+                    // ================================================================
+
+                    // 1. Abrimos un nuevo Hilo (El Cocinero)
+                    new Thread(() -> {
+
+                        // Llamamos a nuestra clase externa de generación de datos (Trabajo pesado)
+                        GeneradorDatos.INSTANCE.cargarExpedientePDF(dbHelper.getWritableDatabase(), (int) resultado);
+
+                        // 2. Volvemos al Hilo Principal (El Camarero) para tocar la pantalla
+                        runOnUiThread(() -> {
+                            Toast.makeText(Registro.this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
+                            finish(); // Cerramos y volvemos al login
+                        });
+
+                    }).start(); // 3. ¡Le damos la orden de empezar!
+                    // descomentar lo siguiente par aque no haga la carga y borrer lo de arriba
+                    /* Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
+                    finish(); // Cerramos y volvemos al login */
                 } else {
-                    // (PRUEBA PU.01) El DNI ya existía en la base de datos
+                    //  El DNI ya existía en la base de datos
                     Toast.makeText(this, "Error: Este DNI ya tiene una cuenta", Toast.LENGTH_LONG).show();
                 }
             }

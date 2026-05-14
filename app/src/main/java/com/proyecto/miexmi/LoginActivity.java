@@ -1,5 +1,14 @@
 package com.proyecto.miexmi;
-
+/*
+  ========================================================================
+  PROYECTO: Mi Expediente Militar
+  AUTOR: Eduardo José Álvarez Montes
+  FECHA DE ENTREGA: Junio 2026
+  * AGRADECIMIENTOS:
+  Quiero dedicar este proyecto a mi familia por su paciencia, y en especial
+  a mi cuñada Amparo (gracias nos volveremos a ver)
+  ========================================================================
+ */
 // Importaciones necesarias
 import android.content.Context;           // Necesario para SharedPreferences
 import android.content.Intent;            // Para cambiar de pantalla (Activity)

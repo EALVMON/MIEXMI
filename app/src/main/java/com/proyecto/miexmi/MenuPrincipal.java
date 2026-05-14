@@ -166,7 +166,7 @@ public class MenuPrincipal extends AppCompatActivity {
         });
     }
 
-    // [ METODO PARA REINICIAR EL TIEMPO DE INACTIVIDAD
+    // METODO PARA REINICIAR EL TIEMPO DE INACTIVIDAD
     private void reiniciarTemporizador() {
         handlerInactividad.removeCallbacks(runnableInactividad);
         handlerInactividad.postDelayed(runnableInactividad, TIEMPO_INACTIVIDAD);
