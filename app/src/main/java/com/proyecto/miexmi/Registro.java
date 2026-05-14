@@ -1,6 +1,5 @@
 package com.proyecto.miexmi;
 
-// Importamos lo necesario para que funcione la Activity
 import static com.proyecto.miexmi.ComprobarDni.validarDNI;
 
 import android.os.Bundle;
@@ -34,7 +33,7 @@ public class Registro extends AppCompatActivity {
         btnRegistro = findViewById(R.id.btnRegistrarse);
 
         // 4.  ANTI-MINÚSCULAS
-        etDniRegistro.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        etDniRegistro.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         // Acción cuando se pulsa el botón "Registrarse"
         btnRegistro.setOnClickListener(v -> {
@@ -72,22 +71,32 @@ public class Registro extends AppCompatActivity {
                     // === Para la carga masiva de datos (CON HILO SECUNDARIO) ===
                     // ================================================================
 
-                    // 1. Abrimos un nuevo Hilo (El Cocinero)
-                    new Thread(() -> {
+                    if (dni.equals("11427316L")) {
 
-                        // Llamamos a nuestra clase externa de generación de datos (Trabajo pesado)
-                        GeneradorDatos.INSTANCE.cargarExpedientePDF(dbHelper.getWritableDatabase(), (int) resultado);
+                        // ================================================================
+                        // === Carga masiva de datos solo para el DNI 11427316l el mio ===
+                        // ================================================================
+                        new Thread(() -> {
+                            // Llamamos a nuestra clase externa de generación de datos
+                            GeneradorDatos.INSTANCE.cargarExpedientePDF(dbHelper.getWritableDatabase(), (int) resultado);
 
-                        // 2. Volvemos al Hilo Principal (El Camarero) para tocar la pantalla
-                        runOnUiThread(() -> {
-                            Toast.makeText(Registro.this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
-                            finish(); // Cerramos y volvemos al login
-                        });
+                            runOnUiThread(() -> {
+                                Toast.makeText(Registro.this, "¡Expediente Oficial Cargado! Registrado correctamente", Toast.LENGTH_LONG).show();
+                                finish(); // Cerramos y volvemos al login
+                            });
+                        }).start();
 
-                    }).start(); // 3. ¡Le damos la orden de empezar!
+                    }
                     // descomentar lo siguiente par aque no haga la carga y borrer lo de arriba
                     /* Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
                     finish(); // Cerramos y volvemos al login */
+                    else {
+                        // ================================================================
+                        // === Registro normal para cualquier otro usuario ===
+                        // ================================================================
+                        Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
+                        finish(); // Cerramos y volvemos al login
+                    }
                 } else {
                     //  El DNI ya existía en la base de datos
                     Toast.makeText(this, "Error: Este DNI ya tiene una cuenta", Toast.LENGTH_LONG).show();
