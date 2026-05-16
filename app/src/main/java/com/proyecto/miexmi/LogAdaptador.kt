@@ -1,84 +1,72 @@
-package com.proyecto.miexmi;
+package com.proyecto.miexmi
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
+// ====================================================================
+// 1. EL MODELO DE DATOS
+// ====================================================================
+// 'data class' es una estructura especial de Kotlin.
+// Genera completamente lo necesario (getters,setters,constructores)
+data class LogModelo(
+    val dni: String,       // Guarda el DNI del usuario que accedió (texto)
+    val fechaHora: String  // Guarda el momento exacto del acceso (texto)
+)
 
-public class LogAdaptador extends RecyclerView.Adapter<LogAdaptador.LogViewHolder> {
+// ====================================================================
+// 2. EL ADAPTADOR
+// ====================================================================
+// Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
+class LogAdaptador(
+    // Recibe la lista completa con todos los registros del log que hay que mostrar.
+    private val listaDatos: List<LogModelo>
+) : RecyclerView.Adapter<LogAdaptador.LogViewHolder>() {
 
-    // 1. EL MODELO DE DATOS
+    // ====================================================================
+    // 2.1 LOS TRES MÉTODOS OBLIGATORIOS
+    // ====================================================================
 
-    public static class LogModelo {
-        String dni, fechaHora;
-
-        // El constructor: se ejecuta cuando creamos un log
-        public LogModelo(String dni, String fechaHora) {
-            this.dni = dni;
-            this.fechaHora = fechaHora;
-        }
+    // CREAR LA VISTA VISUAL
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogViewHolder {
+        // LayoutInflater coge el archivo de diseño XML (item_log_actividad) y lo "infla",
+        // transformando ese código visual en un objeto real que la pantalla puede pintar.
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_log_actividad, parent, false)
+        // devuelvo esa vista ya fabricada
+        return LogViewHolder(view)
     }
 
-    // Esta es la lista que contiene todos los registros del log
-    private final List<LogModelo> lista;
+    // RELLENAR LOS DATOS
+    override fun onBindViewHolder(holder: LogViewHolder, position: Int) {
+        // Busca en nuestra lista de datos la linea de nuestro log que toca dibujar
+        val actual = listaDatos[position]
 
-    // 2. EL CONSTRUCTOR DEL ADAPTADOR
-    // Cuando creamos este adaptador desde LogActividad.java, le pasamos la lista de datos.
-    public LogAdaptador(List<LogModelo> lista) {
-        this.lista = lista;
+        // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
+        // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
+        holder.tvNum.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+
+        // Rellenamos los textos de la fila con los datos reales que tiene nuestro registro de log
+        holder.tvDni.text = actual.dni
+        holder.tvFec.text = actual.fechaHora
     }
 
-    // 3. ON CREATE VIEW HOLDER (Crear la vista de la fila)
-    // Este metodo se ejecuta cuando la lista necesita dibujar una fila NUEVA en la pantalla.
-    // Coge el archivo XML (item_log_actividad.xml) y lo convierte en código visual.
-    @NonNull
-    @Override
-    public LogViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_log_actividad, parent, false);
-        return new LogViewHolder(v); // Le pasa esa fila vacía al ViewHolder para que encuentre los TextViews
-    }
+    // CONTAR LOS ELEMENTOS
+    // Con el siguiente metodo le decimos al sistema el número exacto de elementos que tiene la lista.
+    // Así Android sabe de qué tamaño debe dibujar la barra de desplazamiento (scroll).
+    override fun getItemCount() = listaDatos.size
 
-    // 4. ON BIND VIEW HOLDER (Para unir los datos con la vista)
-    //  Se ejecuta por cada fila que aparece en pantalla.
-    // Coge los datos de la lista y los escribe en los TextViews de la fila.
-    @Override
-    public void onBindViewHolder(@NonNull LogViewHolder holder, int position) {
-        // Sacamos de la lista los datos correspondiente a esta posición
-        LogModelo m = lista.get(position);
 
-        // Escribimos los datos en la pantalla
-        // Le sumamos 1 a la posición para crear el "Número de fila" (1, 2, 3...)
-        // ya que en programación las listas siempre empiezan a contar desde 0.
-        holder.tvNum.setText(String.valueOf(position + 1));
-        holder.tvDni.setText(m.dni);
-        holder.tvFec.setText(m.fechaHora);
-    }
+    // ====================================================================
+    // 2.2. EL VIEWHOLDER
+    // ====================================================================
+    // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
+    class LogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    // 5. GET ITEM COUNT (Contar los elementos)
-    // Para saber cunatas lineas tiene que dibujar
-
-    @Override
-    public int getItemCount() {
-        return lista.size();
-    }
-
-    // 6. VIEW HOLDER
-    // Busca un elemento en pantalla usando 'findViewById'
-    // los TextViews una sola vez y los guarda en la memoria.
-    // Así, cuando haces scroll, el móvil no se traba buscando los elementos una y otra vez.
-    public static class LogViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNum, tvDni, tvFec;
-
-        public LogViewHolder(@NonNull View iv) {
-            super(iv);
-            // 'iv' es la fila entera (item_log_actividad.xml). Aquí buscamos las columnas de esa fila.
-            tvNum = iv.findViewById(R.id.tvIdLog);
-            tvDni = iv.findViewById(R.id.tvDniLog);
-            tvFec = iv.findViewById(R.id.tvFechaHoraLog);
-        }
+        // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
+        val tvNum: TextView = itemView.findViewById(R.id.tvIdLog)
+        val tvDni: TextView = itemView.findViewById(R.id.tvDniLog)
+        val tvFec: TextView = itemView.findViewById(R.id.tvFechaHoraLog)
     }
 }

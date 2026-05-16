@@ -1,94 +1,83 @@
-package com.proyecto.miexmi;
+package com.proyecto.miexmi
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-/**
- * ADAPTADOR PARA LA LISTA DE RELACIONES CON LA ADMINISTRACIÓN
- * Esta clase es el "puente" entre los datos de la Base de Datos y la pantalla visual.
- */
-public class RelacionAdaptador extends RecyclerView.Adapter<RelacionAdaptador.RelacionViewHolder> {
+// ====================================================================
+// 1. EL MODELO DE DATOS
+// ====================================================================
+// 'data class' es una estructura especial de Kotlin.
+// Genera completamente lo necesario (getters,setters,constructores)
+data class RelacionModelo(
+    val idRelacion: Int,   // Guarda el ID (número entero)
+    val nombre: String,    // Guarda el nombre de la situación administrativa (texto)
+    val fechaBod: String,  // Guarda la fecha de publicación (texto)
+    val numBod: String     // Guarda el número del boletín (texto)
+)
 
-    // ========================================================================
-    // === CLASE MODELO (EL CONTENEDOR DE DATOS)                         ===
-    // ========================================================================
-    public static class RelacionModelo {
-        int idRelacion;
-        String nombre;
-        String fechaBod;
-        String numBod;
+// ====================================================================
+// 2. EL ADAPTADOR
+// ====================================================================
+// Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
+class RelacionAdaptador(
+    // Recibe la lista completa con todas las relaciones que hay que mostrar.
+    private val listaDatos: List<RelacionModelo>,
 
-        public RelacionModelo(int idRelacion, String nombre, String fechaBod, String numBod) {
-            this.idRelacion = idRelacion;
-            this.nombre = nombre;
-            this.fechaBod = fechaBod;
-            this.numBod = numBod;
-        }
+    // Usamos una función Lambda para saber cuándo el usuario toca una fila.
+    private val listener: (RelacionModelo) -> Unit
+) : RecyclerView.Adapter<RelacionAdaptador.RelacionViewHolder>() {
+
+    // ====================================================================
+    // 2.1 LOS TRES MÉTODOS OBLIGATORIOS
+    // ====================================================================
+
+    // CREAR LA VISTA VISUAL
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RelacionViewHolder {
+        // LayoutInflater coge el archivo de diseño XML (item_relacion_admin) y lo "infla",
+        // transformando ese código visual en un objeto real que la pantalla puede pintar.
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_relacion_admin, parent, false)
+        // devuelvo esa vista ya fabricada
+        return RelacionViewHolder(view)
     }
 
-    // ========================================================================
-    // === INTERFAZ PARA DETECTAR CLICS                                  ===
-    // ========================================================================
-    public interface OnItemClickListener {
-        void onItemClick(RelacionModelo relacion);
+    // RELLENAR LOS DATOS
+    override fun onBindViewHolder(holder: RelacionViewHolder, position: Int) {
+        // Busca en nuestra lista de datos la linea de nuestra relación que toca dibujar
+        val actual = listaDatos[position]
+
+        // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
+        // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
+        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+
+        // Rellenamos los textos de la fila con los datos reales que tiene nuestra relación
+        holder.tvNombre.text = actual.nombre
+        holder.tvFechaBod.text = actual.fechaBod
+        holder.tvNumBod.text = actual.numBod
+
+        // 'itemView' es la fila completa. Le ponemos un setOnClickListener
+        // Si el usuario toca esa fila, activamos el 'listener' y enviamos los datos de la relación que tocó.
+        holder.itemView.setOnClickListener { listener(actual) }
     }
 
-    private final List<RelacionModelo> listaDatos;
-    private final OnItemClickListener listener;
+    // CONTAR LOS ELEMENTOS
+    // Con el siguiente metodo le decimos al sistema el número exacto de elementos que tiene la lista.
+    // Así Android sabe de qué tamaño debe dibujar la barra de desplazamiento (scroll).
+    override fun getItemCount() = listaDatos.size
 
-    public RelacionAdaptador(List<RelacionModelo> listaDatos, OnItemClickListener listener) {
-        this.listaDatos = listaDatos;
-        this.listener = listener;
-    }
 
-    // ========================================================================
-    // === MÉTODOS OBLIGATORIOS DEL RECYCLERVIEW ADAPTER                 ===
-    // ========================================================================
-    @NonNull
-    @Override
-    public RelacionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Enlazamos directamente con tu archivo item_relacion_admin.xml
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_relacion_admin, parent, false);
-        return new RelacionViewHolder(view);
-    }
+    // ====================================================================
+    // 2.2. EL VIEWHOLDER
+    // ====================================================================
+    // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
+    class RelacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    @Override
-    public void onBindViewHolder(@NonNull RelacionViewHolder holder, int position) {
-        RelacionModelo actual = listaDatos.get(position);
-
-        // Rellenamos los datos en la fila visual
-        holder.tvNumFila.setText(String.valueOf(position + 1));
-        holder.tvNombre.setText(actual.nombre);
-        holder.tvFechaBod.setText(actual.fechaBod);
-        holder.tvNumBod.setText(actual.numBod);
-
-        // Activamos el clic en la fila
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(actual));
-    }
-
-    @Override
-    public int getItemCount() {
-        return listaDatos.size();
-    }
-
-    // ========================================================================
-    // === VIEWHOLDER (EL BUSCADOR DE IDs)                               ===
-    // ========================================================================
-    public static class RelacionViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNumFila, tvNombre, tvFechaBod, tvNumBod;
-
-        public RelacionViewHolder(@NonNull View itemView) {
-            super(itemView);
-            // Estos IDs coinciden perfectamente con tu item_relacion_admin.xml
-            tvNumFila = itemView.findViewById(R.id.tvItemNumRelacion);
-            tvNombre = itemView.findViewById(R.id.tvItemNombreRelacion);
-            tvFechaBod = itemView.findViewById(R.id.tvItemFechaRelacion);
-            tvNumBod = itemView.findViewById(R.id.tvItemBodRelacion);
-        }
+        // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
+        val tvNumFila: TextView = itemView.findViewById(R.id.tvItemNumRelacion)
+        val tvNombre: TextView = itemView.findViewById(R.id.tvItemNombreRelacion)
+        val tvFechaBod: TextView = itemView.findViewById(R.id.tvItemFechaRelacion)
+        val tvNumBod: TextView = itemView.findViewById(R.id.tvItemBodRelacion)
     }
 }

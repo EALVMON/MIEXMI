@@ -1,77 +1,82 @@
-package com.proyecto.miexmi;
+package com.proyecto.miexmi
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-public class TmiAdaptador extends RecyclerView.Adapter<TmiAdaptador.TmiViewHolder> {
+// ====================================================================
+// 1. EL MODELO DE DATOS
+// ====================================================================
+// 'data class' es una estructura especial de Kotlin.
+// Genera completamente lo necesario (getters,setters,constructores)
+data class TmiModelo(
+    val idTmi: Int,            // Guarda el ID (número entero)
+    val numeroTarjeta: String, // Guarda el número de la TMI (texto)
+    val fechaCaducidad: String // Guarda la fecha de caducidad (texto)
+)
 
-    // MODELO DE DATOS ---
-    public static class TmiModelo {
-        int idTmi;
-        String numeroTarjeta;
-        String fechaCaducidad;
+// ====================================================================
+// 2. EL ADAPTADOR
+// ====================================================================
+// Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
+class TmiAdaptador(
+    // Recibe la lista completa con todas las tarjetas que hay que mostrar.
+    // las pongo val (constantes) porque son variables que nacen y mueren ya.
+    // Una vez que le paso la lista y el listener al constructor, no cambian.
+    private val listaTmis: List<TmiModelo>,
 
-        public TmiModelo(int idTmi, String numeroTarjeta, String fechaCaducidad) {
-            this.idTmi = idTmi;
-            this.numeroTarjeta = numeroTarjeta;
-            this.fechaCaducidad = fechaCaducidad;
-        }
+    // Usamos una función Lambda para saber cuándo el usuario toca una fila.
+    private val listener: (TmiModelo) -> Unit
+) : RecyclerView.Adapter<TmiAdaptador.TmiViewHolder>() {
+
+    // ====================================================================
+    // 2.1 LOS TRES MÉTODOS OBLIGATORIOS
+    // ====================================================================
+
+    // CREAR LA VISTA VISUAL
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TmiViewHolder {
+        // LayoutInflater coge el archivo de diseño XML (item_tmi) y lo "infla",
+        // transformando ese código visual en un objeto real que la pantalla puede pintar.
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tmi, parent, false)
+        // devuelvo esa vista ya fabricada
+        return TmiViewHolder(view)
     }
 
-    // INTERFAZ PARA CLICS ---
-    public interface OnItemClickListener {
-        void onItemClick(TmiModelo tmi);
+    // RELLENAR LOS DATOS
+    override fun onBindViewHolder(holder: TmiViewHolder, position: Int) {
+        // Busca en nuestra lista de datos la linea de nuestra tarjeta que toca dibujar
+        val actual = listaTmis[position]
+
+        // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
+        // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
+        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+
+        // Rellenamos los textos de la fila con los datos reales que tiene nuestra tarjeta
+        holder.tvNumeroTarjeta.text = actual.numeroTarjeta
+        holder.tvCaducidad.text = actual.fechaCaducidad
+
+        // 'itemView' es la fila completa. Le ponemos un setOnClickListener
+        // Si el usuario toca esa fila, activamos el 'listener' y enviamos los datos de la tarjeta que tocó.
+        holder.itemView.setOnClickListener { listener(actual) }
     }
 
-    // las pongo final porque son variables que nacen y mueren ya, que una vez que tengo
-    //  que les paso la lista de datos (listaTmis) y la acción del clic (listener) al constructor
-    //  del adaptador, nunca más las cambio  por otras diferentes
-    private final List<TmiModelo> listaTmis;
-    private final OnItemClickListener listener;
+    // CONTAR LOS ELEMENTOS
+    // Con el siguiente metodo le decimos al sistema el número exacto de elementos que tiene la lista.
+    // Así Android sabe de qué tamaño debe dibujar la barra de desplazamiento (scroll).
+    override fun getItemCount() = listaTmis.size
 
-    // Constructor del Adaptador
-    public TmiAdaptador(List<TmiModelo> listaTmis, OnItemClickListener listener) {
-        this.listaTmis = listaTmis;
-        this.listener = listener;
-    }
 
-    @NonNull
-    @Override
-    public TmiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tmi, parent, false);
-        return new TmiViewHolder(view);
-    }
+    // ====================================================================
+    // 2.2. EL VIEWHOLDER
+    // ====================================================================
+    // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
+    class TmiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    @Override
-    public void onBindViewHolder(@NonNull TmiViewHolder holder, int position) {
-        TmiModelo tmiActual = listaTmis.get(position);
-
-        holder.tvNumFila.setText(String.valueOf(position + 1));
-        holder.tvNumeroTarjeta.setText(tmiActual.numeroTarjeta);
-        holder.tvCaducidad.setText(tmiActual.fechaCaducidad);
-
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(tmiActual));
-    }
-
-    @Override
-    public int getItemCount() {
-        return listaTmis.size();
-    }
-
-    // VIEWHOLDER ---
-    public static class TmiViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNumFila, tvNumeroTarjeta, tvCaducidad;
-
-        public TmiViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvNumFila = itemView.findViewById(R.id.tvItemNumFilaTmi);
-            tvNumeroTarjeta = itemView.findViewById(R.id.tvItemNumeroTarjeta);
-            tvCaducidad = itemView.findViewById(R.id.tvItemCaducidadTarjeta);
-        }
+        // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
+        val tvNumFila: TextView = itemView.findViewById(R.id.tvItemNumFilaTmi)
+        val tvNumeroTarjeta: TextView = itemView.findViewById(R.id.tvItemNumeroTarjeta)
+        val tvCaducidad: TextView = itemView.findViewById(R.id.tvItemCaducidadTarjeta)
     }
 }

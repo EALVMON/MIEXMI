@@ -1,75 +1,83 @@
-package com.proyecto.miexmi;
+package com.proyecto.miexmi
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-public class TrienioAdaptador extends RecyclerView.Adapter<TrienioAdaptador.TrienioViewHolder> {
+// ====================================================================
+// 1. EL MODELO DE DATOS
+// ====================================================================
+// 'data class' es una estructura especial de Kotlin.
+// Genera completamente lo necesario (getters,setters,constructores)
+data class TrienioModelo(
+    val idTrienio: Int,    // Guarda el ID (número entero)
+    val tipoTrienio: String, // Guarda el tipo/grupo de trienio (texto)
+    val fechaBod: String,  // Guarda la fecha de publicación (texto)
+    val numBod: String     // Guarda el número del boletín (texto)
+)
 
-    public static class TrienioModelo {
-        int idTrienio;
-        String tipoTrienio;
-        String fechaBod;
-        String numBod;
+// ====================================================================
+// 2. EL ADAPTADOR
+// ====================================================================
+// Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
+class TrienioAdaptador(
+    // Recibe la lista completa con todos los trienios que hay que mostrar.
+    private val listaDatos: List<TrienioModelo>,
 
-        public TrienioModelo(int idTrienio, String tipoTrienio, String fechaBod, String numBod) {
-            this.idTrienio = idTrienio;
-            this.tipoTrienio = tipoTrienio;
-            this.fechaBod = fechaBod;
-            this.numBod = numBod;
-        }
+    // Usamos una función Lambda para saber cuándo el usuario toca una fila.
+    private val listener: (TrienioModelo) -> Unit
+) : RecyclerView.Adapter<TrienioAdaptador.TrienioViewHolder>() {
+
+    // ====================================================================
+    // 2.1 LOS TRES MÉTODOS OBLIGATORIOS
+    // ====================================================================
+
+    // CREAR LA VISTA VISUAL
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrienioViewHolder {
+        // LayoutInflater coge el archivo de diseño XML (item_trienio) y lo "infla",
+        // transformando ese código visual en un objeto real que la pantalla puede pintar.
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_trienio, parent, false)
+        // devuelvo esa vista ya fabricada
+        return TrienioViewHolder(view)
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(TrienioModelo trienio);
+    // RELLENAR LOS DATOS
+    override fun onBindViewHolder(holder: TrienioViewHolder, position: Int) {
+        // Busca en nuestra lista de datos la linea de nuestro trienio que toca dibujar
+        val actual = listaDatos[position]
+
+        // ¡MAGIA! El número de trienio es simplemente su posición en la lista (le sumamos 1).
+        // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
+        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+
+        // Rellenamos los textos de la fila con los datos reales que tiene nuestro trienio
+        holder.tvTipoTrienio.text = actual.tipoTrienio
+        holder.tvFechaBod.text = actual.fechaBod
+        holder.tvNumBod.text = actual.numBod
+
+        // 'itemView' es la fila completa. Le ponemos un setOnClickListener
+        // Si el usuario toca esa fila, activamos el 'listener' y enviamos los datos del trienio que tocó.
+        holder.itemView.setOnClickListener { listener(actual) }
     }
 
-    private final List<TrienioModelo> listaDatos;
-    private final OnItemClickListener listener;
+    // CONTAR LOS ELEMENTOS
+    // Con el siguiente metodo le decimos al sistema el número exacto de elementos que tiene la lista.
+    // Así Android sabe de qué tamaño debe dibujar la barra de desplazamiento (scroll).
+    override fun getItemCount() = listaDatos.size
 
-    public TrienioAdaptador(List<TrienioModelo> listaDatos, OnItemClickListener listener) {
-        this.listaDatos = listaDatos;
-        this.listener = listener;
-    }
 
-    @NonNull
-    @Override
-    public TrienioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trienio, parent, false);
-        return new TrienioViewHolder(view);
-    }
+    // ====================================================================
+    // 2.2. EL VIEWHOLDER
+    // ====================================================================
+    // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
+    class TrienioViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    @Override
-    public void onBindViewHolder(@NonNull TrienioViewHolder holder, int position) {
-        TrienioModelo actual = listaDatos.get(position);
-
-        // ¡MAGIA! El número de trienio es simplemente su posición en la lista
-        holder.tvNumFila.setText(String.valueOf(position + 1));
-        holder.tvTipoTrienio.setText(actual.tipoTrienio);
-        holder.tvFechaBod.setText(actual.fechaBod);
-        holder.tvNumBod.setText(actual.numBod);
-
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(actual));
-    }
-
-    @Override
-    public int getItemCount() {
-        return listaDatos.size();
-    }
-
-    public static class TrienioViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNumFila, tvTipoTrienio, tvFechaBod, tvNumBod;
-
-        public TrienioViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvNumFila = itemView.findViewById(R.id.tvItemNumFilaTrienio);
-            tvTipoTrienio = itemView.findViewById(R.id.tvItemTipoTrienio);
-            tvFechaBod = itemView.findViewById(R.id.tvItemFechaTrienio);
-            tvNumBod = itemView.findViewById(R.id.tvItemBodTrienio);
-        }
+        // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
+        val tvNumFila: TextView = itemView.findViewById(R.id.tvItemNumFilaTrienio)
+        val tvTipoTrienio: TextView = itemView.findViewById(R.id.tvItemTipoTrienio)
+        val tvFechaBod: TextView = itemView.findViewById(R.id.tvItemFechaTrienio)
+        val tvNumBod: TextView = itemView.findViewById(R.id.tvItemBodTrienio)
     }
 }

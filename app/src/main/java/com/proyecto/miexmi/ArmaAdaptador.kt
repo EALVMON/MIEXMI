@@ -1,61 +1,78 @@
-package com.proyecto.miexmi;
+package com.proyecto.miexmi
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-public class ArmaAdaptador extends RecyclerView.Adapter<ArmaAdaptador.ArmaViewHolder> {
+// ====================================================================
+// 1. EL MODELO DE DATOS
+// ====================================================================
+// 'data class' es una estructura especial de Kotlin.
+// Genera completamente lo necesario (getters,setters,constructores)
+data class ArmaModelo(
+    val id: Int,
+    val nombre: String,
+    val numSerie: String,
+    val fecha: String
+)
+// ====================================================================
+// 2. EL ADAPTADOR
+// ====================================================================
+// Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
+class ArmaAdaptador(
+    private val listaDatos: List<ArmaModelo>,
+    // Función Lambda que avisa al tocar una fila.
+    private val listener: (ArmaModelo) -> Unit
+) : RecyclerView.Adapter<ArmaAdaptador.ArmaViewHolder>() {
 
-    public static class ArmaModelo {
-        int id;
-        String nombre, numSerie, fecha;
-        public ArmaModelo(int id, String nombre, String numSerie, String fecha) {
-            this.id = id; this.nombre = nombre; this.numSerie = numSerie; this.fecha = fecha;
-        }
+    // ====================================================================
+    // 2.1. LOS TRES MÉTODOS OBLIGATORIOS
+    // ====================================================================
+
+    // CREAR LA VISTA VISUAL
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArmaViewHolder {
+        // LayoutInflater coge el archivo de diseño XML (item_arma_particular) y lo "infla",
+        // transformando ese código visual en un objeto real que la pantalla puede pintar.
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_arma_particular, parent, false)
+        // Devuelvo esa vista ya fabricada
+        return ArmaViewHolder(view)
     }
 
-    private final List<ArmaModelo> lista;
-    private final OnItemClickListener listener;
+    // RELLENAR LOS DATOS
+    override fun onBindViewHolder(holder: ArmaViewHolder, position: Int) {
+        // Busca en nuestra lista de datos, la línea de nuestra arma que toca dibujar
+        val actual = listaDatos[position]
 
-    public interface OnItemClickListener { void onItemClick(ArmaModelo item); }
+        // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas empiezan en 0.
+        holder.tvNum.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
-    public ArmaAdaptador(List<ArmaModelo> lista, OnItemClickListener listener) {
-        this.lista = lista;
-        this.listener = listener;
+        // Rellenamos los textos de la fila con los datos reales que tiene nuestra arma
+        holder.tvNom.text = actual.nombre
+        holder.tvSerie.text = actual.numSerie
+        holder.tvFec.text = actual.fecha
+
+        // 'itemView' es la fila completa. Le ponemos un setOnClickListener
+        // Si el usuario toca esa fila, activamos el 'listener' y enviamos los datos del arma que tocó.
+        holder.itemView.setOnClickListener { listener(actual) }
     }
 
-    @NonNull
-    @Override
-    public ArmaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_arma_particular, parent, false);
-        return new ArmaViewHolder(v);
-    }
+    // CONTAR LOS ELEMENTOS
+    // Con el siguiente método le decimos al sistema el número exacto de elementos que tiene la lista.
+    // Así Android sabe de qué tamaño debe dibujar la barra de desplazamiento (scroll).
+    override fun getItemCount() = listaDatos.size
 
-    @Override
-    public void onBindViewHolder(@NonNull ArmaViewHolder holder, int position) {
-        ArmaModelo m = lista.get(position);
-        holder.tvNum.setText(String.valueOf(position + 1));
-        holder.tvNom.setText(m.nombre);
-        holder.tvSerie.setText(m.numSerie);
-        holder.tvFec.setText(m.fecha);
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(m));
-    }
 
-    @Override
-    public int getItemCount() { return lista.size(); }
-
-    public static class ArmaViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNum, tvNom, tvSerie, tvFec;
-        public ArmaViewHolder(@NonNull View iv) {
-            super(iv);
-            tvNum = iv.findViewById(R.id.tvItemNumArma);
-            tvNom = iv.findViewById(R.id.tvItemNombreArma);
-            tvSerie = iv.findViewById(R.id.tvItemNumSerieArma);
-            tvFec = iv.findViewById(R.id.tvItemCaducidadArma);
-        }
+    // ====================================================================
+    // 3. EL VIEWHOLDER
+    // ====================================================================
+    // Esta clase busca los textos una sola vez al principio y los guarda en memoria.
+    class ArmaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
+        val tvNum: TextView = itemView.findViewById(R.id.tvItemNumArma)
+        val tvNom: TextView = itemView.findViewById(R.id.tvItemNombreArma)
+        val tvSerie: TextView = itemView.findViewById(R.id.tvItemNumSerieArma)
+        val tvFec: TextView = itemView.findViewById(R.id.tvItemCaducidadArma)
     }
 }

@@ -1,74 +1,83 @@
-package com.proyecto.miexmi;
+package com.proyecto.miexmi
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-public class SituacionAdaptador extends RecyclerView.Adapter<SituacionAdaptador.SituacionViewHolder> {
+// ====================================================================
+// 1. EL MODELO DE DATOS
+// ====================================================================
+// 'data class' es una estructura especial de Kotlin.
+// Genera completamente lo necesario (getters,setters,constructores)
+data class SituacionModelo(
+    val idSituacion: Int,  // Guarda el ID (número entero)
+    val nombre: String,    // Guarda el nombre de la situación administrativa (texto)
+    val fechaBod: String,  // Guarda la fecha de publicación (texto)
+    val numBod: String     // Guarda el número del boletín (texto)
+)
 
-    public static class SituacionModelo {
-        int idSituacion;
-        String nombre;
-        String fechaBod;
-        String numBod;
+// ====================================================================
+// 2. EL ADAPTADOR
+// ====================================================================
+// Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
+class SituacionAdaptador(
+    // Recibe la lista completa con todas las situaciones que hay que mostrar.
+    private val listaDatos: List<SituacionModelo>,
 
-        public SituacionModelo(int idSituacion, String nombre, String fechaBod, String numBod) {
-            this.idSituacion = idSituacion;
-            this.nombre = nombre;
-            this.fechaBod = fechaBod;
-            this.numBod = numBod;
-        }
+    // Usamos una función Lambda para saber cuándo el usuario toca una fila.
+    private val listener: (SituacionModelo) -> Unit
+) : RecyclerView.Adapter<SituacionAdaptador.SituacionViewHolder>() {
+
+    // ====================================================================
+    // 2.1 LOS TRES MÉTODOS OBLIGATORIOS
+    // ====================================================================
+
+    // CREAR LA VISTA VISUAL
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SituacionViewHolder {
+        // LayoutInflater coge el archivo de diseño XML (item_situacion_admin) y lo "infla",
+        // transformando ese código visual en un objeto real que la pantalla puede pintar.
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_situacion_admin, parent, false)
+        // devuelvo esa vista ya fabricada
+        return SituacionViewHolder(view)
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(SituacionModelo situacion);
+    // RELLENAR LOS DATOS
+    override fun onBindViewHolder(holder: SituacionViewHolder, position: Int) {
+        // Busca en nuestra lista de datos la linea de nuestra situación que toca dibujar
+        val actual = listaDatos[position]
+
+        // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
+        // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
+        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+
+        // Rellenamos los textos de la fila con los datos reales que tiene nuestra situación
+        holder.tvNombre.text = actual.nombre
+        holder.tvFechaBod.text = actual.fechaBod
+        holder.tvNumBod.text = actual.numBod
+
+        // 'itemView' es la fila completa. Le ponemos un setOnClickListener
+        // Si el usuario toca esa fila, activamos el 'listener' y enviamos los datos de la situación que tocó.
+        holder.itemView.setOnClickListener { listener(actual) }
     }
 
-    private final List<SituacionModelo> listaDatos;
-    private final OnItemClickListener listener;
+    // CONTAR LOS ELEMENTOS
+    // Con el siguiente metodo le decimos al sistema el número exacto de elementos que tiene la lista.
+    // Así Android sabe de qué tamaño debe dibujar la barra de desplazamiento (scroll).
+    override fun getItemCount() = listaDatos.size
 
-    public SituacionAdaptador(List<SituacionModelo> listaDatos, OnItemClickListener listener) {
-        this.listaDatos = listaDatos;
-        this.listener = listener;
-    }
 
-    @NonNull
-    @Override
-    public SituacionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_situacion_admin, parent, false);
-        return new SituacionViewHolder(view);
-    }
+    // ====================================================================
+    // 2.2. EL VIEWHOLDER
+    // ====================================================================
+    // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
+    class SituacionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    @Override
-    public void onBindViewHolder(@NonNull SituacionViewHolder holder, int position) {
-        SituacionModelo actual = listaDatos.get(position);
-
-        holder.tvNumFila.setText(String.valueOf(position + 1));
-        holder.tvNombre.setText(actual.nombre);
-        holder.tvFechaBod.setText(actual.fechaBod);
-        holder.tvNumBod.setText(actual.numBod);
-
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(actual));
-    }
-
-    @Override
-    public int getItemCount() {
-        return listaDatos.size();
-    }
-
-    public static class SituacionViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNumFila, tvNombre, tvFechaBod, tvNumBod;
-
-        public SituacionViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvNumFila = itemView.findViewById(R.id.tvItemNumSituacion);
-            tvNombre = itemView.findViewById(R.id.tvItemNombreSituacion);
-            tvFechaBod = itemView.findViewById(R.id.tvItemFechaSituacion);
-            tvNumBod = itemView.findViewById(R.id.tvItemBodSituacion);
-        }
+        // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
+        val tvNumFila: TextView = itemView.findViewById(R.id.tvItemNumSituacion)
+        val tvNombre: TextView = itemView.findViewById(R.id.tvItemNombreSituacion)
+        val tvFechaBod: TextView = itemView.findViewById(R.id.tvItemFechaSituacion)
+        val tvNumBod: TextView = itemView.findViewById(R.id.tvItemBodSituacion)
     }
 }

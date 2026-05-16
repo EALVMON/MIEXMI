@@ -3,17 +3,17 @@ package com.proyecto.miexmi;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class ConsultaExpedienteActivity extends AppCompatActivity {
 
+    // ====================================================================
+    // 1. DECLARACIÓN DE VARIABLES GLOBALES
+    // ====================================================================
     private TextView tvNombre, tvDni, tvContenido;
     private com.google.android.material.textfield.TextInputEditText etFiltroBod, etFiltroFecha;
-    private Button btnBuscar;
 
     private ExpedienteHelper dbHelper;
     private int idUsuarioActual;
@@ -42,16 +42,18 @@ public class ConsultaExpedienteActivity extends AppCompatActivity {
         tvContenido = findViewById(R.id.tvContenidoExpediente);
         etFiltroBod = findViewById(R.id.etFiltroBod);
         etFiltroFecha = findViewById(R.id.etFiltroFecha);
-        btnBuscar = findViewById(R.id.btnBuscarFiltro);
 
-        // 4. Activamos el calendario maestro en el campo de fecha usando Utilidades
+        // Convertido a variable local
+        Button btnBuscar = findViewById(R.id.btnBuscarFiltro);
+
+        // 4. Activamos el calendario  en el campo de fecha usando Utilidades
         Utilidades.configurarCalendario(this, etFiltroFecha);
 
         // 5. Llenamos la cabecera azul y cargamos el expediente entero por defecto
         cargarDatosCabecera();
         cargarExpediente("", "");
 
-        // 6. LÓGICA DEL BOTÓN DE BÚSQUEDA (PU.10)
+        // 6. Código del botón de búsqueda
         btnBuscar.setOnClickListener(v -> {
             String bod = etFiltroBod.getText() != null ? etFiltroBod.getText().toString().trim() : "";
             String fecha = etFiltroFecha.getText() != null ? etFiltroFecha.getText().toString().trim() : "";
@@ -67,13 +69,16 @@ public class ConsultaExpedienteActivity extends AppCompatActivity {
     }
 
     // ====================================================================
-    // === MÉTODOS PRIVADOS DE LÓGICA                                   ===
+    // === MÉTODOS PRIVADOS                                             ===
     // ====================================================================
 
     private void cargarDatosCabecera() {
         // Obtenemos el DNI
         String dni = dbHelper.obtenerDniPorId(idUsuarioActual);
-        tvDni.setText("DNI: " + (dni != null ? dni : "Desconocido"));
+
+
+        String textoDni = dni != null ? dni : getString(R.string.desconocido);
+        tvDni.setText(getString(R.string.formato_dni, textoDni));
 
         // Obtenemos Nombre y Apellidos
         Cursor c = dbHelper.obtenerFiliacion(idUsuarioActual);
@@ -82,17 +87,19 @@ public class ConsultaExpedienteActivity extends AppCompatActivity {
                     c.getString(c.getColumnIndexOrThrow("Apellidos"));
             tvNombre.setText(nombreFull);
         } else {
-            tvNombre.setText("Sin Filiación Registrada");
+
+            tvNombre.setText(getString(R.string.sin_filiacion));
         }
         c.close();
     }
 
-    // Método único para mostrar el resumen (PU.09) y también para buscar (PU.10)
+    // Metodo único para mostrar el resumen y también para buscar
     private void cargarExpediente(String bod, String fecha) {
         String textoExpediente = dbHelper.obtenerResumenExpediente(idUsuarioActual, bod, fecha);
 
         if (!bod.isEmpty() || !fecha.isEmpty()) {
-            tvContenido.setText("=== RESULTADOS DEL FILTRO ===\n\n" + textoExpediente);
+
+            tvContenido.setText(getString(R.string.resultados_filtro, textoExpediente));
         } else {
             tvContenido.setText(textoExpediente);
         }
@@ -101,6 +108,6 @@ public class ConsultaExpedienteActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dbHelper.close(); // Cerramos la base de datos para no dejar conexiones "fantasma"
+        dbHelper.close(); // Cerramos la base de datos
     }
 }

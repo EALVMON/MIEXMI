@@ -1,125 +1,84 @@
-package com.proyecto.miexmi;
+package com.proyecto.miexmi
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-/**
- * ADAPTADOR PARA LA LISTA DE DESTINOS
- * Esta clase es el "puente" entre los datos de la Base de Datos y la pantalla visual.
- * Se encarga de coger cada Destino guardado e "inyectarlo" en la fila correspondiente del XML.
- */
-public class DestinoAdaptador extends RecyclerView.Adapter<DestinoAdaptador.DestinoViewHolder> {
 
-    // ========================================================================
-    // === 1. CLASE MODELO (EL CONTENEDOR DE DATOS)                         ===
-    // ========================================================================
-    /**
-     * Esta clase interna representa una única fila de la lista.
-     * Solo sirve para empaquetar los datos de un destino y moverlos fácilmente.
-     */
-    public static class DestinoModelo {
-        int idDestino;
-        String nombre;
-        String fechaBod;
-        String numBod;
+// ====================================================================
+// 1. EL MODELO DE DATOS
+// ====================================================================
+// 'data class' es una estructura especial de Kotlin.
+// Genera completamente lo necesario (getters,setters,constructores)
+data class DestinoModelo(
+    val idDestino: Int,    // Guarda el ID (número entero)
+    val nombre: String,    // Guarda el nombre del destino (texto)
+    val fechaBod: String,  // Guarda la fecha de publicación (texto)
+    val numBod: String     // Guarda el número del boletín (texto)
+)
 
-        // Constructor para guardar los datos al crear el objeto
-        public DestinoModelo(int idDestino, String nombre, String fechaBod, String numBod) {
-            this.idDestino = idDestino;
-            this.nombre = nombre;
-            this.fechaBod = fechaBod;
-            this.numBod = numBod;
-        }
+// ====================================================================
+// 2. EL ADAPTADOR
+// ====================================================================
+// Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
+class DestinoAdaptador(
+    // Recibe la lista completa con todos los destinos que hay que mostrar.
+    private val listaDatos: List<DestinoModelo>,
+
+    // Usamos una función Lambda para saber cuándo el usuario toca una fila.
+    private val listener: (DestinoModelo) -> Unit
+) : RecyclerView.Adapter<DestinoAdaptador.DestinoViewHolder>() {
+
+    // ====================================================================
+    // 2.1 LOS TRES MÉTODOS OBLIGATORIOS
+    // ====================================================================
+
+    // CREAR LA VISTA VISUAL
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DestinoViewHolder {
+        // LayoutInflater coge el archivo de diseño XML (item_destino) y lo "infla",
+        // transformando ese código visual en un objeto real que la pantalla puede pintar.
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_destino, parent, false)
+        // devuelvo esa vista ya fabricada
+        return DestinoViewHolder(view)
     }
 
-    // ========================================================================
-    // === 2. INTERFAZ PARA DETECTAR CLICS                                  ===
-    // ========================================================================
-    /**
-     * Como los adaptadores no saben en qué pantalla están, creamos esta interfaz.
-     * Es como un "timbre": cuando tocamos una fila, el adaptador toca este timbre
-     * y la pantalla principal (Destinos.java) lo escucha y reacciona.
-     */
-    public interface OnItemClickListener {
-        void onItemClick(DestinoModelo destino);
+    // RELLENAR LOS DATOS
+    override fun onBindViewHolder(holder: DestinoViewHolder, position: Int) {
+        // Busca en nuestra lista de datos la linea de nuestro destino que toca dibujar
+        val actual = listaDatos[position]
+
+        // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
+
+        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+
+        // Rellenamos los textos de la fila con los datos reales que tiene nuestro destino
+        holder.tvNombre.text = actual.nombre
+        holder.tvFechaBod.text = actual.fechaBod
+        holder.tvNumBod.text = actual.numBod
+
+        // 'itemView' es la fila completa. Le ponemos un setOnClickListener
+        // Si el usuario toca esa fila, activamos el 'listener' y enviamos los datos del destino que tocó.
+        holder.itemView.setOnClickListener { listener(actual) }
     }
 
-    // Variables globales del adaptador (final porque no cambian una vez asignadas)
-    private final List<DestinoModelo> listaDatos;
-    private final OnItemClickListener listener;
+    // CONTAR LOS ELEMENTOS
+    // Con el siguiente metodo le decimos al sistema el número exacto de elementos que tiene la lista.
+    // Así Android sabe de qué tamaño debe dibujar la barra de desplazamiento (scroll).
+    override fun getItemCount() = listaDatos.size
 
-    // Constructor: Aquí recibimos los datos y el listener desde Destinos.java
-    public DestinoAdaptador(List<DestinoModelo> listaDatos, OnItemClickListener listener) {
-        this.listaDatos = listaDatos;
-        this.listener = listener;
-    }
 
-    // ========================================================================
-    // === 3. MÉTODOS OBLIGATORIOS DEL RECYCLERVIEW ADAPTER                 ===
-    // ========================================================================
+    // ====================================================================
+    // 2.2. EL VIEWHOLDER
+    // ====================================================================
+    // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
+    class DestinoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    /**
-     * PASO A: "Inflar" (crear) la parte visual de la fila.
-     * Aquí le decimos a Android: "Coge el archivo item_destino.xml y conviértelo en una vista real".
-     */
-    @NonNull
-    @Override
-    public DestinoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_destino, parent, false);
-        return new DestinoViewHolder(view);
-    }
-
-    /**
-     * PASO B: Llenar de datos la fila visual.
-     * Este metodo se ejecuta una vez por cada fila visible en la pantalla.
-     */
-    @Override
-    public void onBindViewHolder(@NonNull DestinoViewHolder holder, int position) {
-        // 1. Sacamos el destino correspondiente a esta fila (posición)
-        DestinoModelo actual = listaDatos.get(position);
-
-        // 2. Escribimos los datos en los TextViews
-        // El número de fila es la posición + 1 (para que no empiece en 0)
-        holder.tvNumFila.setText(String.valueOf(position + 1));
-        holder.tvNombre.setText(actual.nombre);
-        holder.tvFechaBod.setText(actual.fechaBod);
-        holder.tvNumBod.setText(actual.numBod);
-
-        // 3. Le ponemos la "oreja" (listener) a toda la fila para detectar si la tocan
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(actual));
-    }
-
-    /**
-     * PASO C: Decirle a la lista cuántos elementos hay en total.
-     */
-    @Override
-    public int getItemCount() {
-        return listaDatos.size();
-    }
-
-    // ========================================================================
-    // === 4. VIEWHOLDER (EL BUSCADOR DE IDs)                               ===
-    // ========================================================================
-    /**
-     * El trabajo de esta clase es buscar los IDs en el XML (findViewById) SOLO UNA VEZ.
-     * Al guardarlos en variables, la app va súper fluida al hacer scroll porque
-     * no tiene que buscar los IDs una y otra vez por cada fila.
-     */
-    public static class DestinoViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNumFila, tvNombre, tvFechaBod, tvNumBod;
-
-        public DestinoViewHolder(@NonNull View itemView) {
-            super(itemView);
-            // Estos IDs coinciden perfectamente con tu item_destino.xml
-            tvNumFila = itemView.findViewById(R.id.tvItemNum);
-            tvNombre = itemView.findViewById(R.id.tvItemNombre);
-            tvFechaBod = itemView.findViewById(R.id.tvItemFecha);
-            tvNumBod = itemView.findViewById(R.id.tvItemBod);
-        }
+        // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
+        val tvNumFila: TextView = itemView.findViewById(R.id.tvItemNum)
+        val tvNombre: TextView = itemView.findViewById(R.id.tvItemNombre)
+        val tvFechaBod: TextView = itemView.findViewById(R.id.tvItemFecha)
+        val tvNumBod: TextView = itemView.findViewById(R.id.tvItemBod)
     }
 }

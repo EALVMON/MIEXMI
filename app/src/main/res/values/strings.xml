@@ -224,5 +224,11 @@
     <string name="visor_de_expediente">Visor de Expediente</string>
     <string name="logo_mi_expediente_militar">Logo Mi Expediente Militar</string>
 
+    <!-- Consulta completa del Expediente -->
+    <string name="formato_dni">DNI: %1$s</string>
+    <string name="desconocido">Desconocido</string>
+    <string name="sin_filiacion">Sin Filiación Registrada</string>
+    <string name="resultados_filtro">=== RESULTADOS DEL FILTRO ===\n\n%1$s</string>
+
 
 </resources>

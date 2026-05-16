@@ -1,61 +1,83 @@
-package com.proyecto.miexmi;
+package com.proyecto.miexmi
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-public class TcgfAdaptador extends RecyclerView.Adapter<TcgfAdaptador.TcgfViewHolder> {
+// ====================================================================
+// 1. EL MODELO DE DATOS
+// ====================================================================
+// 'data class' es una estructura especial de Kotlin.
+// Genera completamente lo necesario (getters,setters,constructores)
+data class TcgfModelo(
+    val id: Int,               // Guarda el ID (número entero)
+    val fecha: String,         // Guarda la fecha de la prueba (texto)
+    val puntuacion: String,    // Guarda la puntuación obtenida (texto)
+    val apto: String           // Guarda el resultado: Apto, No Apto... (texto)
+)
 
-    public static class TcgfModelo {
-        int id;
-        String fecha, puntuacion, apto;
-        public TcgfModelo(int id, String fecha, String puntuacion, String apto) {
-            this.id = id; this.fecha = fecha; this.puntuacion = puntuacion; this.apto = apto;
-        }
+// ====================================================================
+// 2. EL ADAPTADOR
+// ====================================================================
+// Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
+class TcgfAdaptador(
+    // Recibe la lista completa con todas las pruebas físicas que hay que mostrar.
+    private val listaDatos: List<TcgfModelo>,
+
+    // Usamos una función Lambda para saber cuándo el usuario toca una fila.
+    private val listener: (TcgfModelo) -> Unit
+) : RecyclerView.Adapter<TcgfAdaptador.TcgfViewHolder>() {
+
+    // ====================================================================
+    // 2.1 LOS TRES MÉTODOS OBLIGATORIOS
+    // ====================================================================
+
+    // CREAR LA VISTA VISUAL
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TcgfViewHolder {
+        // LayoutInflater coge el archivo de diseño XML (item_tcgf) y lo "infla",
+        // transformando ese código visual en un objeto real que la pantalla puede pintar.
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tcgf, parent, false)
+        // devuelvo esa vista ya fabricada
+        return TcgfViewHolder(view)
     }
 
-    private final List<TcgfModelo> lista;
-    private final OnItemClickListener listener;
+    // RELLENAR LOS DATOS
+    override fun onBindViewHolder(holder: TcgfViewHolder, position: Int) {
+        // Busca en nuestra lista de datos la linea de nuestra prueba que toca dibujar
+        val actual = listaDatos[position]
 
-    public interface OnItemClickListener { void onItemClick(TcgfModelo item); }
+        // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
+        // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
+        holder.tvNum.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
-    public TcgfAdaptador(List<TcgfModelo> lista, OnItemClickListener listener) {
-        this.lista = lista;
-        this.listener = listener;
+        // Rellenamos los textos de la fila con los datos reales que tienen nuestras pruebas físicas
+        holder.tvFec.text = actual.fecha
+        holder.tvPun.text = actual.puntuacion
+        holder.tvApt.text = actual.apto
+
+        // 'itemView' es la fila completa. Le ponemos un setOnClickListener
+        // Si el usuario toca esa fila, activamos el 'listener' y enviamos los datos de la prueba que tocó.
+        holder.itemView.setOnClickListener { listener(actual) }
     }
 
-    @NonNull
-    @Override
-    public TcgfViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tcgf, parent, false);
-        return new TcgfViewHolder(v);
-    }
+    // CONTAR LOS ELEMENTOS
+    // Con el siguiente metodo le decimos al sistema el número exacto de elementos que tiene la lista.
+    // Así Android sabe de qué tamaño debe dibujar la barra de desplazamiento (scroll).
+    override fun getItemCount() = listaDatos.size
 
-    @Override
-    public void onBindViewHolder(@NonNull TcgfViewHolder holder, int position) {
-        TcgfModelo m = lista.get(position);
-        holder.tvNum.setText(String.valueOf(position + 1));
-        holder.tvFec.setText(m.fecha);
-        holder.tvPun.setText(m.puntuacion);
-        holder.tvApt.setText(m.apto);
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(m));
-    }
 
-    @Override
-    public int getItemCount() { return lista.size(); }
+    // ====================================================================
+    // 2.2. EL VIEWHOLDER
+    // ====================================================================
+    // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
+    class TcgfViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    public static class TcgfViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNum, tvFec, tvPun, tvApt;
-        public TcgfViewHolder(@NonNull View iv) {
-            super(iv);
-            tvNum = iv.findViewById(R.id.tvItemNumTcgf);
-            tvFec = iv.findViewById(R.id.tvItemFechaTcgf);
-            tvPun = iv.findViewById(R.id.tvItemPuntuacionTcgf);
-            tvApt = iv.findViewById(R.id.tvItemAptoTcgf);
-        }
+        // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
+        val tvNum: TextView = itemView.findViewById(R.id.tvItemNumTcgf)
+        val tvFec: TextView = itemView.findViewById(R.id.tvItemFechaTcgf)
+        val tvPun: TextView = itemView.findViewById(R.id.tvItemPuntuacionTcgf)
+        val tvApt: TextView = itemView.findViewById(R.id.tvItemAptoTcgf)
     }
 }
