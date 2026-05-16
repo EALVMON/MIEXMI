@@ -74,7 +74,7 @@ public class EvaluacionAscenso extends AppCompatActivity {
         // Buscamos los EditText y los botones en la pantalla y los asignamos a las variables
         etNombreEvaluacion = findViewById(R.id.etNombreEvaluacion);
         etResultadoEvaluacion = findViewById(R.id.etResultadoEvaluacion);
-        etFechaBod = findViewById(R.id.etNumBodEvaluacion); // Corregido según tu código previo
+        etFechaBod = findViewById(R.id.etFechaBodEvaluacion);
         etNumBod = findViewById(R.id.etNumBodEvaluacion);
 
         Button btnAnadir = findViewById(R.id.btnAnadirEvaluacion);
@@ -145,17 +145,19 @@ public class EvaluacionAscenso extends AppCompatActivity {
 
             // No le dejamos guardar si faltan datos obligatorios
             if (nombre.isEmpty() || resultado.isEmpty()) {
-                Toast.makeText(this, "El ascenso y el resultado son obligatorios", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EvaluacionAscenso.this, "El ascenso y el resultado son obligatorios", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Lo guardamos en la Base de Datos, mediante el método anadirEvaluacion que está en ExpedienteHelper
             if (dbHelper.anadirEvaluacion(idUsuarioActual, nombre, resultado, fecha, numBod)) {
-                Toast.makeText(this, "Guardado con éxito", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(EvaluacionAscenso.this, "Guardado con éxito", Toast.LENGTH_SHORT).show();
                 limpiarFormulario(); // Vaciamos los EditText
                 cargarLista();       // Refrescamos la lista para que aparezca el nuevo
             } else {
-                Toast.makeText(this, "Error: Esa evaluación ya está registrada", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(EvaluacionAscenso.this, "Error: Esa evaluación ya está registrada", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -163,7 +165,8 @@ public class EvaluacionAscenso extends AppCompatActivity {
         btnModificar.setOnClickListener(v -> {
             // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar
             if (idEvaluacionSeleccionada == -1) {
-                Toast.makeText(this, "Selecciona una evaluación de la lista", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(EvaluacionAscenso.this, "Selecciona una evaluación de la lista", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -173,13 +176,15 @@ public class EvaluacionAscenso extends AppCompatActivity {
             String numBod = etNumBod.getText() != null ? etNumBod.getText().toString().trim() : "";
 
             if (nombre.isEmpty() || resultado.isEmpty()) {
-                Toast.makeText(this, "El ascenso y el resultado son obligatorios", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(EvaluacionAscenso.this, "El ascenso y el resultado son obligatorios", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Actualizamos la base de datos buscando por el ID que seleccionó
             if (dbHelper.modificarEvaluacion(idEvaluacionSeleccionada, nombre, resultado, fecha, numBod)) {
-                Toast.makeText(this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(EvaluacionAscenso.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
             }
@@ -188,12 +193,14 @@ public class EvaluacionAscenso extends AppCompatActivity {
         // Botón ELIMINAR
         btnEliminar.setOnClickListener(v -> {
             if (idEvaluacionSeleccionada == -1) {
-                Toast.makeText(this, "Selecciona una evaluación de la lista", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(EvaluacionAscenso.this, "Selecciona una evaluación de la lista", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (dbHelper.eliminarEvaluacion(idEvaluacionSeleccionada)) {
-                Toast.makeText(this, "Borrada correctamente", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(EvaluacionAscenso.this, "Borrada correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
             }
