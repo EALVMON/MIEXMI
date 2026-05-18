@@ -121,7 +121,7 @@ public class SituacionesAdmin extends AppCompatActivity {
         // Botón LIMPIAR: Llama a la función limpiarFormulario() que está al final y que vacía los textos
         btnLimpiar.setOnClickListener(v -> limpiarFormulario());
 
-        // Botón AÑADIR (Guardar nuevo)
+        // Boton Añadir
         btnAnadir.setOnClickListener(v -> {
             // Recogemos lo que ha escrito el usuario. "trim()" borra los espacios en blanco sobrantes.
             String nombre = etNombreSituacion.getText() != null ? etNombreSituacion.getText().toString().trim() : "";
@@ -140,7 +140,8 @@ public class SituacionesAdmin extends AppCompatActivity {
                 limpiarFormulario(); // Vaciamos los EditText
                 cargarLista();       // Refrescamos la lista para que aparezca el nuevo
             } else {
-                Toast.makeText(SituacionesAdmin.this, "Error: Esa situación ya está registrada", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(SituacionesAdmin.this, "Error al guardar en la base de datos", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -166,6 +167,9 @@ public class SituacionesAdmin extends AppCompatActivity {
                 Toast.makeText(SituacionesAdmin.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            }else {
+
+                Toast.makeText(SituacionesAdmin.this, "Error al guardar en la base de datos", Toast.LENGTH_LONG).show();
             }
         });
 

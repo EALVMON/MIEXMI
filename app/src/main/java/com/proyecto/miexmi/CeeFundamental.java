@@ -162,9 +162,12 @@ public class CeeFundamental extends AppCompatActivity {
 
             // Actualizamos la base de datos buscando por el ID que seleccionó
             if (dbHelper.modificarCEEF(idCeefSeleccionado, nombre, fecha, numBod)) {
-                Toast.makeText(this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CeeFundamental.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+                // el aviso para que no repita especialidad
+                Toast.makeText(CeeFundamental.this, "Error: Esa especialidad ya está registrada", Toast.LENGTH_LONG).show();
             }
         });
 

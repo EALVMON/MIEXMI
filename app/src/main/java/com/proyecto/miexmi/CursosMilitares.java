@@ -133,17 +133,18 @@ public class CursosMilitares extends AppCompatActivity {
 
             // No le dejamos guardar si no ha puesto el nombre del curso
             if (nom.isEmpty()) {
-                Toast.makeText(this, "El nombre del curso es obligatorio", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CursosMilitares.this, "El nombre del curso es obligatorio", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Lo guardamos en la Base de Datos, mediante el método anadirCursoMilitar que está en ExpedienteHelper
+            // Lo guardamos en la Base de Datos, mediante el método anadirCursoMilitar
             if (dbHelper.anadirCursoMilitar(idUsuarioActual, nom, fec, bod)) {
-                Toast.makeText(this, "Guardado con éxito", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CursosMilitares.this, "Guardado con éxito", Toast.LENGTH_SHORT).show();
                 limpiarFormulario(); // Vaciamos los EditText
                 cargarLista();       // Refrescamos la lista para que aparezca el nuevo
             } else {
-                Toast.makeText(this, "Error: Ese curso ya está registrado", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(CursosMilitares.this, "Error: Ese curso ya está registrado", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -151,7 +152,7 @@ public class CursosMilitares extends AppCompatActivity {
         btnModificar.setOnClickListener(v -> {
             // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar
             if (idCursoSeleccionado == -1) {
-                Toast.makeText(this, "Selecciona un curso de la lista", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CursosMilitares.this, "Selecciona un curso de la lista", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -160,15 +161,18 @@ public class CursosMilitares extends AppCompatActivity {
             String bod = etBod.getText() != null ? etBod.getText().toString().trim() : "";
 
             if (nom.isEmpty()) {
-                Toast.makeText(this, "El nombre del curso es obligatorio", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CursosMilitares.this, "El nombre del curso es obligatorio", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Actualizamos la base de datos buscando por el ID que seleccionó
             if (dbHelper.modificarCursoMilitar(idCursoSeleccionado, nom, fec, bod)) {
-                Toast.makeText(this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CursosMilitares.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+
+                Toast.makeText(CursosMilitares.this, "Error: Ese curso ya está registrado", Toast.LENGTH_LONG).show();
             }
         });
 

@@ -147,7 +147,7 @@ public class Aptitudes extends AppCompatActivity {
         btnModificar.setOnClickListener(v -> {
             // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar
             if (idAptitudSeleccionada == -1) {
-                Toast.makeText(this, "Selecciona una aptitud de la lista", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Aptitudes.this, "Selecciona una aptitud de la lista", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -156,15 +156,18 @@ public class Aptitudes extends AppCompatActivity {
             String numBod = etNumBod.getText() != null ? etNumBod.getText().toString().trim() : "";
 
             if (nombre.isEmpty()) {
-                Toast.makeText(this, "El nombre de la aptitud es obligatorio", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Aptitudes.this, "El nombre de la aptitud es obligatorio", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Actualizamos la base de datos buscando por el ID que seleccionó
             if (dbHelper.modificarAptitud(idAptitudSeleccionada, nombre, fecha, numBod)) {
-                Toast.makeText(this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Aptitudes.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+                //  TOAST PARA AVISAR DEL DUPLICADO
+                Toast.makeText(Aptitudes.this, "Error: Esa aptitud ya está registrada", Toast.LENGTH_LONG).show();
             }
         });
 

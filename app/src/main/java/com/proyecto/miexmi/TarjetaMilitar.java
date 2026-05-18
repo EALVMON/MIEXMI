@@ -162,6 +162,9 @@ public class TarjetaMilitar extends AppCompatActivity {
                 Toast.makeText(TarjetaMilitar.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+                //  Salta si el SQLite devuelve false (porque la tarjeta ya existe)
+                Toast.makeText(TarjetaMilitar.this, "Error: Este número de TMI ya está registrado", Toast.LENGTH_LONG).show();
             }
         });
 

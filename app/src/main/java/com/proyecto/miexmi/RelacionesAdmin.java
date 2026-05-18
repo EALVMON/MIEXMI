@@ -140,7 +140,8 @@ public class RelacionesAdmin extends AppCompatActivity {
                 limpiarFormulario(); // Vaciamos los EditText
                 cargarLista();       // Refrescamos la lista para que aparezca el nuevo
             } else {
-                Toast.makeText(RelacionesAdmin.this, "Error: Esa relación ya está registrada", Toast.LENGTH_LONG).show();
+
+                Toast.makeText(RelacionesAdmin.this, "Error al guardar en la base de datos", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -166,6 +167,8 @@ public class RelacionesAdmin extends AppCompatActivity {
                 Toast.makeText(RelacionesAdmin.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            }else {
+                Toast.makeText(RelacionesAdmin.this, "Error al guardar en la base de datos", Toast.LENGTH_LONG).show();
             }
         });
 

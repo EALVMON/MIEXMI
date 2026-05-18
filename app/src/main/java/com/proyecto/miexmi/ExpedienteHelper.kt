@@ -3,7 +3,7 @@ package com.proyecto.miexmi
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-// imprtaciones necesarias para exportar datos
+// Importaciones necesarias para exportar datos
 import org.json.JSONArray
 import org.json.JSONObject
 class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -13,7 +13,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         const val DATABASE_VERSION = 1
 
         // ====================================================================
-        // === DEFINICIÓN DE TABLAS PRINCIPALES (USUARIO Y LOG)             ===
+        // === DEFINICIÓN DE TABLAS 1:1                                     ===
         // ====================================================================
 
         private const val SQL_CREATE_USUARIO = """
@@ -37,6 +37,10 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             )
         """
 
+        // ====================================================================
+        // === TABLAS DE MÓDULOS (RELACIONES 1:N)                           ===
+        // ====================================================================
+
         private const val SQL_CREATE_REGISTRO_ACTIVIDAD = """
             CREATE TABLE REGISTRO_ACTIVIDAD (
                 Id_Log INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,9 +51,6 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             )
         """
 
-        // ====================================================================
-        // === TABLAS DE MÓDULOS (RELACIONES 1:N)                           ===
-        // ====================================================================
 
         private const val SQL_CREATE_DESTINOS = """
             CREATE TABLE MOD_DESTINOS (
@@ -277,12 +278,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     override fun onConfigure(db: SQLiteDatabase) {
         super.onConfigure(db)
-        // Activar el soporte para Foreign Keys (es importante para el CASCADE)
+        // Activar el soporte para Foreign Keys para que me funcione correctamente el borrado en cascada
         db.setForeignKeyConstraintsEnabled(true)
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        // Ejecutamos la creación de todas las tablas
+        // En la  creacion  Ejecutamos la creación de todas las tablas
         db.execSQL(SQL_CREATE_USUARIO)
         db.execSQL(SQL_CREATE_FILIACION)
         db.execSQL(SQL_CREATE_REGISTRO_ACTIVIDAD)
@@ -309,7 +310,8 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Se borran las tablas antiguas en orden inverso a sus dependencias
+        // En la actualizacion de la version de la BBDD, Se borran las tablas antiguas en orden
+        // inverso a sus dependencias
         db.execSQL("DROP TABLE IF EXISTS MOD_IDIOMA")
         db.execSQL("DROP TABLE IF EXISTS MOD_CARNET")
         db.execSQL("DROP TABLE IF EXISTS MOD_TCGF")
@@ -343,42 +345,43 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DE USUARIO (LOGIN Y REGISTRO)                        ===
     // ====================================================================
 
-    // Devuelve el ID del nuevo usuario, o -1 si el DNI ya existe (por el UNIQUE)
+    // Devuelve el ID del nuevo usuario, o -1 si el DNI ya existe
     fun registrarUsuario(dni: String, contrasena: String): Long {
-        val db = this.writableDatabase
+        val db = this.writableDatabase // ponemos la BBDD en modo escritura
         val values = android.content.ContentValues().apply {
             put("Dni", dni)
             put("Contraseña", contrasena)
         }
-        // El insert devuelve -1 si falla (ej: DNI repetido)
+        // El insert devuelve -1 si falla (ej: si el  DNI esta repetido)
         return db.insert("USUARIO", null, values)
     }
 
-    // Comprueba si un usuario existe en la base de datos y si su contraseña es correcta.
+    //  La siguiente funcion, comprueba si un usuario existe en la base de datos y si su contraseña
+    //  es correcta.
     // Devuelve el Id_Usuario (ej.: 1, 2, 3...) si  es correcto, o -1 si falla.
     fun comprobarLogin(dni: String, contrasena: String): Int {
 
-        // 1. Abrimos la base de datos en modo LECTURA (readableDatabase).
-        // Usamos lectura porque solo vamos a buscar información, no a guardar nada nuevo.
+        // 1. Abrimos la base de datos en modo lectura.
+        // Usamos el modo lectura porque solo vamos a buscar información, no a guardar nada nuevo.
         val db = this.readableDatabase
 
         // 2. Lanzamos la pregunta (Query) a la base de datos usando el 'Cursor', que es un objeto de tipo Cursor.
-        // Las interrogaciones (?) son el valor por el que sustituirá después
-        // Se pondrá el DNI en la primera '?', y la clave en la segunda.
+        // Las interrogaciones (?) son el valor por el que sustituirá después , las variables qye le paso en este
+        // caso se pondrá el DNI en la primera '?', y la clave en la segunda.
         val cursor = db.rawQuery(
             "SELECT Id_Usuario FROM USUARIO WHERE Dni = ? AND Contraseña = ?",
             arrayOf(dni, contrasena)
         )
 
-        // 3. Preparamos una variable con valor -1 ( Para asumir que no existe por defecto).
+        // 3. Preparamos una variable con valor -1 ( Asi asumimos que el usuario no existe por defecto).
         var idUsuario = -1
 
-        // 4. El cursor intenta moverse al primer resultado que encontró en la tabla.
+        // 4. El cursor intenta moverse al primer resultado que encontró en la tabla (si existe).
         // Si 'moveToFirst()' es verdadero (true), significa que SÍ encontró a ese usuario.
         if (cursor.moveToFirst()) {
 
-            // Como sí lo encontró, leemos el dato de la columna 0.
-            // La columna 0 es la primera que pedimos arriba en el SELECT (Id_Usuario).
+            // Como sí lo encontró, leemos el dato de la columna 0. que el Id_Usuario, que es lo que
+            // solicitamos en el query sql
             idUsuario = cursor.getInt(0)
         }
 
@@ -392,10 +395,10 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     // Obtiene el DNI de un usuario a partir de su ID
     fun obtenerDniPorId(idUsuario: Int): String? {
-        val db = this.readableDatabase
+        val db = this.readableDatabase // la abrimos la BBDD en modo lectura ya que no vamos escribir nada en ella
         val cursor = db.rawQuery("SELECT Dni FROM USUARIO WHERE Id_Usuario = ?",
-            // rawQuery espera que se le pasen los valores de ls ? en forma de array y que sea
-            // un String por eso lo paso antes a string el idUsuario
+            //al igual que en la anterior consulta el  rawQuery espera que se le pasen los valores
+            // de ls ? en forma de array y que sea un String por eso lo paso antes a string el idUsuario
             arrayOf(idUsuario.toString()))
 
         var dni: String? = null //pongo String? ya que esta variable puede ser no mutable y no tener valor y la inicializo a nula
@@ -418,14 +421,14 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         val existe = cursor.moveToFirst()
         cursor.close()
 
-        // 2. Si la contraseña actual es correcta, guardamos la nueva
+        // 2. Si la contraseña actual es correcta entonces es tru i entra en el if ,y  guardamos la nueva
         if (existe) {
             val values = android.content.ContentValues().apply {
                 put("Contraseña", passNueva)
             }
             // Actualizamos la fila del usuario
             val filasAfectadas = db.update("USUARIO", values, "Id_Usuario = ?", arrayOf(idUsuario.toString()))
-            return filasAfectadas > 0
+            return filasAfectadas > 0 // si la ctualiza la fila mi devuelve un valor mayor que 0 y es true lo que devuelvo
         }
 
         // Si la clave actual no era correcta, devolvemos falso
@@ -450,11 +453,11 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
         // Primero comprobamos si este usuario ya tiene datos guardados
         val cursor = db.rawQuery("SELECT Id_Filia FROM FILIACION WHERE Id_Usuario = ?", arrayOf(idUsuario.toString()))
-        val existe = cursor.moveToFirst()
+        val existe = cursor.moveToFirst() // si existe me devuelve true y si no existe false
         cursor.close()
 
         if (existe) {
-            // Si ya existen, ACTUALIZAMOS los datos (UPDATE)
+            // Si ya existen, actualizamos los datos (UPDATE)
             val filasAfectadas = db.update("FILIACION", values, "Id_Usuario = ?", arrayOf(idUsuario.toString()))
             return filasAfectadas > 0
         } else {
@@ -467,7 +470,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // Recupera los datos de filiación para mostrarlos en pantalla
     fun obtenerFiliacion(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        // Devuelve todas las columnas de la tabla FILIACION para ese usuario
+        // Devuelve todas las columnas con el * de la tabla FILIACION para ese usuario
         return db.rawQuery("SELECT * FROM FILIACION WHERE Id_Usuario = ?", arrayOf(idUsuario.toString()))
     }
 
@@ -475,17 +478,18 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE TMI (TARJETA MILITAR DE IDENTIDAD)     ===
     // ====================================================================
 
-    // AÑADIR una nueva TMI
-    // 1. AÑADIR una nueva TMI (Con protección anti-duplicados)
+    // AÑadir una nueva TMI
+    // 1. Añadir una nueva TMI y pongo una protección anti-duplicados), podia haberlo realizado en
+    // la creacion de la tabla habiendo puesto Unique pero en aquel momento no cai y asi practico otra cosa
     fun anadirTMI(idUsuario: Int, numTarjeta: String, fechaCaducidad: String): Boolean {
         val db = this.readableDatabase
 
-        // PRIMERO: Comprobamos si esta TMI  ya existe para este usuario
+        // PRIMERO: Comprobamos si esta TMI, ya existe para este usuario
         val cursor = db.rawQuery(
             "SELECT Id_M_Tmi FROM MOD_TMI WHERE Id_Usuario = ? AND N_Tarjeta = ?",
             arrayOf(idUsuario.toString(), numTarjeta)
         )
-        val existe = cursor.moveToFirst()
+        val existe = cursor.moveToFirst() // si existe me devuelve true y entra en el if
         cursor.close()
 
         // Si ya existe, devolvemos false para que no la guarde
@@ -505,7 +509,8 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     }
 
     // LEER todas las TMI de un usuario
-    fun obtenerTMIs(idUsuario: Int): android.database.Cursor {
+    fun obtenerTMIs(idUsuario: Int): android.database.Cursor { // me devuelve un objeto de tipo cursor
+        // que nos permitira recorrer fila a fila cada resultado de la consulta sql
         val db = this.readableDatabase
         // Ordenamos por Id_M_Tmi descendente para ver la más reciente primero
         return db.rawQuery(
@@ -514,11 +519,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    // MODIFICAR una TMI existente (Con protección anti-duplicados)
+    // MODIFICAR una TMI existente y volvemos a mirar si tiene duplicado la TMI para que no meta
+    // otra igual durante la modificacion
     fun modificarTMI(idTmi: Int, numTarjeta: String, fechaCaducidad: String): Boolean {
         val db = this.writableDatabase
 
-        // PRIMERO: Comprobamos si este número de TMI ya lo tiene el usuario en OTRA fila distinta.
+        //  Comprobamos si este número de TMI ya lo tiene el usuario en OTRA fila distinta.
         // Usamos Id_M_Tmi != ? para decirle que no cuente la tarjeta que estamos editando ahora mismo.
         // Usamos una subconsulta para averiguar el Id_Usuario sin tener que pedirlo por parámetro.
         val cursor = db.rawQuery(
@@ -533,12 +539,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         val existeDuplicado = cursor.moveToFirst()
         cursor.close()
 
-        // Si existe otra tarjeta diferente con ese mismo número, bloqueamos la modificación
+        // Si existe otra tarjeta diferente con ese mismo número, no realiza la modificación
         if (existeDuplicado) {
             return false
         }
 
-        // SEGUNDO: Si no hay duplicados (o si es la misma tarjeta de antes), guardamos los cambios
+        // Si no hay duplicados o si es la misma tarjeta de antes, guardamos los cambios
         val values = android.content.ContentValues().apply {
             put("N_Tarjeta", numTarjeta)
             put("M_Tmi_Fecha_Cadu", fechaCaducidad)
@@ -568,9 +574,9 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         val existe = cursor.moveToFirst()
         cursor.close()
 
-        if (existe) return false // Si ya existe, bloqueamos el guardado
+        if (existe) return false // Si ya existe, no realizo el guardado
 
-        // Convertimos el número de BOD a entero (si está vacío, guardamos un 0)
+        // Convertimos el número de BOD a entero si está vacío, guardamos un 0
         val numBod = numBodStr.toIntOrNull() ?: 0
 
         val dbWrite = this.writableDatabase
@@ -590,17 +596,42 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             arrayOf(idUsuario.toString())
         )
     }
+        /*
+        Aquí no comprobé que al modificar si ya existe esta especialidad para este usuario
+        como hice en el anterior módulo esto lo dejo para futuras mejoras
+        */
+        fun modificarCEEF(idCeef: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+            val db = this.writableDatabase
 
-    fun modificarCEEF(idCeef: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
-        val numBod = numBodStr.toIntOrNull() ?: 0
-        val db = this.writableDatabase
-        val values = android.content.ContentValues().apply {
-            put("Nom_CEEF", nombre)
-            put("M_Ceef_Fecha_Bod", fechaBod)
-            put("M_Ceef_Nbod", numBod)
+            // Comprobamos si el usuario ya tiene esta especialidad en OTRA fila.
+            // Usamos Id_M_CEEF != ? para excluir la fila que estamos editando ahora mismo.
+            val cursor = db.rawQuery(
+                """
+        SELECT Id_M_CEEF FROM MOD_CEE_FUNDAMENTAL 
+        WHERE Nom_CEEF = ? 
+        AND Id_M_CEEF != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_CEE_FUNDAMENTAL WHERE Id_M_CEEF = ?)
+        """,
+                arrayOf(nombre, idCeef.toString(), idCeef.toString())
+            )
+            val existeDuplicado = cursor.moveToFirst()
+            cursor.close()
+
+            // Si ya existe esa especialidad, devolvemos false para bloquear la actualización
+            if (existeDuplicado) {
+                return false
+            }
+
+            // 2. Si no hay duplicados, actualizamos los datos
+            val numBod = numBodStr.toIntOrNull() ?: 0
+            val values = android.content.ContentValues().apply {
+                put("Nom_CEEF", nombre)
+                put("M_Ceef_Fecha_Bod", fechaBod)
+                put("M_Ceef_Nbod", numBod)
+            }
+
+            return db.update("MOD_CEE_FUNDAMENTAL", values, "Id_M_CEEF = ?", arrayOf(idCeef.toString())) > 0
         }
-        return db.update("MOD_CEE_FUNDAMENTAL", values, "Id_M_CEEF = ?", arrayOf(idCeef.toString())) > 0
-    }
 
     fun eliminarCEEF(idCeef: Int): Boolean {
         val db = this.writableDatabase
@@ -641,6 +672,10 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
+    /*
+       Aquí no comprobé que al modificar si ya existe este empleo para este usuario
+       esto lo dejo para futuras mejoras
+       */
     fun modificarEmpleo(idEmpleo: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
@@ -660,27 +695,23 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // ====================================================================
     // === MÉTODOS DEL MÓDULO DE DESTINOS                               ===
     // ====================================================================
-
+    // Un usuario puede tener el mismo destino dos veces
     fun anadirDestino(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
-        val db = this.readableDatabase
-        // Filtro anti-duplicados
-        val cursor = db.rawQuery(
-            "SELECT Id_M_Dest FROM MOD_DESTINOS WHERE Id_Usuario = ? AND Nom_Destino = ?",
-            arrayOf(idUsuario.toString(), nombre)
-        )
-        val existe = cursor.moveToFirst()
-        cursor.close()
-
-        if (existe) return false
 
         val numBod = numBodStr.toIntOrNull() ?: 0
+
+
         val dbWrite = this.writableDatabase
+
+
         val values = android.content.ContentValues().apply {
             put("Id_Usuario", idUsuario)
             put("Nom_Destino", nombre)
             put("M_Dest_Fecha_Bod", fechaBod)
             put("M_Dest_Nbod", numBod)
         }
+
+
         return dbWrite.insert("MOD_DESTINOS", null, values) != -1L
     }
 
@@ -692,7 +723,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             arrayOf(idUsuario.toString())
         )
     }
-
+   // Un usuario puede tener el mismo destino dos veces
     fun modificarDestino(idDestino: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
@@ -764,15 +795,6 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // ====================================================================
 
     fun anadirComision(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT Id_M_Cser FROM MOD_COMISION_SER WHERE Id_Usuario = ? AND Nom_Comision = ?",
-            arrayOf(idUsuario.toString(), nombre)
-        )
-        val existe = cursor.moveToFirst()
-        cursor.close()
-
-        if (existe) return false
 
         val numBod = numBodStr.toIntOrNull() ?: 0
         val dbWrite = this.writableDatabase
@@ -782,7 +804,8 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Cser_Fecha_Bod", fechaBod)
             put("M_Cser_Nbod", numBod)
         }
-        return dbWrite.insert("MOD_COMISION_SER", null, values) != -1L
+
+      return dbWrite.insert("MOD_COMISION_SER", null, values) != -1L
     }
 
     fun obtenerComisiones(idUsuario: Int): android.database.Cursor {
@@ -814,29 +837,24 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // ====================================================================
 
     fun anadirEvaluacion(idUsuario: Int, nombre: String, resultadoApto: String, fechaBod: String, numBodStr: String): Boolean {
-        val db = this.readableDatabase
-        // Comprobamos si ya existe esta evaluación para este usuario
-        val cursor = db.rawQuery(
-            "SELECT Id_M_Eva FROM MOD_EVALUACION_ASCENSO WHERE Id_Usuario = ? AND Nom_Evaluacion = ?",
-            arrayOf(idUsuario.toString(), nombre)
-        )
-        val existe = cursor.moveToFirst()
-        cursor.close()
-
-        if (existe) return false
-
+        // 1. Preparamos el número de boletín (si viene vacío, le pone un 0)
         val numBod = numBodStr.toIntOrNull() ?: 0
+
+        // 2. Abrimos la BBDD en modo escritura directamente
         val dbWrite = this.writableDatabase
+
+        // 3. Empaquetamos los datos
         val values = android.content.ContentValues().apply {
             put("Id_Usuario", idUsuario)
             put("Nom_Evaluacion", nombre)
-            put("Resultado", resultadoApto) // Guardamos Apto, No Apto, o No Presentado
+            put("Resultado", resultadoApto) // Guardamos Apto, No Apto o No Presentado
             put("M_Eva_Fecha_Bod", fechaBod)
             put("M_Eva_Nbod", numBod)
         }
+
+        // 4. Insertamos la evaluación permitiendo repeticiones (por si suspendió o no se presentó antes)
         return dbWrite.insert("MOD_EVALUACION_ASCENSO", null, values) != -1L
     }
-
     fun obtenerEvaluaciones(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
         return db.rawQuery(
@@ -897,14 +915,36 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun modificarHps(idHps: Int, nombre: String, fechaConcesion: String, fechaCaducidad: String): Boolean {
         val db = this.writableDatabase
+
+        // Comprobamos si el usuario ya tiene esta HPS en otra fila distinta.
+        // Usamos Id_M_Hps != ? para no contar la propia habilitación que estamos editando.
+        // Usamos la subconsulta para averiguar el Id_Usuario automáticamente.
+        val cursor = db.rawQuery(
+            """
+        SELECT Id_M_Hps FROM MOD_HPS 
+        WHERE Nom_Habilitacion = ? 
+        AND Id_M_Hps != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_HPS WHERE Id_M_Hps = ?)
+        """,
+            arrayOf(nombre, idHps.toString(), idHps.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+
+        // Si ya tiene esa habilitación, cortamos la ejecución y devolvemos false
+        if (existeDuplicado) {
+            return false
+        }
+
+        // 2. Si  está correcto y no hay duplicados, actualizamos
         val values = android.content.ContentValues().apply {
             put("Nom_Habilitacion", nombre)
             put("Fecha_M_Concesion", fechaConcesion)
             put("Fecha_M_Caducidad", fechaCaducidad)
         }
+
         return db.update("MOD_HPS", values, "Id_M_Hps = ?", arrayOf(idHps.toString())) > 0
     }
-
     fun eliminarHps(idHps: Int): Boolean {
         val db = this.writableDatabase
         return db.delete("MOD_HPS", "Id_M_Hps = ?", arrayOf(idHps.toString())) > 0
@@ -915,24 +955,21 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // ====================================================================
 
     fun anadirRelacionAdmin(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT Id_M_Radm FROM MOD_RELA_ADMINISTRACION WHERE Id_Usuario = ? AND Nom_Rel_Admin = ?",
-            arrayOf(idUsuario.toString(), nombre)
-        )
-        val existe = cursor.moveToFirst()
-        cursor.close()
-
-        if (existe) return false
-
+        // 1. Preparamos el número de boletín (si viene vacío, le pone un 0)
         val numBod = numBodStr.toIntOrNull() ?: 0
+
+        // 2. Abrimos la BBDD en modo escritura directamente
         val dbWrite = this.writableDatabase
+
+        // 3. Empaquetamos los datos
         val values = android.content.ContentValues().apply {
             put("Id_Usuario", idUsuario)
             put("Nom_Rel_Admin", nombre)
             put("M_Radm_Fecha_Bod", fechaBod)
             put("M_Radm_Nbod", numBod)
         }
+
+        // 4. Insertamos la relación administrativa permitiendo repeticiones
         return dbWrite.insert("MOD_RELA_ADMINISTRACION", null, values) != -1L
     }
 
@@ -965,24 +1002,19 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // ====================================================================
 
     fun anadirSituacion(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(
-            "SELECT Id_M_Sadm FROM MOD_SITUA_ADMIN WHERE Id_Usuario = ? AND Nom_Sit_Admini = ?",
-            arrayOf(idUsuario.toString(), nombre)
-        )
-        val existe = cursor.moveToFirst()
-        cursor.close()
-
-        if (existe) return false
-
+        // 1. Preparamos el número de boletín (si viene vacío, le pone un 0)
         val numBod = numBodStr.toIntOrNull() ?: 0
+
         val dbWrite = this.writableDatabase
+
         val values = android.content.ContentValues().apply {
             put("Id_Usuario", idUsuario)
             put("Nom_Sit_Admini", nombre)
             put("M_Sadm_Fecha_Bod", fechaBod)
             put("M_Sadm_Nbod", numBod)
         }
+
+        //  Insertamos la situación administrativa permitiendo repeticiones (ej: Servicio Activo varias veces)
         return dbWrite.insert("MOD_SITUA_ADMIN", null, values) != -1L
     }
 
@@ -1088,13 +1120,36 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     }
 
     fun modificarAptitud(idAptitud: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
-        val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
+
+        // Comprobamos si el usuario ya tiene esta aptitud en otra fila distinta.
+        // Usamos Id_M_Apti != ? para no contar la propia aptitud que estamos editando.
+        // Usamos la subconsulta para averiguar el Id_Usuario automáticamente.
+        val cursor = db.rawQuery(
+            """
+        SELECT Id_M_Apti FROM MOD_APTITUDES 
+        WHERE Nom_Aptitud = ? 
+        AND Id_M_Apti != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_APTITUDES WHERE Id_M_Apti = ?)
+        """,
+            arrayOf(nombre, idAptitud.toString(), idAptitud.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+
+        // Si ya tiene esa aptitud, cortamos la ejecución y devolvemos false para que salte el Toast de error
+        if (existeDuplicado) {
+            return false
+        }
+
+        // 2. Si  está correcto, procedemos a actualizar los datos
+        val numBod = numBodStr.toIntOrNull() ?: 0
         val values = android.content.ContentValues().apply {
             put("Nom_Aptitud", nombre)
             put("M_Apti_Fecha_Bod", fechaBod)
             put("M_Apti_Nbod", numBod)
         }
+
         return db.update("MOD_APTITUDES", values, "Id_M_Apti = ?", arrayOf(idAptitud.toString())) > 0
     }
 
@@ -1182,6 +1237,20 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // ====================================================================
 
     fun anadirCursoMilitar(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val db = this.readableDatabase
+
+        // COMPROBACIÓN:
+        val cursor = db.rawQuery(
+            "SELECT Id_M_Cmili FROM MOD_CUR_MILITAR WHERE Id_Usuario = ? AND Nom_Cur_Mili = ?",
+            arrayOf(idUsuario.toString(), nombre)
+        )
+        val existe = cursor.moveToFirst()
+        cursor.close()
+
+        // Si ya existe, cortamos y devolvemos false para que salte el Toast en Java
+        if (existe) return false
+
+        // 2Si no existe, procedemos a guardar
         val numBod = numBodStr.toIntOrNull() ?: 0
         val dbWrite = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -1199,8 +1268,26 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     }
 
     fun modificarCursoMilitar(idCurso: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
-        val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
+
+        // Evitamos que al editar le ponga el nombre de otro curso existente
+        val cursor = db.rawQuery(
+            """
+        SELECT Id_M_Cmili FROM MOD_CUR_MILITAR 
+        WHERE Nom_Cur_Mili = ? 
+        AND Id_M_Cmili != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_CUR_MILITAR WHERE Id_M_Cmili = ?)
+        """,
+            arrayOf(nombre, idCurso.toString(), idCurso.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+
+        // Si hay un duplicado con otra fila, bloqueamos
+        if (existeDuplicado) return false
+
+        // Si está libre, modificamos la fila
+        val numBod = numBodStr.toIntOrNull() ?: 0
         val values = android.content.ContentValues().apply {
             put("Nom_Cur_Mili", nombre)
             put("M_Cmili_Fecha_Bod", fechaBod)

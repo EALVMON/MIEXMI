@@ -172,6 +172,9 @@ public class HabilitacionSeguridad extends AppCompatActivity {
                 Toast.makeText(HabilitacionSeguridad.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+                //  Salta si el SQLite devuelve false (porque el perro guardián detectó un duplicado)
+                Toast.makeText(HabilitacionSeguridad.this, "Error: Esa Habilitación de Seguridad ya está registrada", Toast.LENGTH_LONG).show();
             }
         });
 
