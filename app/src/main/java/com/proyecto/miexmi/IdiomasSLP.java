@@ -141,14 +141,14 @@ public class IdiomasSLP extends AppCompatActivity {
                 return;
             }
 
-            // EL PERRO GUARDIÁN (Regex): Comprueba formato tipo 3.3.3+.2
+            // Compruebo formato tipo 3.3.3+.2
             String patronSLP = "^([0-5]\\+?\\.){3}[0-5]\\+?$";
             if (!res.matches(patronSLP)) {
                 Toast.makeText(IdiomasSLP.this, "Formato SLP incorrecto. Usa puntos (Ej: 3.3.3+.2)", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            // Lo guardamos en la Base de Datos, mediante el método anadirIdioma que está en ExpedienteHelper
+            // Lo guardamos en la Base de Datos, mediante el metodo anadirIdioma que está en ExpedienteHelper
             if (dbHelper.anadirIdioma(idUsuarioActual, nom, res, fec, bod)) {
                 Toast.makeText(IdiomasSLP.this, "Guardado con éxito", Toast.LENGTH_SHORT).show();
                 limpiarFormulario(); // Vaciamos los EditText
@@ -160,7 +160,7 @@ public class IdiomasSLP extends AppCompatActivity {
 
         // Botón MODIFICAR
         btnModificar.setOnClickListener(v -> {
-            // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar
+            // Si el ID es -1, significa que no hay ninguna fila de la lista para editar
             if (idIdiomaSeleccionado == -1) {
                 Toast.makeText(IdiomasSLP.this, "Selecciona un idioma de la lista", Toast.LENGTH_SHORT).show();
                 return;
@@ -176,7 +176,7 @@ public class IdiomasSLP extends AppCompatActivity {
                 return;
             }
 
-            // Comprobación del Regex en la modificación
+            // Compruebo formato tipo 3.3.3+.2
             String patronSLP = "^([0-5]\\+?\\.){3}[0-5]\\+?$";
             if (!res.matches(patronSLP)) {
                 Toast.makeText(IdiomasSLP.this, "Formato SLP incorrecto. Usa puntos (Ej: 3.3.3+.2)", Toast.LENGTH_LONG).show();
@@ -188,6 +188,9 @@ public class IdiomasSLP extends AppCompatActivity {
                 Toast.makeText(IdiomasSLP.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+                // Aviso en caso de que la validación en SQLite detecte un duplicado
+                Toast.makeText(IdiomasSLP.this, "Error: Ese idioma ya está registrado", Toast.LENGTH_LONG).show();
             }
         });
 

@@ -124,7 +124,7 @@ public class CarnetConducir extends AppCompatActivity {
         // Botón LIMPIAR: Llama a la función limpiarFormulario() que está al final y que vacía los textos
         btnLimpiar.setOnClickListener(v -> limpiarFormulario());
 
-        // Botón AÑADIR (Guardar nuevo)
+        // Botón AÑADIR
         btnAnadir.setOnClickListener(v -> {
             // Recogemos lo que ha escrito el usuario. "trim()" borra los espacios en blanco sobrantes.
             String tipo = etTipo.getText().toString().trim();
@@ -169,6 +169,9 @@ public class CarnetConducir extends AppCompatActivity {
                 Toast.makeText(this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+                // Aviso en caso de que la validación en SQLite detecte un carnet duplicado
+                Toast.makeText(this, "Error: Esta clase de carnet ya está registrada", Toast.LENGTH_LONG).show();
             }
         });
 

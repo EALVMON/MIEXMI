@@ -1286,7 +1286,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         // Si hay un duplicado con otra fila, bloqueamos
         if (existeDuplicado) return false
 
-        // Si está libre, modificamos la fila
+        // Si no hay duplicado, modificamos la fila
         val numBod = numBodStr.toIntOrNull() ?: 0
         val values = android.content.ContentValues().apply {
             put("Nom_Cur_Mili", nombre)
@@ -1334,12 +1334,29 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun modificarTituloCivil(idTitulo: Int, nombre: String): Boolean {
         val db = this.writableDatabase
+
+        //Comprobamos si el usuario ya tiene este título civil en otra  fila distinta.
+        // Usamos Id_M_Tcivi != ? para excluir la propia fila que estamos editando ahora mismo.
+        // Usamos la subconsulta para averiguar el Id_Usuario automáticamente sin pedirlo por parámetro.
+        val cursor = db.rawQuery(
+            """
+        SELECT Id_M_Tcivi FROM MOD_TITULOS_CIVILES 
+        WHERE Nom_Titulo = ? 
+        AND Id_M_Tcivi != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_TITULOS_CIVILES WHERE Id_M_Tcivi = ?)
+        """,
+            arrayOf(nombre, idTitulo.toString(), idTitulo.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+        if (existeDuplicado) return false
+
+
         val values = android.content.ContentValues().apply {
             put("Nom_Titulo", nombre)
         }
         return db.update("MOD_TITULOS_CIVILES", values, "Id_M_Tcivi = ?", arrayOf(idTitulo.toString())) > 0
     }
-
     fun eliminarTituloCivil(idTitulo: Int): Boolean {
         val db = this.writableDatabase
         return db.delete("MOD_TITULOS_CIVILES", "Id_M_Tcivi = ?", arrayOf(idTitulo.toString())) > 0
@@ -1378,8 +1395,28 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     }
 
     fun modificarIdioma(idIdioma: Int, nombre: String, resultadoSlp: String, fechaBod: String, numBodStr: String): Boolean {
-        val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
+
+        // Comprobamos si el usuario ya tiene este idioma registrado en OTRA fila distinta.
+        // Usamos Id_M_Idi != ? para excluir la propia fila que estamos editando ahora mismo.
+        // Usamos la subconsulta para averiguar el Id_Usuario automáticamente sin pedirlo por parámetro.
+        val cursor = db.rawQuery(
+            """
+        SELECT Id_M_Idi FROM MOD_IDIOMA 
+        WHERE Nom_idioma = ? 
+        AND Id_M_Idi != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_IDIOMA WHERE Id_M_Idi = ?)
+        """,
+            arrayOf(nombre, idIdioma.toString(), idIdioma.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+
+
+        if (existeDuplicado) return false
+
+
+        val numBod = numBodStr.toIntOrNull() ?: 0
         val values = android.content.ContentValues().apply {
             put("Nom_idioma", nombre)
             put("Resultado", resultadoSlp)
@@ -1427,16 +1464,27 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun modificarArma(idArma: Int, nombre: String, numSerie: String, fechaCaducidad: String): Boolean {
         val db = this.writableDatabase
+
+        //Comprobamos si el número de serie ya existe en OTRA arma distinta.
+        // El número de serie es un identificador único físico, por lo que la comprobación es global.
+        // Usamos Id_M_EArm != ? para excluir el arma que estamos editando actualmente.
+        val cursor = db.rawQuery(
+            "SELECT Id_M_EArm FROM MOD_EXP_ARMAS WHERE M_EArm_Nserie = ? AND Id_M_EArm != ?",
+            arrayOf(numSerie, idArma.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+
+
+        if (existeDuplicado) return false
+
+
         val values = android.content.ContentValues().apply {
             put("Nom_Arma", nombre)
             put("M_EArm_Nserie", numSerie)
             put("M_EArm_Fecha_Cad", fechaCaducidad)
         }
-        return try {
-            db.update("MOD_EXP_ARMAS", values, "Id_M_EArm = ?", arrayOf(idArma.toString())) > 0
-        } catch (e: Exception) {
-            false // Retorna falso si intenta poner un número de serie que ya existe
-        }
+        return db.update("MOD_EXP_ARMAS", values, "Id_M_EArm = ?", arrayOf(idArma.toString())) > 0
     }
 
     fun eliminarArma(idArma: Int): Boolean {
@@ -1476,6 +1524,24 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun modificarCarnet(idCarnet: Int, tipo: String, fechaConcesion: String, fechaCaducidad: String): Boolean {
         val db = this.writableDatabase
+
+        //Comprobamos si el usuario ya tiene esta clase de carnet registrada en OTRA fila distinta.
+        // Usamos Id_M_Carnet != ? para excluir la propia fila que estamos editando ahora mismo.
+        // Usamos la subconsulta para averiguar el Id_Usuario automáticamente sin pedirlo por parámetro.
+        val cursor = db.rawQuery(
+            """
+        SELECT Id_M_Carnet FROM MOD_CARNET 
+        WHERE Tipo_Carnet = ? 
+        AND Id_M_Carnet != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_CARNET WHERE Id_M_Carnet = ?)
+        """,
+            arrayOf(tipo, idCarnet.toString(), idCarnet.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+
+        if (existeDuplicado) return false
+
         val values = android.content.ContentValues().apply {
             put("Tipo_Carnet", tipo)
             put("M_Carn_Fecha_Concesion", fechaConcesion)
@@ -1522,6 +1588,24 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun modificarTcgf(idTcgf: Int, fecha: String, puntuacion: String, apto: String): Boolean {
         val db = this.writableDatabase
+
+        // Comprobamos que no haya ya una prueba guardada en la misma fecha
+        val cursor = db.rawQuery(
+            """
+        SELECT Id_M_TCGF FROM MOD_TCGF 
+        WHERE M_Tcgf_Fecha = ? 
+        AND Id_M_TCGF != ? 
+        AND Id_Usuario = (SELECT Id_Usuario FROM MOD_TCGF WHERE Id_M_TCGF = ?)
+        """,
+            arrayOf(fecha, idTcgf.toString(), idTcgf.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
+
+        // Si la fecha ya existe devolvemos false
+        if (existeDuplicado) return false
+
+        // Actualización de los datos si la fecha es válida
         val values = android.content.ContentValues().apply {
             put("M_Tcgf_Fecha", fecha)
             put("M_Tcgf_Puntuacion", puntuacion)

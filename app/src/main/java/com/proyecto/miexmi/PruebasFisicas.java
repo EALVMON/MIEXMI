@@ -148,6 +148,7 @@ public class PruebasFisicas extends AppCompatActivity {
         });
 
         // Botón MODIFICAR
+        // Botón MODIFICAR
         btnModificar.setOnClickListener(v -> {
             // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar
             if (idSeleccionado == -1) {
@@ -169,9 +170,11 @@ public class PruebasFisicas extends AppCompatActivity {
                 Toast.makeText(PruebasFisicas.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+                // Aviso en caso de que la validación en SQLite detecte una prueba en la misma fecha
+                Toast.makeText(PruebasFisicas.this, "Error: Ya existe una prueba física registrada en esa fecha", Toast.LENGTH_LONG).show();
             }
         });
-
         // Botón ELIMINAR
         btnEliminar.setOnClickListener(v -> {
             if (idSeleccionado == -1) {

@@ -148,9 +148,9 @@ public class ArmasParticulares extends AppCompatActivity {
 
         // Botón MODIFICAR
         btnModificar.setOnClickListener(v -> {
-            // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar
+            // Si el ID es -1, significa que nohay  ninguna fila de la lista para editar
             if (idSeleccionado == -1) {
-                Toast.makeText(this, "Selecciona un arma de la lista", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ArmasParticulares.this, "Selecciona un arma de la lista", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -159,15 +159,18 @@ public class ArmasParticulares extends AppCompatActivity {
             String fec = etFecha.getText() != null ? etFecha.getText().toString().trim() : "";
 
             if (nom.isEmpty() || serie.isEmpty()) {
-                Toast.makeText(this, "El nombre y el número de serie son obligatorios", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ArmasParticulares.this, "El nombre y el número de serie son obligatorios", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Actualizamos la base de datos buscando por el ID que seleccionó
             if (dbHelper.modificarArma(idSeleccionado, nom, serie, fec)) {
-                Toast.makeText(this, "Actualizada correctamente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ArmasParticulares.this, "Actualizada correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+                // Aviso en caso de que la validación en SQLite detecte un número de serie duplicado en otra arma
+                Toast.makeText(ArmasParticulares.this, "Error: Ese número de serie ya está registrado en otra arma", Toast.LENGTH_LONG).show();
             }
         });
 

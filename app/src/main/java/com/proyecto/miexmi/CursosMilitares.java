@@ -150,7 +150,7 @@ public class CursosMilitares extends AppCompatActivity {
 
         // Botón MODIFICAR
         btnModificar.setOnClickListener(v -> {
-            // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar
+            // Si el ID es -1, significa que no hay ninguna fila de la lista para editar
             if (idCursoSeleccionado == -1) {
                 Toast.makeText(CursosMilitares.this, "Selecciona un curso de la lista", Toast.LENGTH_SHORT).show();
                 return;

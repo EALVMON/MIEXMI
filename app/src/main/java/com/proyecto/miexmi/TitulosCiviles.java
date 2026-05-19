@@ -135,7 +135,7 @@ public class TitulosCiviles extends AppCompatActivity {
 
         // Botón MODIFICAR
         btnModificar.setOnClickListener(v -> {
-            // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar
+            // Si el ID es -1, significa que no hay ninguna fila de la lista para editar
             if (idTituloSeleccionado == -1) {
                 Toast.makeText(TitulosCiviles.this, "Selecciona un título de la lista", Toast.LENGTH_SHORT).show();
                 return;
@@ -153,6 +153,9 @@ public class TitulosCiviles extends AppCompatActivity {
                 Toast.makeText(TitulosCiviles.this, "Actualizado correctamente", Toast.LENGTH_SHORT).show();
                 limpiarFormulario();
                 cargarLista();
+            } else {
+
+                Toast.makeText(TitulosCiviles.this, "Error: Ese título ya está registrado", Toast.LENGTH_LONG).show();
             }
         });
 
