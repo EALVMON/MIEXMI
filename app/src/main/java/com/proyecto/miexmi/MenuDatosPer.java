@@ -1,12 +1,11 @@
 package com.proyecto.miexmi;
+
 import android.content.Intent;
 import android.os.Bundle;
 
-
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-public class MenuDatosPer extends AppCompatActivity {
+public class MenuDatosPer extends Temporizador {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +18,6 @@ public class MenuDatosPer extends AppCompatActivity {
         CardView CardSubcee = findViewById(R.id.cardSubCuerpoEscala);
         CardView CardSubtmi = findViewById(R.id.cardSubTmi);
         CardView cardSubFiliacion = findViewById(R.id.cardSubFiliacion);
-
 
 
         // 2. Programamos el clic de cada tarjeta
@@ -37,9 +35,6 @@ public class MenuDatosPer extends AppCompatActivity {
             Intent intent = new Intent(MenuDatosPer.this, Filiacion.class);
             startActivity(intent);
         });
-
-
-
 
         // Boton volver llamamos a la funcion de la clase Utilidades
         Utilidades.configurarBotonVolver(this, R.id.btnVolverDatos);

@@ -15,8 +15,9 @@ data class ArmaModelo(
     val id: Int,
     val nombre: String,
     val numSerie: String,
-    val fecha: String
+    val fecha: String,
 )
+
 // ====================================================================
 // 2. EL ADAPTADOR
 // ====================================================================
@@ -24,7 +25,7 @@ data class ArmaModelo(
 class ArmaAdaptador(
     private val listaDatos: List<ArmaModelo>,
     // Función Lambda que avisa al tocar una fila.
-    private val listener: (ArmaModelo) -> Unit
+    private val listener: (ArmaModelo) -> Unit,
 ) : RecyclerView.Adapter<ArmaAdaptador.ArmaViewHolder>() {
 
     // ====================================================================
@@ -35,7 +36,8 @@ class ArmaAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArmaViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_arma_particular) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_arma_particular, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_arma_particular, parent, false)
         // Devuelvo esa vista ya fabricada
         return ArmaViewHolder(view)
     }

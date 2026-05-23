@@ -11,11 +11,17 @@ class PU02 {
         // Caso A: Contraseña corta (7 caracteres) -> Debe dar FALSO
         val passCorta = "1234567"
         // Llamamos directamente a tu lógica real de la App
-        assertFalse("La contraseña de 7 caracteres debe ser rechazada", Utilidades.esPasswordSegura(passCorta))
+        assertFalse(
+            "La contraseña de 7 caracteres debe ser rechazada",
+            Utilidades.esPasswordSegura(passCorta)
+        )
 
         // Caso B: Contraseña límite (8 caracteres) -> Debe dar VERDADERO
         val passCorrecta = "12345678"
-        assertTrue("La contraseña de 8 caracteres debe ser aceptada", Utilidades.esPasswordSegura(passCorrecta))
+        assertTrue(
+            "La contraseña de 8 caracteres debe ser aceptada",
+            Utilidades.esPasswordSegura(passCorrecta)
+        )
 
         // Caso C: Contraseña larga (12 caracteres) -> Debe dar VERDADERO
         val passLarga = "SoldadoBase1"

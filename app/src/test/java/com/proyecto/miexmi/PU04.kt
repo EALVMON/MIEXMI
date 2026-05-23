@@ -11,7 +11,10 @@ class PU04 {
         // Caso A: Ambos campos vacíos -> Debe dar FALSO (bloquear)
         val dniVacio = ""
         val passVacia = ""
-        assertFalse("Debe fallar si ambos están vacíos", Utilidades.camposRellenos(dniVacio, passVacia))
+        assertFalse(
+            "Debe fallar si ambos están vacíos",
+            Utilidades.camposRellenos(dniVacio, passVacia)
+        )
 
         // Caso B: Solo DNI vacío -> Debe dar FALSO
         val passOk = "Soldado123"
@@ -22,7 +25,10 @@ class PU04 {
         assertFalse("Debe fallar si la clave está vacía", Utilidades.camposRellenos(dniOk, ""))
 
         // Caso D: Ambos rellenos -> Debe dar VERDADERO (permitir continuar)
-        assertTrue("Debe aceptar si ambos campos tienen texto", Utilidades.camposRellenos(dniOk, passOk))
+        assertTrue(
+            "Debe aceptar si ambos campos tienen texto",
+            Utilidades.camposRellenos(dniOk, passOk)
+        )
     }
 }
 

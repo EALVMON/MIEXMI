@@ -3,9 +3,10 @@ package com.proyecto.miexmi;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +18,8 @@ import java.util.List;
 // 4. Le digo a los botones lo que tienen que hacer con los clics.
 // 5. Hago un metodo para leer la base de datos (cargarLista()).
 // ====================================================================
-// Le digo que herede de 'AppCompatActivity' así sabe que va a ser una pantalla visual y puedo utilizar sus métodos.
-public class LogActividad extends AppCompatActivity {
+// Hereda de la clase Temporizador para poder controlar el tiempo de 3 minutos en todos los On...
+public class LogActividad extends Temporizador {
 
     // Declaro ExpedienteHelper que será el que se comunica con la base de datos SQLite
     private ExpedienteHelper dbHelper;
@@ -33,7 +34,7 @@ public class LogActividad extends AppCompatActivity {
     // ====================================================================
     // 2.Enlazo los botones del XML en el onCreate.
     // ====================================================================
-    // Este método es lo primero que se ejecuta
+    // Este metodo es lo primero que se ejecuta
     // cuando el usuario abre esta pantalla en el móvil.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class LogActividad extends AppCompatActivity {
         // Nos conectamos a la base de datos y preguntamos quién es el usuario, mediante otro metodo
         // que está en la clase Utilidades y es genérico para todas las pantallas (devuelve el ID del usuario actual).
         dbHelper = new ExpedienteHelper(this);
+        //leemos el usuario que teniamos en SesionApp que lo obtenemos en de LoginActividad
         idUsuarioActual = Utilidades.obtenerUsuarioActual(this);
 
         // Si por algún fallo el usuario no existe, le echamos de la pantalla
@@ -71,21 +73,18 @@ public class LogActividad extends AppCompatActivity {
         listaDatos = new ArrayList<>(); // Creamos la lista vacía en memoria
 
         // Conectamos el Adaptador que está en Kotlin (LogAdaptador.kt)
-        // No necesita listener ya que los registros de log son solo para visualizar
+        // No necesita listener ya que los registros de log son solo para visualizar, no va hacer
+        // nada aunque presione una fila
         adaptador = new LogAdaptador(listaDatos);
 
         // Enganchamos el adaptador terminado a la lista visual
         rvLogActividad.setAdapter(adaptador);
 
-        // Llamamos a la base de datos para que traiga los datos y los pinte, mediante el método
+        // Llamamos a la base de datos para que traiga los datos y los pinte, mediante el metodo
         // cargarLista() cuyo código está al final
         cargarLista();
 
-        // ====================================================================
-        // 5. PROGRAMAR LOS BOTONES (CRUD)
-        // ====================================================================
-        // Esta pantalla es un registro de auditoría de seguridad histórico,
-        // por lo tanto, no se permiten añadir, modificar ni eliminar datos de forma manual.
+
     }
 
     // ====================================================================

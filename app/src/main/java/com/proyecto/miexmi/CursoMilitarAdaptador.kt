@@ -16,7 +16,7 @@ data class CursoModelo(
     val id: Int,           // Guarda el ID (número entero)
     val nombre: String,    // Guarda el nombre del curso (texto)
     val fecha: String,     // Guarda la fecha de publicación (texto)
-    val nbod: String       // Guarda el número del boletín (texto)
+    val nbod: String,       // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -28,7 +28,7 @@ class CursoMilitarAdaptador(
     private val listaDatos: List<CursoModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (CursoModelo) -> Unit
+    private val listener: (CursoModelo) -> Unit,
 ) : RecyclerView.Adapter<CursoMilitarAdaptador.CursoViewHolder>() {
 
     // ====================================================================
@@ -39,7 +39,8 @@ class CursoMilitarAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CursoViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_curso_militar) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_curso_militar, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_curso_militar, parent, false)
         // devuelvo esa vista ya fabricada
         return CursoViewHolder(view)
     }

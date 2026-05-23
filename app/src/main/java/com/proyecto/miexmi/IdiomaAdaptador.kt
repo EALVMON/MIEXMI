@@ -16,7 +16,7 @@ data class IdiomaModelo(
     val nombre: String,       // Guarda el nombre del idioma (texto)
     val resultado: String,    // Guarda el perfil lingüístico SLP (texto)
     val fecha: String,        // Guarda la fecha de publicación (texto)
-    val nbod: String          // Guarda el número del boletín (texto)
+    val nbod: String,          // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -28,7 +28,7 @@ class IdiomaAdaptador(
     private val listaDatos: List<IdiomaModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (IdiomaModelo) -> Unit
+    private val listener: (IdiomaModelo) -> Unit,
 ) : RecyclerView.Adapter<IdiomaAdaptador.IdiomaViewHolder>() {
 
     // ====================================================================

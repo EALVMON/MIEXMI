@@ -15,7 +15,7 @@ data class RecompensaModelo(
     val id: Int,           // Guarda el ID (número entero)
     val nombre: String,    // Guarda el nombre de la condecoración (texto)
     val fecha: String,     // Guarda la fecha de publicación (texto)
-    val nbod: String       // Guarda el número del boletín (texto)
+    val nbod: String,       // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -27,7 +27,7 @@ class RecompensasAdaptador(
     private val listaDatos: List<RecompensaModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (RecompensaModelo) -> Unit
+    private val listener: (RecompensaModelo) -> Unit,
 ) : RecyclerView.Adapter<RecompensasAdaptador.RecompensaViewHolder>() {
 
     // ====================================================================
@@ -38,7 +38,8 @@ class RecompensasAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecompensaViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_recompensa) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recompensa, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_recompensa, parent, false)
         // devuelvo esa vista ya fabricada
         return RecompensaViewHolder(view)
     }

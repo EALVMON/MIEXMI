@@ -5,32 +5,26 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor; // Añadido para poder leer la base de datos
 import android.os.Bundle;
-import android.os.Handler; // [NUEVO] Para gestionar el temporizador de inactividad
+
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.cardview.widget.CardView;
 
 import java.nio.charset.StandardCharsets;
 
-public class MenuPrincipal extends AppCompatActivity {
+// Hereda de la clase Temporizador para poder controlar el tiempo de 3 minutos en todos los On...
+public class MenuPrincipal extends Temporizador {
 
-    // VARIABLES PARA EL CIERRE AUTOMÁTICO POR INACTIVIDAD
-    // Usamos un Handler para contar el tiempo en milisegundos
-    private final Handler handlerInactividad = new Handler();
-    private Runnable runnableInactividad;
-    // Definimos el tiempo límite: 3 minutos (3 * 60 segundos * 1000 milisegundos)
-    private final long TIEMPO_INACTIVIDAD = 3 * 60 * 1000;
 
-    // Aquí guardamos el texto justo antes de meterlo en el archivo
     private String datosTemporalesParaGuardar = "";
 
-    // Este metodo Se encarga de recibir la carpeta
-    // que el usuario eligió y escribir los datos ahí.
+    // Este metodo se encarga de recibir la carpeta
+    // que el usuario eligió para guardar el archivo y escribir los datos ahí.
     private final ActivityResultLauncher<Intent> lanzadorGuardarArchivo =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
 
@@ -41,7 +35,7 @@ public class MenuPrincipal extends AppCompatActivity {
                         java.io.OutputStream outputStream = getContentResolver().openOutputStream(result.getData().getData());
 
                         if (outputStream != null) {
-                            // Escribimos los datos en formato UTF-8 (vital para tildes y eñes)
+                            // Escribimos los datos en formato UTF-8 para las tildes y ñ
                             outputStream.write(datosTemporalesParaGuardar.getBytes(StandardCharsets.UTF_8));
                             outputStream.close();
                             Toast.makeText(this, "✅ Archivo guardado con éxito", Toast.LENGTH_LONG).show();
@@ -60,23 +54,8 @@ public class MenuPrincipal extends AppCompatActivity {
         // Conectamos esta clase con el XML (activity_menu_principal.xml)
         setContentView(R.layout.activity_menu_principal);
 
-        //CONFIGURACIÓN DE LA TAREA DE CIERRE AUTOMÁTICO
-        // Se define qué pasará cuando el tiempo se agote
-        runnableInactividad = () -> {
-            // Borramos la sesión para obligar a loguearse de nuevo
-            SharedPreferences prefsSalir = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
-            prefsSalir.edit().clear().apply();
-
-            // Mostramos aviso y redirigimos al Login
-            Toast.makeText(MenuPrincipal.this, "Sesión cerrada por inactividad (3 min)", Toast.LENGTH_LONG).show();
-            Intent intentInactividad = new Intent(MenuPrincipal.this, LoginActivity.class);
-            startActivity(intentInactividad);
-            finish();
-        };
-
-        // RECUPERAMOS LA SESIÓN (El ID del usuario que hizo login)
-        SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
-        int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
+        // Recuperamos él, id del usuario que inicio el login
+        int idUsuarioActual = Utilidades.obtenerUsuarioActual(this);
 
         // Si por algún error no hay sesión (alguien intentó saltarse el Login),
         // lo devolvemos al Login por seguridad.
@@ -102,6 +81,7 @@ public class MenuPrincipal extends AppCompatActivity {
 
         // Programamos el clic para la "Rosca" de Ajustes/Seguridad
         btnAjustes.setOnClickListener(v -> {
+            // Nos lleva al página de seguridad
             Intent intent = new Intent(MenuPrincipal.this, Seguridad.class);
             startActivity(intent);
         });
@@ -166,20 +146,6 @@ public class MenuPrincipal extends AppCompatActivity {
         });
     }
 
-    // METODO PARA REINICIAR EL TIEMPO DE INACTIVIDAD
-    private void reiniciarTemporizador() {
-        handlerInactividad.removeCallbacks(runnableInactividad);
-        handlerInactividad.postDelayed(runnableInactividad, TIEMPO_INACTIVIDAD);
-    }
-
-    // DETECTOR DE INTERACCIÓN DEL USUARIO
-    // Este metodo de Android se lanza cada vez que alguien toca la pantalla
-    @Override
-    public void onUserInteraction() {
-        super.onUserInteraction();
-        // Si el usuario toca algo, le damos otros 3 minutos de tiempo
-        reiniciarTemporizador();
-    }
 
     // ========================================================================
     // === CICLO DE VIDA PARA REFRESCO DE PANTALLA                          ===
@@ -194,32 +160,23 @@ public class MenuPrincipal extends AppCompatActivity {
         // Disparamos la actualización del Dashboard
         actualizarResumen();
 
-        // [NUEVO] Al volver al menú, activamos la vigilancia de inactividad
-        reiniciarTemporizador();
 
         // --- LANZAMOS PARA VER LAS CADUCIDADES ---
-        SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
-        int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
+        // Recuperamos el, id del usuario que inicio el login
+        int idUsuarioActual = Utilidades.obtenerUsuarioActual(this);
         if (idUsuarioActual != -1) {
             verificarCaducidades(idUsuarioActual);
         }
     }
 
-    // CONTROL CUANDO LA APP SE QUEDA EN SEGUNDO PLANO
-    @Override
-    protected void onPause() {
-        super.onPause();
-        // Paramos el temporizador para evitar que cierre la sesión mientras no usamos la app
-        handlerInactividad.removeCallbacks(runnableInactividad);
-    }
 
     // ========================================================================
-    // === METODO PARA LLENAR EL TABLERO CON DATOS FRESCOS                ===
+    // === Metodo para refrescar el tablero donde pone nombre,empleo y destino ===
     // ========================================================================
     private void actualizarResumen() {
-        // RECUPERAMOS LA SESIÓN de nuevo para saber a quién buscar en la Base de Datos
-        SharedPreferences prefs = getSharedPreferences("SesionApp", Context.MODE_PRIVATE);
-        int idUsuarioActual = prefs.getInt("ID_USUARIO_ACTUAL", -1);
+
+        // Recuperamos el, id del usuario que inicio el login
+        int idUsuarioActual = Utilidades.obtenerUsuarioActual(this);
 
         if (idUsuarioActual == -1) return; // Si no hay usuario, abortamos
 
@@ -238,7 +195,7 @@ public class MenuPrincipal extends AppCompatActivity {
         // Usamos un bloque try-with-resources para que se cierre sola al terminar
         try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
 
-            // Intentamos buscar sus datos en la tabla FILIACION primero
+            // Intentamos buscar sus datos en la tabla Filiacion primero
             Cursor cursorFilia = dbHelper.obtenerFiliacion(idUsuarioActual);
 
             if (cursorFilia.moveToFirst()) {
@@ -257,18 +214,18 @@ public class MenuPrincipal extends AppCompatActivity {
             }
             cursorFilia.close(); // Siempre cerramos el cursor al terminar
 
-            // --- LÓGICA PARA CARGAR EL ÚLTIMO EMPLEO ---
+            // --- Código para cargar el último Empleo militar que tenga el usuario ---
             // Llamamos a la base de datos
             Cursor cursorEmpleo = dbHelper.obtenerEmpleos(idUsuarioActual);
 
-            // Si el cursor encuentra datos (true), leemos la primera fila (el último empleo)
+            // Si el cursor encuentra datos (true), leemos la primera fila  que es el último empleo al estar ordenados DESC
             if (cursorEmpleo.moveToFirst()) {
                 String ultimoEmpleo = cursorEmpleo.getString(cursorEmpleo.getColumnIndexOrThrow("Nom_Empleo"));
                 tvDetalleEmpleo.setText(getString(R.string.detalle_empleo, ultimoEmpleo));
             }
             cursorEmpleo.close(); // Cerramos el cursor de empleos
 
-            // --- LÓGICA PARA CARGAR EL ÚLTIMO DESTINO ---
+            // --- Código para mostrar el último destino ---
             // Llamamos a la base de datos para obtener los destinos (ya vienen ordenados por id DESC)
             Cursor cursorDestino = dbHelper.obtenerDestinos(idUsuarioActual);
 
@@ -282,7 +239,7 @@ public class MenuPrincipal extends AppCompatActivity {
     }
 
     // ====================================================================
-    // === LÓGICA DE EXPORTACIÓN (CSV y JSON)  Busque algo por internet ===
+    // ===  EXPORTACIÓN (CSV y JSON)                                    ===
     // ====================================================================
 
     // Este metodo crea y muestra la ventanita emergente (pop-up) para elegir el formato.
@@ -349,6 +306,7 @@ public class MenuPrincipal extends AppCompatActivity {
         intent.putExtra(android.content.Intent.EXTRA_TITLE, nombreArchivo);
 
         // Usamos el lanzador moderno (definido al principio de la clase) en lugar del obsoleto startActivityForResult
+        // lo aconsejan en Android Developers)
         lanzadorGuardarArchivo.launch(intent);
     }
 
@@ -379,10 +337,10 @@ public class MenuPrincipal extends AppCompatActivity {
 
         // --- 2. BÚSQUEDA DE CADUCIDADES EN LA BASE DE DATOS ---
 
-        // Creamos un "Constructor de Textos" (StringBuilder) que es muy eficiente para ir pegando frases largas.
+        // Creamos un "Constructor de Textos" (StringBuilder)
         StringBuilder mensajeAlerta = new StringBuilder();
 
-        // Abrimos la base de datos de forma segura (con try) para que se cierre sola al terminar y no gaste batería.
+        // Abrimos la base de datos de forma segura (con try) para que se cierre sola al terminar
         try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
 
             // --- A) REVISAR CARNETS ---
@@ -441,7 +399,7 @@ public class MenuPrincipal extends AppCompatActivity {
         }
     }
 
-    // ---  METODO  se encarga de dibujar la ventanita emergente ---
+    // ---  Metodo que se encarga de dibujar la ventanita emergente del aviso de caducidad ---
     private void mostrarDialogoCaducidad(String listaAlertas, SharedPreferences prefs, String hoyStr) {
 
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);

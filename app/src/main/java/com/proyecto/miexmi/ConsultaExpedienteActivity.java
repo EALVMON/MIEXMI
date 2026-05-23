@@ -5,14 +5,16 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class ConsultaExpedienteActivity extends AppCompatActivity {
+
+public class ConsultaExpedienteActivity extends Temporizador {
 
     // ====================================================================
     // 1. DECLARACIÓN DE VARIABLES GLOBALES
     // ====================================================================
     private TextView tvNombre, tvDni, tvContenido;
+
+    // la siguientes variables son una version mejorada del EditText (Material Design)
     private com.google.android.material.textfield.TextInputEditText etFiltroBod, etFiltroFecha;
 
     private ExpedienteHelper dbHelper;
@@ -30,6 +32,7 @@ public class ConsultaExpedienteActivity extends AppCompatActivity {
         dbHelper = new ExpedienteHelper(this);
         idUsuarioActual = Utilidades.obtenerUsuarioActual(this);
 
+        // si nos devuelve -1 obtenerUsuario se cierra y le da el siguiente mensaje
         if (idUsuarioActual == -1) {
             Toast.makeText(this, "Error de sesión", Toast.LENGTH_SHORT).show();
             finish();
@@ -42,14 +45,13 @@ public class ConsultaExpedienteActivity extends AppCompatActivity {
         tvContenido = findViewById(R.id.tvContenidoExpediente);
         etFiltroBod = findViewById(R.id.etFiltroBod);
         etFiltroFecha = findViewById(R.id.etFiltroFecha);
-
-        // Convertido a variable local
         Button btnBuscar = findViewById(R.id.btnBuscarFiltro);
 
-        // 4. Activamos el calendario  en el campo de fecha usando Utilidades
+        // 4. Activamos el calendario en el campo de fecha usando Utilidades
         Utilidades.configurarCalendario(this, etFiltroFecha);
 
-        // 5. Llenamos la cabecera azul y cargamos el expediente entero por defecto
+        // 5. Llenamos la cabecera azul y cargamos el expediente entero por defecto, estos metodos
+        // estan al final en metodos privados
         cargarDatosCabecera();
         cargarExpediente("", "");
 
@@ -64,7 +66,8 @@ public class ConsultaExpedienteActivity extends AppCompatActivity {
             // Ocultamos el teclado numérico para que el usuario pueda ver los resultados
             try {
                 Utilidades.ocultarTeclado(this, etFiltroBod);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         });
     }
 

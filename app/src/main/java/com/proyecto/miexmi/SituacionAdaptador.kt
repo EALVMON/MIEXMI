@@ -15,7 +15,7 @@ data class SituacionModelo(
     val idSituacion: Int,  // Guarda el ID (número entero)
     val nombre: String,    // Guarda el nombre de la situación administrativa (texto)
     val fechaBod: String,  // Guarda la fecha de publicación (texto)
-    val numBod: String     // Guarda el número del boletín (texto)
+    val numBod: String,     // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -27,7 +27,7 @@ class SituacionAdaptador(
     private val listaDatos: List<SituacionModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (SituacionModelo) -> Unit
+    private val listener: (SituacionModelo) -> Unit,
 ) : RecyclerView.Adapter<SituacionAdaptador.SituacionViewHolder>() {
 
     // ====================================================================
@@ -38,7 +38,8 @@ class SituacionAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SituacionViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_situacion_admin) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_situacion_admin, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_situacion_admin, parent, false)
         // devuelvo esa vista ya fabricada
         return SituacionViewHolder(view)
     }
@@ -50,7 +51,8 @@ class SituacionAdaptador(
 
         // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
         // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
         // Rellenamos los textos de la fila con los datos reales que tiene nuestra situación
         holder.tvNombre.text = actual.nombre

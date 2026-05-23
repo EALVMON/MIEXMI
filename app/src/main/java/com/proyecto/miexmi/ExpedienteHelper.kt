@@ -6,7 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper
 // Importaciones necesarias para exportar datos
 import org.json.JSONArray
 import org.json.JSONObject
-class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+class ExpedienteHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         const val DATABASE_NAME = "MiExpediente.db"
@@ -373,7 +375,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             arrayOf(dni, contrasena)
         )
 
-        // 3. Preparamos una variable con valor -1 ( Asi asumimos que el usuario no existe por defecto).
+        // 3. Preparamos una variable con valor -1 (Asi asumimos que el usuario no existe por defecto).
         var idUsuario = -1
 
         // 4. El cursor intenta moverse al primer resultado que encontró en la tabla (si existe).
@@ -395,13 +397,17 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     // Obtiene el DNI de un usuario a partir de su ID
     fun obtenerDniPorId(idUsuario: Int): String? {
-        val db = this.readableDatabase // la abrimos la BBDD en modo lectura ya que no vamos escribir nada en ella
-        val cursor = db.rawQuery("SELECT Dni FROM USUARIO WHERE Id_Usuario = ?",
+        val db =
+            this.readableDatabase // la abrimos la BBDD en modo lectura ya que no vamos escribir nada en ella
+        val cursor = db.rawQuery(
+            "SELECT Dni FROM USUARIO WHERE Id_Usuario = ?",
             //al igual que en la anterior consulta el  rawQuery espera que se le pasen los valores
             // de ls ? en forma de array y que sea un String por eso lo paso antes a string el idUsuario
-            arrayOf(idUsuario.toString()))
+            arrayOf(idUsuario.toString())
+        )
 
-        var dni: String? = null //pongo String? ya que esta variable puede ser no mutable y no tener valor y la inicializo a nula
+        var dni: String? =
+            null //pongo String? ya que esta variable puede ser no mutable y no tener valor y la inicializo a nula
         if (cursor.moveToFirst()) {
             dni = cursor.getString(0) // le digo que al haber un resultado lo coja
         }
@@ -427,7 +433,8 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                 put("Contraseña", passNueva)
             }
             // Actualizamos la fila del usuario
-            val filasAfectadas = db.update("USUARIO", values, "Id_Usuario = ?", arrayOf(idUsuario.toString()))
+            val filasAfectadas =
+                db.update("USUARIO", values, "Id_Usuario = ?", arrayOf(idUsuario.toString()))
             return filasAfectadas > 0 // si la ctualiza la fila mi devuelve un valor mayor que 0 y es true lo que devuelvo
         }
 
@@ -440,7 +447,14 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // ====================================================================
 
     // Guarda o actualiza los datos personales del militar
-    fun guardarFiliacion(idUsuario: Int, nombre: String, apellidos: String, tmi: String, fechaIncorp: String, numEscalafon: Int): Boolean {
+    fun guardarFiliacion(
+        idUsuario: Int,
+        nombre: String,
+        apellidos: String,
+        tmi: String,
+        fechaIncorp: String,
+        numEscalafon: Int,
+    ): Boolean {
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
             put("Id_Usuario", idUsuario)
@@ -452,13 +466,17 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         }
 
         // Primero comprobamos si este usuario ya tiene datos guardados
-        val cursor = db.rawQuery("SELECT Id_Filia FROM FILIACION WHERE Id_Usuario = ?", arrayOf(idUsuario.toString()))
+        val cursor = db.rawQuery(
+            "SELECT Id_Filia FROM FILIACION WHERE Id_Usuario = ?",
+            arrayOf(idUsuario.toString())
+        )
         val existe = cursor.moveToFirst() // si existe me devuelve true y si no existe false
         cursor.close()
 
         if (existe) {
             // Si ya existen, actualizamos los datos (UPDATE)
-            val filasAfectadas = db.update("FILIACION", values, "Id_Usuario = ?", arrayOf(idUsuario.toString()))
+            val filasAfectadas =
+                db.update("FILIACION", values, "Id_Usuario = ?", arrayOf(idUsuario.toString()))
             return filasAfectadas > 0
         } else {
             // Si no existen, CREAMOS el nuevo registro (INSERT)
@@ -471,7 +489,10 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     fun obtenerFiliacion(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
         // Devuelve todas las columnas con el * de la tabla FILIACION para ese usuario
-        return db.rawQuery("SELECT * FROM FILIACION WHERE Id_Usuario = ?", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM FILIACION WHERE Id_Usuario = ?",
+            arrayOf(idUsuario.toString())
+        )
     }
 
     // ====================================================================
@@ -596,42 +617,48 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             arrayOf(idUsuario.toString())
         )
     }
-        /*
-        Aquí no comprobé que al modificar si ya existe esta especialidad para este usuario
-        como hice en el anterior módulo esto lo dejo para futuras mejoras
-        */
-        fun modificarCEEF(idCeef: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
-            val db = this.writableDatabase
 
-            // Comprobamos si el usuario ya tiene esta especialidad en OTRA fila.
-            // Usamos Id_M_CEEF != ? para excluir la fila que estamos editando ahora mismo.
-            val cursor = db.rawQuery(
-                """
+    /*
+    Aquí no comprobé que al modificar si ya existe esta especialidad para este usuario
+    como hice en el anterior módulo esto lo dejo para futuras mejoras
+    */
+    fun modificarCEEF(idCeef: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+        val db = this.writableDatabase
+
+        // Comprobamos si el usuario ya tiene esta especialidad en OTRA fila.
+        // Usamos Id_M_CEEF != ? para excluir la fila que estamos editando ahora mismo.
+        val cursor = db.rawQuery(
+            """
         SELECT Id_M_CEEF FROM MOD_CEE_FUNDAMENTAL 
         WHERE Nom_CEEF = ? 
         AND Id_M_CEEF != ? 
         AND Id_Usuario = (SELECT Id_Usuario FROM MOD_CEE_FUNDAMENTAL WHERE Id_M_CEEF = ?)
         """,
-                arrayOf(nombre, idCeef.toString(), idCeef.toString())
-            )
-            val existeDuplicado = cursor.moveToFirst()
-            cursor.close()
+            arrayOf(nombre, idCeef.toString(), idCeef.toString())
+        )
+        val existeDuplicado = cursor.moveToFirst()
+        cursor.close()
 
-            // Si ya existe esa especialidad, devolvemos false para bloquear la actualización
-            if (existeDuplicado) {
-                return false
-            }
-
-            // 2. Si no hay duplicados, actualizamos los datos
-            val numBod = numBodStr.toIntOrNull() ?: 0
-            val values = android.content.ContentValues().apply {
-                put("Nom_CEEF", nombre)
-                put("M_Ceef_Fecha_Bod", fechaBod)
-                put("M_Ceef_Nbod", numBod)
-            }
-
-            return db.update("MOD_CEE_FUNDAMENTAL", values, "Id_M_CEEF = ?", arrayOf(idCeef.toString())) > 0
+        // Si ya existe esa especialidad, devolvemos false para bloquear la actualización
+        if (existeDuplicado) {
+            return false
         }
+
+        // 2. Si no hay duplicados, actualizamos los datos
+        val numBod = numBodStr.toIntOrNull() ?: 0
+        val values = android.content.ContentValues().apply {
+            put("Nom_CEEF", nombre)
+            put("M_Ceef_Fecha_Bod", fechaBod)
+            put("M_Ceef_Nbod", numBod)
+        }
+
+        return db.update(
+            "MOD_CEE_FUNDAMENTAL",
+            values,
+            "Id_M_CEEF = ?",
+            arrayOf(idCeef.toString())
+        ) > 0
+    }
 
     fun eliminarCEEF(idCeef: Int): Boolean {
         val db = this.writableDatabase
@@ -676,7 +703,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
        Aquí no comprobé que al modificar si ya existe este empleo para este usuario
        esto lo dejo para futuras mejoras
        */
-    fun modificarEmpleo(idEmpleo: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarEmpleo(
+        idEmpleo: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -696,7 +728,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE DESTINOS                               ===
     // ====================================================================
     // Un usuario puede tener el mismo destino dos veces
-    fun anadirDestino(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirDestino(
+        idUsuario: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
 
         val numBod = numBodStr.toIntOrNull() ?: 0
 
@@ -723,8 +760,14 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             arrayOf(idUsuario.toString())
         )
     }
-   // Un usuario puede tener el mismo destino dos veces
-    fun modificarDestino(idDestino: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+
+    // Un usuario puede tener el mismo destino dos veces
+    fun modificarDestino(
+        idDestino: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -774,7 +817,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    fun modificarMision(idMision: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarMision(
+        idMision: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -794,7 +842,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE COMISIONES DE SERVICIO                 ===
     // ====================================================================
 
-    fun anadirComision(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirComision(
+        idUsuario: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
 
         val numBod = numBodStr.toIntOrNull() ?: 0
         val dbWrite = this.writableDatabase
@@ -805,7 +858,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Cser_Nbod", numBod)
         }
 
-      return dbWrite.insert("MOD_COMISION_SER", null, values) != -1L
+        return dbWrite.insert("MOD_COMISION_SER", null, values) != -1L
     }
 
     fun obtenerComisiones(idUsuario: Int): android.database.Cursor {
@@ -816,7 +869,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    fun modificarComision(idComision: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarComision(
+        idComision: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -824,7 +882,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Cser_Fecha_Bod", fechaBod)
             put("M_Cser_Nbod", numBod)
         }
-        return db.update("MOD_COMISION_SER", values, "Id_M_Cser = ?", arrayOf(idComision.toString())) > 0
+        return db.update(
+            "MOD_COMISION_SER",
+            values,
+            "Id_M_Cser = ?",
+            arrayOf(idComision.toString())
+        ) > 0
     }
 
     fun eliminarComision(idComision: Int): Boolean {
@@ -836,7 +899,13 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE EVALUACIÓN PARA EL ASCENSO             ===
     // ====================================================================
 
-    fun anadirEvaluacion(idUsuario: Int, nombre: String, resultadoApto: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirEvaluacion(
+        idUsuario: Int,
+        nombre: String,
+        resultadoApto: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         // 1. Preparamos el número de boletín (si viene vacío, le pone un 0)
         val numBod = numBodStr.toIntOrNull() ?: 0
 
@@ -855,6 +924,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         // 4. Insertamos la evaluación permitiendo repeticiones (por si suspendió o no se presentó antes)
         return dbWrite.insert("MOD_EVALUACION_ASCENSO", null, values) != -1L
     }
+
     fun obtenerEvaluaciones(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
         return db.rawQuery(
@@ -863,7 +933,13 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    fun modificarEvaluacion(idEvaluacion: Int, nombre: String, resultadoApto: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarEvaluacion(
+        idEvaluacion: Int,
+        nombre: String,
+        resultadoApto: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -872,19 +948,33 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Eva_Fecha_Bod", fechaBod)
             put("M_Eva_Nbod", numBod)
         }
-        return db.update("MOD_EVALUACION_ASCENSO", values, "Id_M_Eva = ?", arrayOf(idEvaluacion.toString())) > 0
+        return db.update(
+            "MOD_EVALUACION_ASCENSO",
+            values,
+            "Id_M_Eva = ?",
+            arrayOf(idEvaluacion.toString())
+        ) > 0
     }
 
     fun eliminarEvaluacion(idEvaluacion: Int): Boolean {
         val db = this.writableDatabase
-        return db.delete("MOD_EVALUACION_ASCENSO", "Id_M_Eva = ?", arrayOf(idEvaluacion.toString())) > 0
+        return db.delete(
+            "MOD_EVALUACION_ASCENSO",
+            "Id_M_Eva = ?",
+            arrayOf(idEvaluacion.toString())
+        ) > 0
     }
 
     // ====================================================================
     // === MÉTODOS DEL MÓDULO DE HABILITACIÓN DE SEGURIDAD (HPS)        ===
     // ====================================================================
 
-    fun anadirHps(idUsuario: Int, nombre: String, fechaConcesion: String, fechaCaducidad: String): Boolean {
+    fun anadirHps(
+        idUsuario: Int,
+        nombre: String,
+        fechaConcesion: String,
+        fechaCaducidad: String,
+    ): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
             "SELECT Id_M_Hps FROM MOD_HPS WHERE Id_Usuario = ? AND Nom_Habilitacion = ?",
@@ -913,7 +1003,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    fun modificarHps(idHps: Int, nombre: String, fechaConcesion: String, fechaCaducidad: String): Boolean {
+    fun modificarHps(
+        idHps: Int,
+        nombre: String,
+        fechaConcesion: String,
+        fechaCaducidad: String,
+    ): Boolean {
         val db = this.writableDatabase
 
         // Comprobamos si el usuario ya tiene esta HPS en otra fila distinta.
@@ -945,6 +1040,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
         return db.update("MOD_HPS", values, "Id_M_Hps = ?", arrayOf(idHps.toString())) > 0
     }
+
     fun eliminarHps(idHps: Int): Boolean {
         val db = this.writableDatabase
         return db.delete("MOD_HPS", "Id_M_Hps = ?", arrayOf(idHps.toString())) > 0
@@ -954,7 +1050,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE RELACIONES CON LA ADMINISTRACIÓN       ===
     // ====================================================================
 
-    fun anadirRelacionAdmin(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirRelacionAdmin(
+        idUsuario: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         // 1. Preparamos el número de boletín (si viene vacío, le pone un 0)
         val numBod = numBodStr.toIntOrNull() ?: 0
 
@@ -981,7 +1082,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    fun modificarRelacionAdmin(idRelacion: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarRelacionAdmin(
+        idRelacion: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -989,19 +1095,33 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Radm_Fecha_Bod", fechaBod)
             put("M_Radm_Nbod", numBod)
         }
-        return db.update("MOD_RELA_ADMINISTRACION", values, "Id_M_Radm = ?", arrayOf(idRelacion.toString())) > 0
+        return db.update(
+            "MOD_RELA_ADMINISTRACION",
+            values,
+            "Id_M_Radm = ?",
+            arrayOf(idRelacion.toString())
+        ) > 0
     }
 
     fun eliminarRelacionAdmin(idRelacion: Int): Boolean {
         val db = this.writableDatabase
-        return db.delete("MOD_RELA_ADMINISTRACION", "Id_M_Radm = ?", arrayOf(idRelacion.toString())) > 0
+        return db.delete(
+            "MOD_RELA_ADMINISTRACION",
+            "Id_M_Radm = ?",
+            arrayOf(idRelacion.toString())
+        ) > 0
     }
 
     // ====================================================================
     // === MÉTODOS DEL MÓDULO DE SITUACIONES ADMINISTRATIVAS            ===
     // ====================================================================
 
-    fun anadirSituacion(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirSituacion(
+        idUsuario: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         // 1. Preparamos el número de boletín (si viene vacío, le pone un 0)
         val numBod = numBodStr.toIntOrNull() ?: 0
 
@@ -1026,7 +1146,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    fun modificarSituacion(idSituacion: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarSituacion(
+        idSituacion: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -1034,7 +1159,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Sadm_Fecha_Bod", fechaBod)
             put("M_Sadm_Nbod", numBod)
         }
-        return db.update("MOD_SITUA_ADMIN", values, "Id_M_Sadm = ?", arrayOf(idSituacion.toString())) > 0
+        return db.update(
+            "MOD_SITUA_ADMIN",
+            values,
+            "Id_M_Sadm = ?",
+            arrayOf(idSituacion.toString())
+        ) > 0
     }
 
     fun eliminarSituacion(idSituacion: Int): Boolean {
@@ -1047,7 +1177,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE TRIENIOS                               ===
     // ====================================================================
 
-    fun anadirTrienio(idUsuario: Int, tipoTrienio: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirTrienio(
+        idUsuario: Int,
+        tipoTrienio: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val dbWrite = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -1068,7 +1203,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    fun modificarTrienio(idTrienio: Int, tipoTrienio: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarTrienio(
+        idTrienio: Int,
+        tipoTrienio: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -1089,7 +1229,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE APTITUDES                              ===
     // ====================================================================
 
-    fun anadirAptitud(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirAptitud(
+        idUsuario: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
             "SELECT Id_M_Apti FROM MOD_APTITUDES WHERE Id_Usuario = ? AND Nom_Aptitud = ?",
@@ -1119,7 +1264,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         )
     }
 
-    fun modificarAptitud(idAptitud: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarAptitud(
+        idAptitud: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val db = this.writableDatabase
 
         // Comprobamos si el usuario ya tiene esta aptitud en otra fila distinta.
@@ -1150,7 +1300,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Apti_Nbod", numBod)
         }
 
-        return db.update("MOD_APTITUDES", values, "Id_M_Apti = ?", arrayOf(idAptitud.toString())) > 0
+        return db.update(
+            "MOD_APTITUDES",
+            values,
+            "Id_M_Apti = ?",
+            arrayOf(idAptitud.toString())
+        ) > 0
     }
 
     fun eliminarAptitud(idAptitud: Int): Boolean {
@@ -1162,7 +1317,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE RECOMPENSAS                            ===
     // ====================================================================
 
-    fun anadirRecompensa(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirRecompensa(
+        idUsuario: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val dbWrite = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -1176,10 +1336,18 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun obtenerRecompensas(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM MOD_RECOMPENSAS WHERE Id_Usuario = ? ORDER BY Id_M_Reco DESC", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM MOD_RECOMPENSAS WHERE Id_Usuario = ? ORDER BY Id_M_Reco DESC",
+            arrayOf(idUsuario.toString())
+        )
     }
 
-    fun modificarRecompensa(idReco: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarRecompensa(
+        idReco: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -1199,7 +1367,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE DISTINTIVOS                            ===
     // ====================================================================
 
-    fun anadirDistintivo(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirDistintivo(
+        idUsuario: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val dbWrite = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -1213,10 +1386,18 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun obtenerDistintivos(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM MOD_DISTINTIVOS WHERE Id_Usuario = ? ORDER BY Id_M_Dist DESC", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM MOD_DISTINTIVOS WHERE Id_Usuario = ? ORDER BY Id_M_Dist DESC",
+            arrayOf(idUsuario.toString())
+        )
     }
 
-    fun modificarDistintivo(idDistintivo: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarDistintivo(
+        idDistintivo: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val numBod = numBodStr.toIntOrNull() ?: 0
         val db = this.writableDatabase
         val values = android.content.ContentValues().apply {
@@ -1224,7 +1405,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Dist_Fecha_Bod", fechaBod)
             put("M_Dist_Nbod", numBod)
         }
-        return db.update("MOD_DISTINTIVOS", values, "Id_M_Dist = ?", arrayOf(idDistintivo.toString())) > 0
+        return db.update(
+            "MOD_DISTINTIVOS",
+            values,
+            "Id_M_Dist = ?",
+            arrayOf(idDistintivo.toString())
+        ) > 0
     }
 
     fun eliminarDistintivo(idDistintivo: Int): Boolean {
@@ -1236,7 +1422,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE CURSOS MILITARES                       ===
     // ====================================================================
 
-    fun anadirCursoMilitar(idUsuario: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirCursoMilitar(
+        idUsuario: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val db = this.readableDatabase
 
         // COMPROBACIÓN:
@@ -1264,10 +1455,18 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun obtenerCursosMilitares(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM MOD_CUR_MILITAR WHERE Id_Usuario = ? ORDER BY Id_M_Cmili DESC", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM MOD_CUR_MILITAR WHERE Id_Usuario = ? ORDER BY Id_M_Cmili DESC",
+            arrayOf(idUsuario.toString())
+        )
     }
 
-    fun modificarCursoMilitar(idCurso: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarCursoMilitar(
+        idCurso: Int,
+        nombre: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val db = this.writableDatabase
 
         // Evitamos que al editar le ponga el nombre de otro curso existente
@@ -1293,7 +1492,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             put("M_Cmili_Fecha_Bod", fechaBod)
             put("M_Cmili_Nbod", numBod)
         }
-        return db.update("MOD_CUR_MILITAR", values, "Id_M_Cmili = ?", arrayOf(idCurso.toString())) > 0
+        return db.update(
+            "MOD_CUR_MILITAR",
+            values,
+            "Id_M_Cmili = ?",
+            arrayOf(idCurso.toString())
+        ) > 0
     }
 
     fun eliminarCursoMilitar(idCurso: Int): Boolean {
@@ -1355,8 +1559,14 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         val values = android.content.ContentValues().apply {
             put("Nom_Titulo", nombre)
         }
-        return db.update("MOD_TITULOS_CIVILES", values, "Id_M_Tcivi = ?", arrayOf(idTitulo.toString())) > 0
+        return db.update(
+            "MOD_TITULOS_CIVILES",
+            values,
+            "Id_M_Tcivi = ?",
+            arrayOf(idTitulo.toString())
+        ) > 0
     }
+
     fun eliminarTituloCivil(idTitulo: Int): Boolean {
         val db = this.writableDatabase
         return db.delete("MOD_TITULOS_CIVILES", "Id_M_Tcivi = ?", arrayOf(idTitulo.toString())) > 0
@@ -1366,7 +1576,13 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE IDIOMAS SLP                            ===
     // ====================================================================
 
-    fun anadirIdioma(idUsuario: Int, nombre: String, resultadoSlp: String, fechaBod: String, numBodStr: String): Boolean {
+    fun anadirIdioma(
+        idUsuario: Int,
+        nombre: String,
+        resultadoSlp: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
             "SELECT Id_M_Idi FROM MOD_IDIOMA WHERE Id_Usuario = ? AND Nom_idioma = ?",
@@ -1391,10 +1607,19 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun obtenerIdiomas(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM MOD_IDIOMA WHERE Id_Usuario = ? ORDER BY Id_M_Idi DESC", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM MOD_IDIOMA WHERE Id_Usuario = ? ORDER BY Id_M_Idi DESC",
+            arrayOf(idUsuario.toString())
+        )
     }
 
-    fun modificarIdioma(idIdioma: Int, nombre: String, resultadoSlp: String, fechaBod: String, numBodStr: String): Boolean {
+    fun modificarIdioma(
+        idIdioma: Int,
+        nombre: String,
+        resultadoSlp: String,
+        fechaBod: String,
+        numBodStr: String,
+    ): Boolean {
         val db = this.writableDatabase
 
         // Comprobamos si el usuario ya tiene este idioma registrado en OTRA fila distinta.
@@ -1435,7 +1660,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE ARMAS PARTICULARES                     ===
     // ====================================================================
 
-    fun anadirArma(idUsuario: Int, nombre: String, numSerie: String, fechaCaducidad: String): Boolean {
+    fun anadirArma(
+        idUsuario: Int,
+        nombre: String,
+        numSerie: String,
+        fechaCaducidad: String,
+    ): Boolean {
         val db = this.readableDatabase
         // Comprobamos si el número de serie ya existe para evitar errores bruscos de SQLite
         val cursor = db.rawQuery(
@@ -1459,10 +1689,18 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun obtenerArmas(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM MOD_EXP_ARMAS WHERE Id_Usuario = ? ORDER BY Id_M_EArm DESC", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM MOD_EXP_ARMAS WHERE Id_Usuario = ? ORDER BY Id_M_EArm DESC",
+            arrayOf(idUsuario.toString())
+        )
     }
 
-    fun modificarArma(idArma: Int, nombre: String, numSerie: String, fechaCaducidad: String): Boolean {
+    fun modificarArma(
+        idArma: Int,
+        nombre: String,
+        numSerie: String,
+        fechaCaducidad: String,
+    ): Boolean {
         val db = this.writableDatabase
 
         //Comprobamos si el número de serie ya existe en OTRA arma distinta.
@@ -1496,7 +1734,12 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === MÉTODOS DEL MÓDULO DE CARNETS MILITARES                      ===
     // ====================================================================
 
-    fun anadirCarnet(idUsuario: Int, tipo: String, fechaConcesion: String, fechaCaducidad: String): Boolean {
+    fun anadirCarnet(
+        idUsuario: Int,
+        tipo: String,
+        fechaConcesion: String,
+        fechaCaducidad: String,
+    ): Boolean {
         val db = this.readableDatabase
         val cursor = db.rawQuery(
             "SELECT Id_M_Carnet FROM MOD_CARNET WHERE Id_Usuario = ? AND Tipo_Carnet = ?",
@@ -1519,10 +1762,18 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun obtenerCarnets(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM MOD_CARNET WHERE Id_Usuario = ? ORDER BY Id_M_Carnet DESC", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM MOD_CARNET WHERE Id_Usuario = ? ORDER BY Id_M_Carnet DESC",
+            arrayOf(idUsuario.toString())
+        )
     }
 
-    fun modificarCarnet(idCarnet: Int, tipo: String, fechaConcesion: String, fechaCaducidad: String): Boolean {
+    fun modificarCarnet(
+        idCarnet: Int,
+        tipo: String,
+        fechaConcesion: String,
+        fechaCaducidad: String,
+    ): Boolean {
         val db = this.writableDatabase
 
         //Comprobamos si el usuario ya tiene esta clase de carnet registrada en OTRA fila distinta.
@@ -1583,7 +1834,10 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
     fun obtenerTcgf(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM MOD_TCGF WHERE Id_Usuario = ? ORDER BY Id_M_TCGF DESC", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM MOD_TCGF WHERE Id_Usuario = ? ORDER BY Id_M_TCGF DESC",
+            arrayOf(idUsuario.toString())
+        )
     }
 
     fun modificarTcgf(idTcgf: Int, fecha: String, puntuacion: String, apto: String): Boolean {
@@ -1623,17 +1877,17 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // === EXPORTACIÓN DE DATOS (CSV Y JSON) EN BASE DE DATOS           ===
     // ====================================================================
 
-    // 1. Función para JSON. Lee una tabla y la convierte en una lista de objetos.
+    // Función para JSON. Lee una tabla y la convierte en una lista de objetos.
     private fun cursorToJsonArray(cursor: android.database.Cursor): JSONArray {
         // Creamos una lista JSON vacía
         val array = JSONArray()
 
         // Si la tabla tiene al menos un dato, empezamos a leer
         if (cursor.moveToFirst()) {
-            // Guardamos los nombres de todas las columnas (ej: "Nombre", "Num_Bod")
+            // Guardamos los nombres de todas las columnas (ejemplo: "Nombre", "Num_Bod")
             val columnNames = cursor.columnNames
 
-            // Bucle: Repetimos esto por cada fila que haya en la tabla
+            // Hacemos un bucle, repetimos esto por cada fila que haya en la tabla
             do {
                 // Creamos un Objeto JSON nuevo para esta fila exacta
                 val obj = JSONObject()
@@ -1643,7 +1897,7 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                     val colIndex = cursor.getColumnIndex(col)
                     // Si la celda está vacía ponemos "", si tiene algo lo sacamos como texto
                     val value = if (cursor.isNull(colIndex)) "" else cursor.getString(colIndex)
-                    // Metemos el dato en el objeto (Ej: "Nombre" -> "Carlos")
+                    // Metemos el dato en el objeto (Ejemplo: "Nombre" -> "Eduardo Jose")
                     obj.put(col, value)
                 }
                 // Añadimos la fila ya procesada a la lista
@@ -1651,11 +1905,11 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
 
             } while (cursor.moveToNext()) // Pasamos a la siguiente fila
         }
-        cursor.close() // Siempre hay que cerrar el cursor
-        return array
+        cursor.close() // cerramos el cursor
+        return array // devolvemos un array del tipo JSONArray
     }
 
-    // 2. Genera el texto  en formato JSON llamando a todas las tablas.
+    // Generamos el texto en formato JSON llamando a todas las tablas.
     // ====================================================================
     // === EXPORTACIÓN DE LA COPIA DE SEGURIDAD (JSON)                  ===
     // ====================================================================
@@ -1668,29 +1922,28 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         try {
             // Llamamos a nuestra función tabla por tabla y la metemos en la raíz con una etiqueta
 
-            // 1. Datos Personales
             raiz.put("Filiacion", cursorToJsonArray(obtenerFiliacion(idUsuario)))
-
-            // 2. Historial Profesional
             raiz.put("Empleos", cursorToJsonArray(obtenerEmpleos(idUsuario)))
             raiz.put("Destinos", cursorToJsonArray(obtenerDestinos(idUsuario)))
             raiz.put("Misiones", cursorToJsonArray(obtenerMisiones(idUsuario)))
             raiz.put("Comisiones_Servicio", cursorToJsonArray(obtenerComisiones(idUsuario)))
             raiz.put("Situacion_Administrativa", cursorToJsonArray(obtenerSituaciones(idUsuario)))
             raiz.put("Especialidad_Fundamental", cursorToJsonArray(obtenerCEEFs(idUsuario)))
-            raiz.put("Relaciones_Administrativas", cursorToJsonArray(obtenerRelacionesAdmin(idUsuario)))
-
-            // 3. Méritos y Formación
+            raiz.put(
+                "Relaciones_Administrativas",
+                cursorToJsonArray(obtenerRelacionesAdmin(idUsuario))
+            )
             raiz.put("Trienios", cursorToJsonArray(obtenerTrienios(idUsuario)))
             raiz.put("Recompensas", cursorToJsonArray(obtenerRecompensas(idUsuario)))
             raiz.put("Distintivos", cursorToJsonArray(obtenerDistintivos(idUsuario)))
             raiz.put("Aptitudes", cursorToJsonArray(obtenerAptitudes(idUsuario)))
             raiz.put("Cursos_Militares", cursorToJsonArray(obtenerCursosMilitares(idUsuario)))
-            raiz.put("Titulos_y_Cursos_Civiles", cursorToJsonArray(obtenerTitulosCiviles(idUsuario)))
+            raiz.put(
+                "Titulos_y_Cursos_Civiles",
+                cursorToJsonArray(obtenerTitulosCiviles(idUsuario))
+            )
             raiz.put("Idiomas", cursorToJsonArray(obtenerIdiomas(idUsuario)))
             raiz.put("Evaluacion_Ascenso", cursorToJsonArray(obtenerEvaluaciones(idUsuario)))
-
-            // 4. Registros Críticos / Administrativos
             raiz.put("TMI", cursorToJsonArray(obtenerTMIs(idUsuario)))
             raiz.put("Habilitaciones_HPS", cursorToJsonArray(obtenerHps(idUsuario)))
             raiz.put("Armas_Particulares", cursorToJsonArray(obtenerArmas(idUsuario)))
@@ -1702,42 +1955,50 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             android.util.Log.e("ExportarJSON", "Error al generar la copia de seguridad", e)
 
         }
-
-        // Convertimos  ese paquete de datos en un texto ordenado (poniendo 4 espacios de sangría para que sea legible)
+        // Convertimos ese paquete de datos (raiz) en un texto ordenado (poniendo 4 espacios de sangría para que sea legible)
         return raiz.toString(4)
     }
 
 
-    // 3. Función para Excel (CSV). Lee una tabla y la convierte en texto con punto y coma (;).
-    private fun agregarCursorACsv(titulo: String, cursor: android.database.Cursor, sb: StringBuilder) {
+    // ====================================================================
+    // === FUNCION DE LA COPIA DE SEGURIDAD (CVS)                       ===
+    // ====================================================================
+    //  Función para CSV. Lee una tabla y la convierte en texto con punto y coma (;).
+    private fun agregarCursorACsv(
+        titulo: String,
+        cursor: android.database.Cursor,
+        sb: StringBuilder,
+    ) {
 
-        // Ponemos el título de la tabla (El \n significa "Intro" o salto de línea)
+        // Ponemos el título de la tabla (El \n es un salto de línea)
         sb.append("--- $titulo ---\n")
 
         if (cursor.moveToFirst()) {
-            // Sacamos los nombres de las columnas para hacer la cabecera del Excel
+            // Sacamos los nombres de las columnas para hacer la cabecera
             val columnNames = cursor.columnNames
             // Unimos los nombres con ";" y damos un Intro
             sb.append(columnNames.joinToString(";")).append("\n")
 
-            // Bucle: Repetimos por cada fila
+            // Bucle que repetimos por cada fila
             do {
-                val rowValues = mutableListOf<String>()
+                // Nos creamos una lista mutable a la cual le podemos seguir añadiendo datos
+                val valoresFila = mutableListOf<String>()
+
                 for (col in columnNames) {
                     val colIndex = cursor.getColumnIndex(col)
                     val value = if (cursor.isNull(colIndex)) "" else cursor.getString(colIndex)
 
                     // Si el usuario escribió un ";" en la app,
-                    // rompería las columnas del Excel. Aquí reemplazamos los ";" por "," para evitarlo.
-                    val cleanValue = value.replace("\n", " ").replace(";", ",")
+                    // rompería las columnas del cvs. Aquí reemplazamos los ";" por "," para evitarlo.
+                    val limpiarVariable = value.replace("\n", " ").replace(";", ",")
 
-                    rowValues.add(cleanValue)
+                    valoresFila.add(limpiarVariable)
                 }
                 // Unimos todos los datos de la fila con ";" y damos un Intro
-                sb.append(rowValues.joinToString(";")).append("\n")
+                sb.append(valoresFila.joinToString(";")).append("\n")
 
             } while (cursor.moveToNext())
-        } else {
+        } else { // Si no hay registro pone el siguiente mensaje
             sb.append("Sin registros\n")
         }
         // Damos un intro extra para separar visualmente las tablas
@@ -1745,23 +2006,17 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         cursor.close()
     }
 
-    // 4. Generamos el texto completo en CSV para Excel
+    // Generamos el texto completo en CSV
     fun exportarACsv(idUsuario: Int): String {
-        // StringBuilder está diseñado para unir textos gigantes muy rápido
+        // StringBuilder está diseñado para unir textos grandes muy rápido
         val sb = StringBuilder()
 
         // '\uFEFF' es una clave que le dice a Excel que el archivo usa español (UTF-8)
         // para que las tildes y las eñes se vean perfectas.
         sb.append("\uFEFF")
+        // Llamamos a nuestra función tabla por tabla
 
-        // ====================================================================
-        // === 1. DATOS PERSONALES                                          ===
-        // ====================================================================
         agregarCursorACsv("FILIACIÓN", obtenerFiliacion(idUsuario), sb)
-
-        // ====================================================================
-        // === 2. HISTORIAL PROFESIONAL                                     ===
-        // ====================================================================
         agregarCursorACsv("EMPLEOS", obtenerEmpleos(idUsuario), sb)
         agregarCursorACsv("DESTINOS", obtenerDestinos(idUsuario), sb)
         agregarCursorACsv("MISIONES", obtenerMisiones(idUsuario), sb)
@@ -1769,10 +2024,6 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         agregarCursorACsv("SITUACIÓN ADMINISTRATIVA", obtenerSituaciones(idUsuario), sb)
         agregarCursorACsv("ESPECIALIDAD FUNDAMENTAL", obtenerCEEFs(idUsuario), sb)
         agregarCursorACsv("RELACIONES ADMINISTRATIVAS", obtenerRelacionesAdmin(idUsuario), sb)
-
-        // ====================================================================
-        // === 3. MÉRITOS Y FORMACIÓN                                       ===
-        // ====================================================================
         agregarCursorACsv("TRIENIOS", obtenerTrienios(idUsuario), sb)
         agregarCursorACsv("RECOMPENSAS", obtenerRecompensas(idUsuario), sb)
         agregarCursorACsv("DISTINTIVOS", obtenerDistintivos(idUsuario), sb)
@@ -1781,17 +2032,13 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         agregarCursorACsv("TÍTULOS Y CURSOS CIVILES", obtenerTitulosCiviles(idUsuario), sb)
         agregarCursorACsv("IDIOMAS", obtenerIdiomas(idUsuario), sb)
         agregarCursorACsv("EVALUACIÓN PARA EL ASCENSO", obtenerEvaluaciones(idUsuario), sb)
-
-        // ====================================================================
-        // === 4. REGISTROS CRÍTICOS / ADMINISTRATIVOS                      ===
-        // ====================================================================
         agregarCursorACsv("TMI", obtenerTMIs(idUsuario), sb)
         agregarCursorACsv("HABILITACIONES (HPS)", obtenerHps(idUsuario), sb)
         agregarCursorACsv("ARMAS PARTICULARES", obtenerArmas(idUsuario), sb)
         agregarCursorACsv("CARNETS DE CONDUCIR", obtenerCarnets(idUsuario), sb)
         agregarCursorACsv("PRUEBAS FÍSICAS (TCGF)", obtenerTcgf(idUsuario), sb)
 
-        // Devolvemos el conjunto del texto del cuaderno ya terminado
+        // Devolvemos el conjunto del texto con todas nuestras tablas pasado a string
         return sb.toString()
     }
 
@@ -1800,8 +2047,9 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     // ====================================================================
 
     // Este metodo se usa en el LoginActivity justo después de que el usuario meta bien su clave
+
     fun registrarAcceso(idUsuario: Int, dni: String, fechaHora: String): Boolean {
-        val dbWrite = this.writableDatabase
+        val dbWrite = this.writableDatabase  // ponemos la BBDD en modo escritura
         val values = android.content.ContentValues().apply {
             put("Id_Usuario", idUsuario)
             put("DNI", dni)
@@ -1814,7 +2062,10 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     fun obtenerAccesos(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
         // Ordenamos DESC para ver la última conexión arriba del item
-        return db.rawQuery("SELECT * FROM REGISTRO_ACTIVIDAD WHERE Id_Usuario = ? ORDER BY Id_Log DESC", arrayOf(idUsuario.toString()))
+        return db.rawQuery(
+            "SELECT * FROM REGISTRO_ACTIVIDAD WHERE Id_Usuario = ? ORDER BY Id_Log DESC",
+            arrayOf(idUsuario.toString())
+        )
     }
 
     // ====================================================================
@@ -1824,24 +2075,37 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
     fun obtenerResumenExpediente(idUsuario: Int, filtroBod: String, filtroFecha: String): String {
         val sb = StringBuilder()
         val db = this.readableDatabase
+        // Me creo unas variables para los filtro en las cuales les digo si no estan vacias si estan vacias en un false y si no true
         val usaFiltroBod = filtroBod.isNotEmpty()
         val usaFiltroFecha = filtroFecha.isNotEmpty()
 
-        // 1. Función interna para módulos con BOD (Empleos, Destinos, etc.)
-        fun procesarConBod(titulo: String, tabla: String, colNombre: String, colFechaBod: String, colNumBod: String) {
-            var query = "SELECT * FROM $tabla WHERE Id_Usuario = ?"
+        // 1. Función interna para módulos con BOD (Empleos, Destinos, etc.), ya que no todos los modulos tienen BOD
+        fun procesarConBod(
+            titulo: String,
+            tabla: String,
+            colNombre: String,
+            colFechaBod: String,
+            colNumBod: String,
+        ) {
+            var sql = "SELECT * FROM $tabla WHERE Id_Usuario = ?"
             val args = mutableListOf(idUsuario.toString())
 
             if (usaFiltroBod) {
-                query += " AND $colNumBod = ?"
+                // Si la variable no esta vacia le añado lo siguente a la sentencia sql que tengo en la variable sql
+                // para que busque por el numero de bod
+                sql += " AND $colNumBod = ?"
                 args.add(filtroBod)
             }
             if (usaFiltroFecha) {
-                query += " AND $colFechaBod = ?"
+                // Si la variable no esta vacia le añado lo siguente a la sentencia sql que tengo en la variable query
+                // para que busque por la fecha del BOD
+                sql += " AND $colFechaBod = ?"
                 args.add(filtroFecha)
             }
 
-            val cursor = db.rawQuery(query, args.toTypedArray())
+            val cursor =
+                db.rawQuery(sql, args.toTypedArray()) // coge mi mutableListOf y lo transforma
+            // en un array que es lo que necesita recibir el rawQuery
 
             // Solo mostramos si hay resultados o si no hay filtros aplicados
             if (cursor.count > 0 || (!usaFiltroBod && !usaFiltroFecha)) {
@@ -1849,7 +2113,8 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                 if (cursor.moveToFirst()) {
                     do {
                         val nombre = cursor.getString(cursor.getColumnIndexOrThrow(colNombre))
-                        val fecha = cursor.getString(cursor.getColumnIndexOrThrow(colFechaBod)) ?: "N/D"
+                        val fecha =
+                            cursor.getString(cursor.getColumnIndexOrThrow(colFechaBod)) ?: "N/D"
                         val bod = cursor.getString(cursor.getColumnIndexOrThrow(colNumBod)) ?: "N/D"
                         sb.append("• $nombre (BOD: $bod - Fecha: $fecha)\n")
                     } while (cursor.moveToNext())
@@ -1861,21 +2126,22 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
             cursor.close()
         }
 
-        // 2. Función interna para módulos sin BOD (TMI, Carnets, etc.)
+        // 2. Función interna para módulos sin BOD (TMI, Carnets, etc.) la misma explicacion que la
+        // funcion anterior pero solo filtra por fecha
         fun procesarSinBod(titulo: String, tabla: String, colNombre: String, colExtra: String?) {
-            // Si el usuario busca un BOD, omitimos estas tablas (no tienen BOD)
+            // Si el usuario busca un BOD, omitimos las  tablas que no tienen BOD, y nos salimos de la funcion
             if (usaFiltroBod) return
 
-            var query = "SELECT * FROM $tabla WHERE Id_Usuario = ?"
+            var sql = "SELECT * FROM $tabla WHERE Id_Usuario = ?"
             val args = mutableListOf(idUsuario.toString())
 
-            // Solo filtramos si la tabla tiene una columna extra de fecha y el usuario ha buscado por fecha
+            // Solo filtramos si la tabla tiene una columna  de fecha y el usuario ha buscado por fecha
             if (usaFiltroFecha && colExtra != null) {
-                query += " AND $colExtra = ?"
+                sql += " AND $colExtra = ?"
                 args.add(filtroFecha)
             }
 
-            val cursor = db.rawQuery(query, args.toTypedArray())
+            val cursor = db.rawQuery(sql, args.toTypedArray())
 
             if (cursor.count > 0 || !usaFiltroFecha) {
                 sb.append("=== $titulo ===\n")
@@ -1884,7 +2150,8 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
                         val nombre = cursor.getString(cursor.getColumnIndexOrThrow(colNombre))
                         sb.append("• $nombre")
                         if (colExtra != null) {
-                            val dato = cursor.getString(cursor.getColumnIndexOrThrow(colExtra)) ?: "N/D"
+                            val dato =
+                                cursor.getString(cursor.getColumnIndexOrThrow(colExtra)) ?: "N/D"
                             sb.append(" (Fecha: $dato)")
                         }
                         sb.append("\n")
@@ -1902,18 +2169,77 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         procesarConBod("EMPLEOS", "MOD_EMPLEOS", "Nom_Empleo", "M_Empl_Fecha_Bod", "M_Empl_Nbod")
         procesarConBod("DESTINOS", "MOD_DESTINOS", "Nom_Destino", "M_Dest_Fecha_Bod", "M_Dest_Nbod")
         procesarConBod("MISIONES", "MOD_MISIONES", "Nom_Mision", "M_Misi_Fecha_Bod", "M_Misi_Nbod")
-        procesarConBod("COMISIONES DE SERVICIO", "MOD_COMISION_SER", "Nom_Comision", "M_Cser_Fecha_Bod", "M_Cser_Nbod")
-        procesarConBod("SITUACIÓN ADMINISTRATIVA", "MOD_SITUA_ADMIN", "Nom_Sit_Admini", "M_Sadm_Fecha_Bod", "M_Sadm_Nbod")
-        procesarConBod("TRIENIOS", "MOD_TRIENIOS", "Tipo_Trienio", "M_Trie_Fecha_Bod", "M_Trie_Nbod")
-        procesarConBod("RECOMPENSAS", "MOD_RECOMPENSAS", "Nom_Recompensa", "M_Reco_Fecha_Bod", "M_Reco_Nbod")
-        procesarConBod("DISTINTIVOS", "MOD_DISTINTIVOS", "Nom_Distintivo", "M_Dist_Fecha_Bod", "M_Dist_Nbod")
-        procesarConBod("APTITUDES", "MOD_APTITUDES", "Nom_Aptitud", "M_Apti_Fecha_Bod", "M_Apti_Nbod")
-        procesarConBod("ESPECIALIDAD FUNDAMENTAL", "MOD_CEE_FUNDAMENTAL", "Nom_CEEF", "M_Ceef_Fecha_Bod", "M_Ceef_Nbod")
-        procesarConBod("RELACIONES ADMINISTRACIÓN", "MOD_RELA_ADMINISTRACION", "Nom_Rel_Admin", "M_Radm_Fecha_Bod", "M_Radm_Nbod")
-        procesarConBod("CURSOS MILITARES", "MOD_CUR_MILITAR", "Nom_Cur_Mili", "M_Cmili_Fecha_Bod", "M_Cmili_Nbod")
-        procesarConBod("EVALUACIÓN ASCENSO", "MOD_EVALUACION_ASCENSO", "Nom_Evaluacion", "M_Eva_Fecha_Bod", "M_Eva_Nbod")
+        procesarConBod(
+            "COMISIONES DE SERVICIO",
+            "MOD_COMISION_SER",
+            "Nom_Comision",
+            "M_Cser_Fecha_Bod",
+            "M_Cser_Nbod"
+        )
+        procesarConBod(
+            "SITUACIÓN ADMINISTRATIVA",
+            "MOD_SITUA_ADMIN",
+            "Nom_Sit_Admini",
+            "M_Sadm_Fecha_Bod",
+            "M_Sadm_Nbod"
+        )
+        procesarConBod(
+            "TRIENIOS",
+            "MOD_TRIENIOS",
+            "Tipo_Trienio",
+            "M_Trie_Fecha_Bod",
+            "M_Trie_Nbod"
+        )
+        procesarConBod(
+            "RECOMPENSAS",
+            "MOD_RECOMPENSAS",
+            "Nom_Recompensa",
+            "M_Reco_Fecha_Bod",
+            "M_Reco_Nbod"
+        )
+        procesarConBod(
+            "DISTINTIVOS",
+            "MOD_DISTINTIVOS",
+            "Nom_Distintivo",
+            "M_Dist_Fecha_Bod",
+            "M_Dist_Nbod"
+        )
+        procesarConBod(
+            "APTITUDES",
+            "MOD_APTITUDES",
+            "Nom_Aptitud",
+            "M_Apti_Fecha_Bod",
+            "M_Apti_Nbod"
+        )
+        procesarConBod(
+            "ESPECIALIDAD FUNDAMENTAL",
+            "MOD_CEE_FUNDAMENTAL",
+            "Nom_CEEF",
+            "M_Ceef_Fecha_Bod",
+            "M_Ceef_Nbod"
+        )
+        procesarConBod(
+            "RELACIONES ADMINISTRACIÓN",
+            "MOD_RELA_ADMINISTRACION",
+            "Nom_Rel_Admin",
+            "M_Radm_Fecha_Bod",
+            "M_Radm_Nbod"
+        )
+        procesarConBod(
+            "CURSOS MILITARES",
+            "MOD_CUR_MILITAR",
+            "Nom_Cur_Mili",
+            "M_Cmili_Fecha_Bod",
+            "M_Cmili_Nbod"
+        )
+        procesarConBod(
+            "EVALUACIÓN ASCENSO",
+            "MOD_EVALUACION_ASCENSO",
+            "Nom_Evaluacion",
+            "M_Eva_Fecha_Bod",
+            "M_Eva_Nbod"
+        )
         procesarConBod("IDIOMAS", "MOD_IDIOMA", "Nom_idioma", "M_Idi_Fecha_Bod", "M_Idi_Nbod")
-
         // Tablas que NO tienen BOD
         procesarSinBod("TÍTULOS CIVILES", "MOD_TITULOS_CIVILES", "Nom_Titulo", null)
         procesarSinBod("HABILITACIONES (HPS)", "MOD_HPS", "Nom_Habilitacion", "Fecha_M_Caducidad")
@@ -1921,7 +2247,6 @@ class ExpedienteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NA
         procesarSinBod("ARMAS PARTICULARES", "MOD_EXP_ARMAS", "Nom_Arma", "M_EArm_Fecha_Cad")
         procesarSinBod("PRUEBAS FÍSICAS (TCGF)", "MOD_TCGF", "M_Tcgf_Puntuacion", "M_Tcgf_Fecha")
         procesarSinBod("CARNETS DE CONDUCIR", "MOD_CARNET", "Tipo_Carnet", "M_Carn_Fecha_Caducidad")
-
         if (sb.isEmpty()) {
             return "No se ha encontrado ninguna información con los filtros aplicados."
         }

@@ -16,7 +16,7 @@ data class CarnetModelo(
     val id: Int,                // Guarda el ID (número entero)
     val tipo: String,           // Guarda la clase de carnet (texto)
     val fechaConcesion: String, // Guarda la fecha de concesión (texto)
-    val fechaCaducidad: String  // Guarda la fecha de caducidad (texto)
+    val fechaCaducidad: String,  // Guarda la fecha de caducidad (texto)
 )
 
 // ====================================================================
@@ -28,7 +28,7 @@ class CarnetAdaptador(
     private val listaDatos: List<CarnetModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (CarnetModelo) -> Unit
+    private val listener: (CarnetModelo) -> Unit,
 ) : RecyclerView.Adapter<CarnetAdaptador.CarnetViewHolder>() {
 
     // ====================================================================

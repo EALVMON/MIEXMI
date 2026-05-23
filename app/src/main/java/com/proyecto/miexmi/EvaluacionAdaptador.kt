@@ -17,7 +17,7 @@ data class EvaluacionModelo(
     val nombre: String,    // Guarda el nombre de la evaluación (texto)
     val resultado: String, // Guarda el resultado (Apto, No Apto, etc.)
     val fechaBod: String,  // Guarda la fecha de publicación (texto)
-    val numBod: String     // Guarda el número del boletín (texto)
+    val numBod: String,     // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -29,7 +29,7 @@ class EvaluacionAdaptador(
     private val listaDatos: List<EvaluacionModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (EvaluacionModelo) -> Unit
+    private val listener: (EvaluacionModelo) -> Unit,
 ) : RecyclerView.Adapter<EvaluacionAdaptador.EvaluacionViewHolder>() {
 
     // ====================================================================
@@ -40,7 +40,8 @@ class EvaluacionAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EvaluacionViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_evaluacion) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_evaluacion, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_evaluacion, parent, false)
         // devuelvo esa vista ya fabricada
         return EvaluacionViewHolder(view)
     }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -133,13 +132,24 @@
             android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
-            <Button android:id="@+id/btnAnadirIdioma"  style="@style/EstiloBotonAnadir"
+            <Button
+                android:id="@+id/btnAnadirIdioma"
+                style="@style/EstiloBotonAnadir"
                 android:text="@string/anadir" />
-            <Button android:id="@+id/btnModificarIdioma" style="@style/EstiloBotonEditar"
+
+            <Button
+                android:id="@+id/btnModificarIdioma"
+                style="@style/EstiloBotonEditar"
                 android:text="@string/editar" />
-            <Button android:id="@+id/btnEliminarIdioma" style="@style/EstiloBotonBorrar"
+
+            <Button
+                android:id="@+id/btnEliminarIdioma"
+                style="@style/EstiloBotonBorrar"
                 android:text="@string/borrar" />
-            <Button android:id="@+id/btnLimpiarIdioma" style="@style/EstiloBotonLimpiar"
+
+            <Button
+                android:id="@+id/btnLimpiarIdioma"
+                style="@style/EstiloBotonLimpiar"
                 android:text="@string/limpiar" />
         </LinearLayout>
     </LinearLayout>
@@ -166,19 +176,26 @@
         android:baselineAligned="false"
         app:layout_constraintTop_toBottomOf="@+id/tvTituloListaIdioma">
 
-        <TextView style="@style/EstiloTextoColumna"
+        <TextView
+            style="@style/EstiloTextoColumna"
             android:layout_weight="1.5"
-            android:text="@string/nombre_idioma_columna"/>
-        <TextView style="@style/EstiloTextoColumna"
+            android:text="@string/nombre_idioma_columna" />
+
+        <TextView
+            style="@style/EstiloTextoColumna"
             android:layout_weight="1"
-            android:text="@string/resultado_columna"/>
-        <TextView style="@style/EstiloTextoColumna"
+            android:text="@string/resultado_columna" />
+
+        <TextView
+            style="@style/EstiloTextoColumna"
             android:layout_weight="1"
-            android:text="@string/fecha_bod"/>
-        <TextView style="@style/EstiloTextoColumna"
+            android:text="@string/fecha_bod" />
+
+        <TextView
+            style="@style/EstiloTextoColumna"
             android:layout_weight="0.8"
             android:text="@string/n_bod"
-            android:textAlignment="viewEnd"/>
+            android:textAlignment="viewEnd" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

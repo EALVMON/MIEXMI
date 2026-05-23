@@ -16,7 +16,7 @@ data class MisionModelo(
     val idMision: Int,    // Guarda el ID (número entero)
     val nombre: String,    // Guarda el nombre de la misión (texto)
     val fechaBod: String,  // Guarda la fecha de publicación (texto)
-    val numBod: String     // Guarda el número del boletín (texto)
+    val numBod: String,     // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -28,7 +28,7 @@ class MisionAdaptador(
     private val listaDatos: List<MisionModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (MisionModelo) -> Unit
+    private val listener: (MisionModelo) -> Unit,
 ) : RecyclerView.Adapter<MisionAdaptador.MisionViewHolder>() {
 
     // ====================================================================
@@ -51,7 +51,8 @@ class MisionAdaptador(
 
         // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
         // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
         // Rellenamos los textos de la fila con los datos reales que tiene nuestra misión
         holder.tvNombre.text = actual.nombre

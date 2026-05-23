@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.widget.Button;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.textfield.TextInputEditText;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +20,10 @@ import java.util.List;
 // 2. Enlazo los botones del XML en el onCreate.
 // 3. Configuro la lista (RecyclerView).
 // 4. Le digo a los botones lo que tienen que hacer con los clics.
-// 5. Hago un método para leer la base de datos (cargarLista()).
+// 5. Hago un metodo para leer la base de datos (cargarLista()).
 // ====================================================================
-// Al heredar de 'AppCompatActivity', le indico a Android que esta clase es una pantalla visual y me permite usar todos sus métodos nativos.
-public class ArmasParticulares extends AppCompatActivity {
+// Hereda de la clase Temporizador para poder controlar el tiempo de 3 minutos en todos los On...
+public class ArmasParticulares extends Temporizador {
 
     // Declaramos las variables "globales" para que cualquier
     // botón o función dentro de esta pantalla pueda usarlas y verlas.
@@ -75,7 +77,7 @@ public class ArmasParticulares extends AppCompatActivity {
         etFecha = findViewById(R.id.etFechaCaducidadArma);
 
         // Forzamos mayúsculas para el número de serie (Filtro nativo de Android)
-        etNumSerie.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        etNumSerie.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         Button btnAnadir = findViewById(R.id.btnAnadirArma);
         Button btnModificar = findViewById(R.id.btnModificarArma);

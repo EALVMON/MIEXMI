@@ -29,12 +29,22 @@ class PU05 {
     @Test
     fun verificarLoginErroneo() {
         //  DNI que no existe en la base de datos
-        val loginDniInexistente = dbHelper.comprobarLogin("99999999R", Utilidades.cifrarContrasena("CualquierClave"))
-        assertEquals("El sistema no debe permitir el acceso a un DNI no registrado", -1, loginDniInexistente)
+        val loginDniInexistente =
+            dbHelper.comprobarLogin("99999999R", Utilidades.cifrarContrasena("CualquierClave"))
+        assertEquals(
+            "El sistema no debe permitir el acceso a un DNI no registrado",
+            -1,
+            loginDniInexistente
+        )
 
         // DNI correcto pero contraseña incorrecta
-        val loginPasswordMal = dbHelper.comprobarLogin("12345678Z", Utilidades.cifrarContrasena("ClaveErronea"))
-        assertEquals("El sistema debe rechazar una contraseña que no coincide", -1, loginPasswordMal)
+        val loginPasswordMal =
+            dbHelper.comprobarLogin("12345678Z", Utilidades.cifrarContrasena("ClaveErronea"))
+        assertEquals(
+            "El sistema debe rechazar una contraseña que no coincide",
+            -1,
+            loginPasswordMal
+        )
     }
 }
 

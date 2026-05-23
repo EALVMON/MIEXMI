@@ -15,7 +15,7 @@ data class HpsModelo(
     val idHps: Int,            // Guarda el ID (número entero)
     val nombre: String,        // Guarda el nombre de la habilitación (texto)
     val fechaConcesion: String, // Guarda la fecha de concesión (texto)
-    val fechaCaducidad: String  // Guarda la fecha de caducidad (texto)
+    val fechaCaducidad: String,  // Guarda la fecha de caducidad (texto)
 )
 
 // ====================================================================
@@ -27,7 +27,7 @@ class HpsAdaptador(
     private val listaDatos: List<HpsModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (HpsModelo) -> Unit
+    private val listener: (HpsModelo) -> Unit,
 ) : RecyclerView.Adapter<HpsAdaptador.HpsViewHolder>() {
 
     // ====================================================================

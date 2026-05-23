@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -142,6 +141,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardDatosPersonales"
                     style="@style/EstiloModuloCard">
+
                     <TextView
                         style="@style/EstiloModuloTexto"
                         android:text="@string/cat_datos_personales" />
@@ -150,6 +150,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardHistorialProfesional"
                     style="@style/EstiloModuloCard">
+
                     <TextView
                         style="@style/EstiloModuloTexto"
                         android:text="@string/cat_historial_profesional" />
@@ -158,6 +159,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardMeritosFormacion"
                     style="@style/EstiloModuloCard">
+
                     <TextView
                         style="@style/EstiloModuloTexto"
                         android:text="@string/cat_meritos_formacion" />
@@ -166,6 +168,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardRegistrosAdmin"
                     style="@style/EstiloModuloCard">
+
                     <TextView
                         style="@style/EstiloModuloTexto"
                         android:text="@string/cat_otros_registros" />
@@ -174,6 +177,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardExportar"
                     style="@style/EstiloModuloCard">
+
                     <TextView
                         style="@style/EstiloModuloTexto"
                         android:text="@string/cat_exportar_expediente" />
@@ -182,6 +186,7 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardActividad"
                     style="@style/EstiloModuloCard">
+
                     <TextView
                         style="@style/EstiloModuloTexto"
                         android:text="@string/cat_actividad_app" />

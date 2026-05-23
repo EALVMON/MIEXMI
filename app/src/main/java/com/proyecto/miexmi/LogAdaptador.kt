@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 // Genera completamente lo necesario (getters,setters,constructores)
 data class LogModelo(
     val dni: String,       // Guarda el DNI del usuario que accedió (texto)
-    val fechaHora: String  // Guarda el momento exacto del acceso (texto)
+    val fechaHora: String,  // Guarda el momento exacto del acceso (texto)
 )
 
 // ====================================================================
@@ -22,7 +22,7 @@ data class LogModelo(
 // Creamos la clase. El adaptador recibe la información desde fuera a través de su constructor:
 class LogAdaptador(
     // Recibe la lista completa con todos los registros del log que hay que mostrar.
-    private val listaDatos: List<LogModelo>
+    private val listaDatos: List<LogModelo>,
 ) : RecyclerView.Adapter<LogAdaptador.LogViewHolder>() {
 
     // ====================================================================
@@ -33,7 +33,8 @@ class LogAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_log_actividad) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_log_actividad, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_log_actividad, parent, false)
         // devuelvo esa vista ya fabricada
         return LogViewHolder(view)
     }

@@ -15,7 +15,7 @@ data class TrienioModelo(
     val idTrienio: Int,    // Guarda el ID (número entero)
     val tipoTrienio: String, // Guarda el tipo/grupo de trienio (texto)
     val fechaBod: String,  // Guarda la fecha de publicación (texto)
-    val numBod: String     // Guarda el número del boletín (texto)
+    val numBod: String,     // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -27,7 +27,7 @@ class TrienioAdaptador(
     private val listaDatos: List<TrienioModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (TrienioModelo) -> Unit
+    private val listener: (TrienioModelo) -> Unit,
 ) : RecyclerView.Adapter<TrienioAdaptador.TrienioViewHolder>() {
 
     // ====================================================================
@@ -50,7 +50,8 @@ class TrienioAdaptador(
 
         // ¡MAGIA! El número de trienio es simplemente su posición en la lista (le sumamos 1).
         // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
         // Rellenamos los textos de la fila con los datos reales que tiene nuestro trienio
         holder.tvTipoTrienio.text = actual.tipoTrienio

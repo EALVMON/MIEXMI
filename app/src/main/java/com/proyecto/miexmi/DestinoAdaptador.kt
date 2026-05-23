@@ -16,7 +16,7 @@ data class DestinoModelo(
     val idDestino: Int,    // Guarda el ID (número entero)
     val nombre: String,    // Guarda el nombre del destino (texto)
     val fechaBod: String,  // Guarda la fecha de publicación (texto)
-    val numBod: String     // Guarda el número del boletín (texto)
+    val numBod: String,     // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -28,7 +28,7 @@ class DestinoAdaptador(
     private val listaDatos: List<DestinoModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (DestinoModelo) -> Unit
+    private val listener: (DestinoModelo) -> Unit,
 ) : RecyclerView.Adapter<DestinoAdaptador.DestinoViewHolder>() {
 
     // ====================================================================
@@ -51,7 +51,8 @@ class DestinoAdaptador(
 
         // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
 
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
         // Rellenamos los textos de la fila con los datos reales que tiene nuestro destino
         holder.tvNombre.text = actual.nombre

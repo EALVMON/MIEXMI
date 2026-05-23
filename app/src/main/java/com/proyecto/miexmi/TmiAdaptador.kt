@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 data class TmiModelo(
     val idTmi: Int,            // Guarda el ID (número entero)
     val numeroTarjeta: String, // Guarda el número de la TMI (texto)
-    val fechaCaducidad: String // Guarda la fecha de caducidad (texto)
+    val fechaCaducidad: String, // Guarda la fecha de caducidad (texto)
 )
 
 // ====================================================================
@@ -28,7 +28,7 @@ class TmiAdaptador(
     private val listaTmis: List<TmiModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (TmiModelo) -> Unit
+    private val listener: (TmiModelo) -> Unit,
 ) : RecyclerView.Adapter<TmiAdaptador.TmiViewHolder>() {
 
     // ====================================================================
@@ -51,7 +51,8 @@ class TmiAdaptador(
 
         // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
         // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
         // Rellenamos los textos de la fila con los datos reales que tiene nuestra tarjeta
         holder.tvNumeroTarjeta.text = actual.numeroTarjeta

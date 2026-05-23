@@ -17,7 +17,7 @@ data class AptitudModelo(
     val idAptitud: Int,    // Guarda el ID (número entero)
     val nombre: String,    // Guarda el nombre de la aptitud (texto)
     val fechaBod: String,  // Guarda la fecha de publicación (texto)
-    val numBod: String     // Guarda el número del boletín (texto)
+    val numBod: String,     // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -29,10 +29,8 @@ class AptitudAdaptador(
     private val listaDatos: List<AptitudModelo>,
 
     //Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (AptitudModelo) -> Unit
-) : RecyclerView.Adapter<AptitudAdaptador.AptitudViewHolder>()
-
-{
+    private val listener: (AptitudModelo) -> Unit,
+) : RecyclerView.Adapter<AptitudAdaptador.AptitudViewHolder>() {
     // ====================================================================
     // 2.1 LOS TRES MÉTODOS OBLIGATORIOS
     // ====================================================================
@@ -51,7 +49,8 @@ class AptitudAdaptador(
         // Busca en nuestra lista de datos la linea de nuestra aptidud que toca dibujar
         val actual = listaDatos[position]
         // para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
         // Rellenamos los textos de la fila con los datos reales que tiene nuestra aptitud
         holder.tvNombre.text = actual.nombre
         holder.tvFechaBod.text = actual.fechaBod
@@ -70,7 +69,7 @@ class AptitudAdaptador(
     // ====================================================================
     // 2.2. EL VIEWHOLDER
     // ====================================================================
-       // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
+    // Esta clase anidada busca los textos una sola vez al principio y los guarda en memoria.
     class AptitudViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         // Enlazamos las variables de Kotlin con los IDs que cree en el diseño XML.

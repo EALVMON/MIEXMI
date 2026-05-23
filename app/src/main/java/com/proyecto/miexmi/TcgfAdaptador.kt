@@ -15,7 +15,7 @@ data class TcgfModelo(
     val id: Int,               // Guarda el ID (número entero)
     val fecha: String,         // Guarda la fecha de la prueba (texto)
     val puntuacion: String,    // Guarda la puntuación obtenida (texto)
-    val apto: String           // Guarda el resultado: Apto, No Apto... (texto)
+    val apto: String,           // Guarda el resultado: Apto, No Apto... (texto)
 )
 
 // ====================================================================
@@ -27,7 +27,7 @@ class TcgfAdaptador(
     private val listaDatos: List<TcgfModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (TcgfModelo) -> Unit
+    private val listener: (TcgfModelo) -> Unit,
 ) : RecyclerView.Adapter<TcgfAdaptador.TcgfViewHolder>() {
 
     // ====================================================================

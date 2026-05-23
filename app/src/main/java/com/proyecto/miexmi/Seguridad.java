@@ -5,12 +5,12 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
-// Importamos el campo de texto de Material Design que tienes en tu XML
+// Importamos el campo de texto de Material Design que tengo en mi  XML
 import com.google.android.material.textfield.TextInputEditText;
 
-public class Seguridad extends AppCompatActivity {
+// Hereda de la clase Temporizador para poder controlar el tiempo de 3 minutos en todos los On...
+public class Seguridad extends Temporizador {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

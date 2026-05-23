@@ -33,7 +33,11 @@ class PU11 {
         val idUsuarioGenerado = dbHelper.registrarUsuario(dniPrueba, passCifrada).toInt()
 
         // Verificamos que el usuario se creó (si es -1, algo falló en el registro)
-        assertNotEquals("El usuario debe crearse correctamente para poder añadir empleos", -1, idUsuarioGenerado)
+        assertNotEquals(
+            "El usuario debe crearse correctamente para poder añadir empleos",
+            -1,
+            idUsuarioGenerado
+        )
 
         // --- 3. ALTA: Ahora  añadimos el empleo con el ID real ---
         val exitoAlta = dbHelper.anadirEmpleo(idUsuarioGenerado, "Soldado", "01/01/2022", "10")
@@ -55,7 +59,11 @@ class PU11 {
         // Verificamos el cambio
         cursor = dbHelper.obtenerEmpleos(idUsuarioGenerado)
         cursor.moveToFirst()
-        assertEquals("El nombre debería haber cambiado a Cabo", "Cabo", cursor.getString(cursor.getColumnIndexOrThrow("Nom_Empleo")))
+        assertEquals(
+            "El nombre debería haber cambiado a Cabo",
+            "Cabo",
+            cursor.getString(cursor.getColumnIndexOrThrow("Nom_Empleo"))
+        )
         cursor.close()
 
         // --- 6. ELIMINACIÓN: Borramos el registro ---

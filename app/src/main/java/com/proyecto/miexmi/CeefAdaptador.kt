@@ -16,7 +16,7 @@ data class CeefModelo(
     val idCeef: Int,       // Guarda el ID (número entero)
     val nombre: String,    // Guarda el nombre de la especialidad (texto)
     val fechaBod: String,  // Guarda la fecha de publicación (texto)
-    val numBod: String     // Guarda el número del boletín (texto)
+    val numBod: String,     // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -28,7 +28,7 @@ class CeefAdaptador(
     private val listaDatos: List<CeefModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (CeefModelo) -> Unit
+    private val listener: (CeefModelo) -> Unit,
 ) : RecyclerView.Adapter<CeefAdaptador.CeefViewHolder>() {
 
     // ====================================================================
@@ -39,7 +39,8 @@ class CeefAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CeefViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_cee_fundamental) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_cee_fundamental, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_cee_fundamental, parent, false)
         // devuelvo esa vista ya fabricada
         return CeefViewHolder(view)
     }
@@ -50,7 +51,8 @@ class CeefAdaptador(
         val actual = listaDatos[position]
 
         // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
         // Rellenamos los textos de la fila con los datos reales que tiene nuestra especialidad
         holder.tvNombre.text = actual.nombre

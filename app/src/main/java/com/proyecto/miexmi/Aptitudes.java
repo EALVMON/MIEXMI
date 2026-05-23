@@ -4,10 +4,12 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.textfield.TextInputEditText;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +21,8 @@ import java.util.List;
 // 4. Le digo a los botones lo que tienen que hacer con los clics.
 // 5. Hago un metodo para leer la base de datos (cargarLista()).
 // ====================================================================
-// Le digo que herede de 'AppCompatActivity' así sabe que va a ser una pantalla visual y puedo utilizar sus métodos.
-public class Aptitudes extends AppCompatActivity {
+// Hereda de la clase Temporizador para poder controlar el tiempo de 3 minutos en todos los On...
+public class Aptitudes extends Temporizador {
 
     // Declaramos las variables "globales" para que cualquier
     // botón o función dentro de esta pantalla pueda usarlas y verlas.
@@ -41,7 +43,7 @@ public class Aptitudes extends AppCompatActivity {
     // ====================================================================
     // 2.Enlazo los botones del XML en el onCreate.
     // ====================================================================
-    // Este método es lo primero que se ejecuta
+    // Este metodo es lo primero que se ejecuta
     // cuando el usuario abre esta pantalla en el móvil.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,7 +192,7 @@ public class Aptitudes extends AppCompatActivity {
     // 6. MÉTODOS AUXILIARES
     // ====================================================================
 
-    // Método para vaciar las cajas de texto y reiniciar la selección
+    // Metodo para vaciar los textos y reiniciar la selección
     private void limpiarFormulario() {
         etNombreAptitud.setText("");
         etFechaBod.setText("");

@@ -3,11 +3,9 @@ package com.proyecto.miexmi;
 import android.content.Intent;
 import android.os.Bundle;
 
-
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-public class MenuMeritoFor extends AppCompatActivity {
+public class MenuMeritoFor extends Temporizador {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +58,7 @@ public class MenuMeritoFor extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-
-
-
-
-
-
-        // Boton volver llamamos a la funcion de la clase Utilidades
+        // Boton volver llamamos a la función de la clase Utilidades
         Utilidades.configurarBotonVolver(this, R.id.btnVolverMeritos);
 
     }

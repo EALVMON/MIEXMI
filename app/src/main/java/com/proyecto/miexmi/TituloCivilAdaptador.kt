@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 // Genera completamente lo necesario (getters,setters,constructores)
 data class TituloModelo(
     val idTitulo: Int, // Guarda el ID (número entero)
-    val nombre: String // Guarda el nombre del título civil (texto)
+    val nombre: String, // Guarda el nombre del título civil (texto)
 )
 
 // ====================================================================
@@ -25,7 +25,7 @@ class TituloCivilAdaptador(
     private val listaDatos: List<TituloModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (TituloModelo) -> Unit
+    private val listener: (TituloModelo) -> Unit,
 ) : RecyclerView.Adapter<TituloCivilAdaptador.TituloViewHolder>() {
 
     // ====================================================================
@@ -36,7 +36,8 @@ class TituloCivilAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TituloViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_titulo_civil) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_titulo_civil, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_titulo_civil, parent, false)
         // devuelvo esa vista ya fabricada
         return TituloViewHolder(view)
     }
@@ -48,7 +49,8 @@ class TituloCivilAdaptador(
 
         // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
         // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
         // Rellenamos los textos de la fila con los datos reales que tiene nuestro título
         holder.tvNombre.text = actual.nombre

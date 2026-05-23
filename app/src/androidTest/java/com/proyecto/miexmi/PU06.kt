@@ -33,6 +33,10 @@ class PU06 {
         val idUsuario = dbHelper.comprobarLogin("12345678Z", passCifradaParaLogin)
 
         // El test tiene éxito si el ID es distinto de -1 (es decir, el usuario existe)
-        assertNotEquals("El sistema debe permitir el acceso con credenciales correctas", -1, idUsuario)
+        assertNotEquals(
+            "El sistema debe permitir el acceso con credenciales correctas",
+            -1,
+            idUsuario
+        )
     }
 }

@@ -15,7 +15,7 @@ data class RelacionModelo(
     val idRelacion: Int,   // Guarda el ID (número entero)
     val nombre: String,    // Guarda el nombre de la situación administrativa (texto)
     val fechaBod: String,  // Guarda la fecha de publicación (texto)
-    val numBod: String     // Guarda el número del boletín (texto)
+    val numBod: String,     // Guarda el número del boletín (texto)
 )
 
 // ====================================================================
@@ -27,7 +27,7 @@ class RelacionAdaptador(
     private val listaDatos: List<RelacionModelo>,
 
     // Usamos una función Lambda para saber cuándo el usuario toca una fila.
-    private val listener: (RelacionModelo) -> Unit
+    private val listener: (RelacionModelo) -> Unit,
 ) : RecyclerView.Adapter<RelacionAdaptador.RelacionViewHolder>() {
 
     // ====================================================================
@@ -38,7 +38,8 @@ class RelacionAdaptador(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RelacionViewHolder {
         // LayoutInflater coge el archivo de diseño XML (item_relacion_admin) y lo "infla",
         // transformando ese código visual en un objeto real que la pantalla puede pintar.
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_relacion_admin, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_relacion_admin, parent, false)
         // devuelvo esa vista ya fabricada
         return RelacionViewHolder(view)
     }
@@ -50,7 +51,8 @@ class RelacionAdaptador(
 
         // Para imprimir el número en la primera columna. Le sumamos 1 porque las listas en programación empiezan en el número 0.
         // Utilizamos el recurso de texto oficial de Android para evitar el warning de concatenación.
-        holder.tvNumFila.text = holder.itemView.context.getString(R.string.numero_fila, position + 1)
+        holder.tvNumFila.text =
+            holder.itemView.context.getString(R.string.numero_fila, position + 1)
 
         // Rellenamos los textos de la fila con los datos reales que tiene nuestra relación
         holder.tvNombre.text = actual.nombre

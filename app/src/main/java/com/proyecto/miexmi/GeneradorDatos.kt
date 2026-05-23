@@ -90,7 +90,11 @@ object GeneradorDatos {
             arrayOf<Any>("CRUZ MERITO MILITAR CON DISTINTIVO BLANCO", "02/01/2014", 2),
             arrayOf<Any>("CRUZ DE LA REAL Y MILITAR ORDEN DE SAN HERMENEGILDO", "14/11/2014", 28),
             arrayOf<Any>("CRUZ MERITO MILITAR CON DISTINTIVO BLANCO", "19/06/2019", 119),
-            arrayOf<Any>("ENCOMIENDA DE LA REAL Y MILITAR ORDEN DE SAN HERMENEGILDO", "14/11/2019", 3),
+            arrayOf<Any>(
+                "ENCOMIENDA DE LA REAL Y MILITAR ORDEN DE SAN HERMENEGILDO",
+                "14/11/2019",
+                3
+            ),
             arrayOf<Any>("MEDALLA DE CAMPAÑA", "16/04/2024", 82)
         )
         for (r in recompensas) {

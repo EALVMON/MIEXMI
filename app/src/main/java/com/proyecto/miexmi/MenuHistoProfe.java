@@ -3,10 +3,10 @@ package com.proyecto.miexmi;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.cardview.widget.CardView;
 
-public class MenuHistoProfe extends AppCompatActivity {
+public class MenuHistoProfe extends Temporizador {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,9 +23,6 @@ public class MenuHistoProfe extends AppCompatActivity {
         CardView cardSubHps = findViewById(R.id.cardSubHps);
         CardView cardSubRelacion = findViewById(R.id.cardSubRelacion);
         CardView cardSubSituacion = findViewById(R.id.cardSubSituacion);
-
-
-
 
         // 2. Programamos el clic de cada tarjeta
         cardSubMisiones.setOnClickListener(v -> {

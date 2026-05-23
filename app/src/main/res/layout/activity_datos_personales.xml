@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -61,19 +60,28 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubFiliacion"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/filiacion" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/filiacion" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubTmi"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/tmi" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/tmi" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubCuerpoEscala"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/cuerpo_escala" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/cuerpo_escala" />
             </androidx.cardview.widget.CardView>
 
         </GridLayout>

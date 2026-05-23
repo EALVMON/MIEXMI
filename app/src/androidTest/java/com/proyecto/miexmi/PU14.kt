@@ -25,7 +25,8 @@ class PU14 {
         db.execSQL("DELETE FROM USUARIO")
 
         // 2. Creamos un usuario de prueba
-        idUsuarioGenerado = dbHelper.registrarUsuario("12345678Z", Utilidades.cifrarContrasena("pass123")).toInt()
+        idUsuarioGenerado =
+            dbHelper.registrarUsuario("12345678Z", Utilidades.cifrarContrasena("pass123")).toInt()
 
         // 3. Añadimos un dato real (un empleo) para que la exportación no esté vacía
         dbHelper.anadirEmpleo(idUsuarioGenerado, "Sargento", "15/05/2026", "100")
@@ -44,7 +45,10 @@ class PU14 {
 
         // 2. Verificamos que tenga el título de la tabla y los datos que insertamos
         assertTrue("Debe contener el título de la sección", textoCsv.contains("--- EMPLEOS ---"))
-        assertTrue("Debe contener el empleo insertado separado por formato CSV", textoCsv.contains("Sargento"))
+        assertTrue(
+            "Debe contener el empleo insertado separado por formato CSV",
+            textoCsv.contains("Sargento")
+        )
         assertTrue("Debe contener la fecha insertada", textoCsv.contains("15/05/2026"))
 
 
@@ -56,7 +60,10 @@ class PU14 {
         // 1. Verificamos la estructura básica de un JSON (Empieza por { y termina por })
         assertNotNull("El JSON no debe ser nulo", textoJson)
         val jsonLimpio = textoJson.trim()
-        assertTrue("El texto debe tener formato de objeto JSON", jsonLimpio.startsWith("{") && jsonLimpio.endsWith("}"))
+        assertTrue(
+            "El texto debe tener formato de objeto JSON",
+            jsonLimpio.startsWith("{") && jsonLimpio.endsWith("}")
+        )
 
         // 2. Intentamos convertir el texto en un Objeto JSON real para validarlo
         val raizJson = JSONObject(jsonLimpio)
@@ -69,6 +76,10 @@ class PU14 {
 
         // 3. Entramos al objeto y leemos el dato para ver si coincide
         val empleoGuardado = listaEmpleos.getJSONObject(0)
-        assertEquals("El empleo en el JSON debe ser Sargento", "Sargento", empleoGuardado.getString("Nom_Empleo"))
+        assertEquals(
+            "El empleo en el JSON debe ser Sargento",
+            "Sargento",
+            empleoGuardado.getString("Nom_Empleo")
+        )
     }
 }

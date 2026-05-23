@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -61,43 +60,64 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubTrienios"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/trienios" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/trienios" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubAptitudes"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/aptitudes" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/aptitudes" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubRecompensas"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/recompensas" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/recompensas" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubDistintivos"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/distintivos" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/distintivos" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubIdiomas"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/idiomas" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/idiomas" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubCursosMilitares"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/cursos_militares" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/cursos_militares" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSubTitulosCiviles"
                 style="@style/EstiloModuloCard">
-                <TextView style="@style/EstiloModuloTexto" android:text="@string/titulos_civiles" />
+
+                <TextView
+                    style="@style/EstiloModuloTexto"
+                    android:text="@string/titulos_civiles" />
             </androidx.cardview.widget.CardView>
 
         </GridLayout>
