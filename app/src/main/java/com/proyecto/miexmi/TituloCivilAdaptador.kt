@@ -73,8 +73,7 @@ class TituloCivilAdaptador(
     class TituloViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         // Enlazamos las variables de Kotlin con los IDs que creé en el diseño XML.
-        // (Asegúrate de que estos IDs coinciden con los de tu item_titulo_civil.xml)
-        val tvNumFila: TextView = itemView.findViewById(R.id.tvItemNumTitulo)
+         val tvNumFila: TextView = itemView.findViewById(R.id.tvItemNumTitulo)
         val tvNombre: TextView = itemView.findViewById(R.id.tvItemNombreTitulo)
     }
 }

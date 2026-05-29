@@ -83,7 +83,7 @@ public class Recompensas extends Temporizador {
         Button btnLimpiar = findViewById(R.id.btnLimpiarRecompensa);
         RecyclerView rvRecompensas = findViewById(R.id.rvRecompensas);
 
-        // Activamos los métodos que están en la clase Utilidades.
+        // Utilizamos los métodos que están en la clase Utilidades.
         // Uno para el desplegable de recompensas militares y otro para que al tocar la fecha salga el calendario.
         Utilidades.configurarCalendario(this, etFecha);
         Utilidades.configurarDesplegableRecompensas(this, etNombre);

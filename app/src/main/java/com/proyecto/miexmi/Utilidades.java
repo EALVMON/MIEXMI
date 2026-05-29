@@ -67,7 +67,7 @@ public class Utilidades {
             DatePickerDialog dialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
                 // Formateamos la fecha siempre igual: dd/mm/yyyy en Java los meses empiezan en 0 (enero) por eso sumamos 1
                 String fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, (month + 1), year);
-                // pomemos los que escogio en eel calendario en el editText de la fecha ya en el formato que queremos
+                // ponemos los que escogió en eel calendario en el editText de la fecha ya en el formato que queremos
                 editText.setText(fechaSeleccionada);
             }, anio, mes, dia);
             // Le decimos a android que mueste el calendario
@@ -271,7 +271,7 @@ public class Utilidades {
             // Como no podemos guardar "símbolos raros" en la base de datos, vamos a traducir
             // esos bytes a un formato llamado Hexadecimal que usa números del 0 al 9 y letras de la A a la F.
 
-            // Creamos un 'StringBuilder' (nuestro constructor de textos rápido) para ir uniendo las letras.
+            // Creamos un 'StringBuilder' para ir uniendo las letras.
             StringBuilder hexString = new StringBuilder();
 
             // Iniciamos un bucle: vamos a coger la matriz de bytes ('hash') y analizarla byte por byte.
@@ -324,8 +324,8 @@ public class Utilidades {
         // devolvemos 'false' directamente para evitar que la aplicación se "cuelgue".
         if (fechaStr == null || fechaStr.isEmpty()) return false;
 
-        // Abrimos un bloque 'try-catch' porque trabajar con fechas introducidas por usuarios
-        // es peligroso. Si el usuario escribió "hola" en vez de una fecha aunque esto lo evite
+        // Abrimos un bloque 'try-catch', porque trabajar con fechas introducidas por usuarios
+        // es peligroso. Si el usuario escribió "hola" en vez de una fecha, aunque esto lo evite
         // luego haciendo que le saliera el calendario
         try {
 

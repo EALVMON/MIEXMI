@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 object GeneradorDatos {
 
     // ====================================================================
-    // === CARGA MASIVA DE DATOS REALES (DESDE PDFs OFICIALES)          ===
+    // === CARGA MASIVA DE DATOS REALES DE MI DNI 11427316L COMO UN HUEVO DE PASCUA ===
     // ====================================================================
 
     fun cargarExpedientePDF(db: SQLiteDatabase, idUsuario: Int) {
@@ -18,7 +18,7 @@ object GeneradorDatos {
             put("Apellidos", "ALVAREZ MONTES")
             put("Fech_Incorp", "14/11/1994")
             put("Nun_Escalafon", 3092310)
-            put("TMI", "") // Opcional
+            put("TMI", "")
         })
 
         // 2. EMPLEOS (Extraídos de Hoja de Servicios)
@@ -212,9 +212,9 @@ object GeneradorDatos {
             put("M_Apti_Nbod", 135)
         })
 
-        // ====================================================================
-        // 12. SITUACIONES ADMINISTRATIVAS (¡Añadido!)
-        // ====================================================================
+
+        // 12. SITUACIONES ADMINISTRATIVAS
+
         val situaciones = listOf(
             arrayOf<Any>("SERVICIO MILITAR OBLIGATORIO", "14/11/1994", 999),
             arrayOf<Any>("SERV.ACTIVO-DESTINADO EN UCO,S. DEL MINISDEF", "14/08/1995", 999),
@@ -233,9 +233,9 @@ object GeneradorDatos {
             })
         }
 
-        // ====================================================================
-        // 13. RELACIÓN CON LA ADMINISTRACIÓN (¡Nuevo!)
-        // ====================================================================
+
+        // 13. RELACIÓN CON LA ADMINISTRACIÓN
+
         val relacionesAdmin = listOf(
             arrayOf<Any>("MTM CON COMPROMISO INICIAL", "14/11/1994", 32),
             arrayOf<Any>("MILITAR ALUMNO (ACCESO A MILITAR DE CARRERA)", "10/09/2001", 143),
@@ -250,9 +250,9 @@ object GeneradorDatos {
             })
         }
 
-        // ====================================================================
+
         // 14. DISTINTIVOS
-        // ====================================================================
+
         val distintivos = listOf(
             arrayOf<Any>("MERITO OPERACIONES DE MANTENIMIENTO DE LA PAZ", "31/05/1996", 116),
             arrayOf<Any>("MERITO OPERACIONES DE MANTO. DE LA PAZ(ADICION)", "20/03/1998", 65),
@@ -269,9 +269,9 @@ object GeneradorDatos {
             })
         }
 
-        // ====================================================================
+
         // 15. ESPECIALIDADES FUNDAMENTALES
-        // ====================================================================
+
         val especialidades = listOf(
             arrayOf<Any>("MPTM-ET-INGENIEROS TRANSMISIONES", "14/11/1994", 32),
             arrayOf<Any>("TRANSMISIONES(MPTM-ET-TRS)", "06/09/2000", 175),

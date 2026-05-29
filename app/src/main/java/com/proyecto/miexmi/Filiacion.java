@@ -19,7 +19,7 @@ public class Filiacion extends Temporizador {
         // Configuramos el botón de volver
         Utilidades.configurarBotonVolver(this, R.id.btnVolverFiliacion);
 
-        // RECUPERAMOS LA SESIÓN usando la función que nos hemos creado en Utilidades.java
+        // Recuperamos la sesion usando la función que nos hemos creado en Utilidades.java
         int idUsuarioActual = Utilidades.obtenerUsuarioActual(this);
 
         if (idUsuarioActual == -1) {
@@ -46,7 +46,7 @@ public class Filiacion extends Temporizador {
         try (ExpedienteHelper dbHelper = new ExpedienteHelper(this)) {
             Cursor cursor = dbHelper.obtenerFiliacion(idUsuarioActual);
 
-            // Como sabemos que el cursor nunca es nulo, vamos directos al grano
+
             if (cursor.moveToFirst()) {
                 // Sacamos los datos de las columnas y los escribimos en los campos de texto
                 etNombre.setText(cursor.getString(cursor.getColumnIndexOrThrow("Nombre")));

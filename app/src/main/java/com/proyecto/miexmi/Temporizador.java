@@ -9,13 +9,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-// Le digo que herede de 'AppCompatActivity' así sabe que va a ser una pantalla visual y puedo utilizar sus métodos.
+// Le digo que herede de 'AppCompatActivity' así puedo utilizar sus métodos, en otras clases que hereden de Temporizador
 public class Temporizador extends AppCompatActivity {
 
     // Variables que voy a utilizar para controlar el cierre por inactividad
     // Usamos un Handler para contar el tiempo en milisegundos es un temporizador
     private final Handler handlerInactividad = new Handler();
-    // defino un objeto runnable que lo defino en la linea 66 y se dispra si pasan 3 minutos
+    // defino un objeto runnable que lo defino en la linea 33 y se dispra si pasan 3 minutos
     private Runnable runnableInactividad;
     // Definimos el tiempo límite: 3 minutos (3 * 60 segundos * 1000 milisegundos)
     private static final long TIEMPO_INACTIVIDAD = 3 * 60 * 1000;
@@ -38,7 +38,7 @@ public class Temporizador extends AppCompatActivity {
             // 2. Mostramos aviso
             Toast.makeText(this, "Sesión cerrada por inactividad (3 min)", Toast.LENGTH_LONG).show();
 
-            // 3. Redirigimos al Login
+            // 3. Redirigimos al LoginActivity
             Intent intentInactividad = new Intent(this, LoginActivity.class);
 
             // 4- Evitamos que el usuario pueda darle al botón "Atrás" del móvil y volver a entrar a la APP

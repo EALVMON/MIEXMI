@@ -86,7 +86,7 @@ public class EvaluacionAscenso extends Temporizador {
         RecyclerView rvEvaluaciones = findViewById(R.id.rvEvaluaciones);
 
         // --- CONFIGURACIÓN DE LOS DESPLEGABLES Y CALENDARIO ---
-        // 1. Desplegable de Empleos (reutilizando la herramienta global)
+        // 1. Desplegable de Empleos
         Utilidades.configurarDesplegableEmpleos(this, etNombreEvaluacion);
 
         // 2. Desplegable de Resultados (Apto, No Apto)

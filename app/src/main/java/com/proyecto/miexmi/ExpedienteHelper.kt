@@ -427,7 +427,7 @@ class ExpedienteHelper(context: Context) :
         val existe = cursor.moveToFirst()
         cursor.close()
 
-        // 2. Si la contraseña actual es correcta entonces es tru i entra en el if ,y  guardamos la nueva
+        // 2. Si la contraseña actual es correcta entonces es true y entra en el if ,y  guardamos la nueva
         if (existe) {
             val values = android.content.ContentValues().apply {
                 put("Contraseña", passNueva)
@@ -618,10 +618,7 @@ class ExpedienteHelper(context: Context) :
         )
     }
 
-    /*
-    Aquí no comprobé que al modificar si ya existe esta especialidad para este usuario
-    como hice en el anterior módulo esto lo dejo para futuras mejoras
-    */
+
     fun modificarCEEF(idCeef: Int, nombre: String, fechaBod: String, numBodStr: String): Boolean {
         val db = this.writableDatabase
 
@@ -699,10 +696,7 @@ class ExpedienteHelper(context: Context) :
         )
     }
 
-    /*
-       Aquí no comprobé que al modificar si ya existe este empleo para este usuario
-       esto lo dejo para futuras mejoras
-       */
+
     fun modificarEmpleo(
         idEmpleo: Int,
         nombre: String,
@@ -1196,7 +1190,7 @@ class ExpedienteHelper(context: Context) :
 
     fun obtenerTrienios(idUsuario: Int): android.database.Cursor {
         val db = this.readableDatabase
-        // ASC es importante aquí para que el número de fila coincida con el número de trienio cronológico
+        // poner lo ASC es  para que el número de fila coincida con el número de trienio cronológico
         return db.rawQuery(
             "SELECT * FROM MOD_TRIENIOS WHERE Id_Usuario = ? ORDER BY Id_M_Trie ASC",
             arrayOf(idUsuario.toString())
@@ -1703,7 +1697,7 @@ class ExpedienteHelper(context: Context) :
     ): Boolean {
         val db = this.writableDatabase
 
-        //Comprobamos si el número de serie ya existe en OTRA arma distinta.
+        //Comprobamos si el número de serie ya existe en otra arma distinta.
         // El número de serie es un identificador único físico, por lo que la comprobación es global.
         // Usamos Id_M_EArm != ? para excluir el arma que estamos editando actualmente.
         val cursor = db.rawQuery(

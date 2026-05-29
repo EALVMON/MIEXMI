@@ -44,15 +44,15 @@ public class Registro extends AppCompatActivity {
 
             // === 5. CASCADA DE VALIDACIONES ===
 
-            // A. Comprobamos si hay campos vacíos
+            // 5.1. Comprobamos si hay campos vacíos
             if (dni.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(this, "Rellena todos los campos", Toast.LENGTH_SHORT).show();
 
-                // B. Comprobamos la seguridad de la contraseña
+                //5.2. Comprobamos la seguridad de la contraseña
             } else if (!Utilidades.esPasswordSegura(pass)) {
                 Toast.makeText(this, "La contraseña debe tener al menos 8 caracteres", Toast.LENGTH_LONG).show();
 
-                // C. Validamos el formato del DNI
+                // 5.3 Validamos el formato del DNI
             } else if (!validarDNI(dni)) {
                 Toast.makeText(this, "DNI incorrecto", Toast.LENGTH_SHORT).show();
 
@@ -87,7 +87,7 @@ public class Registro extends AppCompatActivity {
                         }).start();
 
                     }
-                    // descomentar lo siguiente par aque no haga la carga y borrer lo de arriba
+                    // descomentar lo siguiente par aque no haga la carga y borrar lo de arriba
                     /* Toast.makeText(this, "Registrado correctamente", Toast.LENGTH_SHORT).show();
                     finish(); // Cerramos y volvemos al login */
                     else {

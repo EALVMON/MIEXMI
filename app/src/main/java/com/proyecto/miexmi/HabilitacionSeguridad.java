@@ -84,7 +84,7 @@ public class HabilitacionSeguridad extends Temporizador {
         RecyclerView rvHps = findViewById(R.id.rvHps);
 
         // --- CONFIGURACIÓN DE DESPLEGABLE Y CALENDARIOS ---
-        // Llamamos a tu función global en Utilidades para cargar los tipos de HPS (Confidencial, Reservado...)
+        // Utilizamos la función global en Utilidades para cargar los tipos de HPS (Confidencial, Reservado...)
         Utilidades.configurarDesplegableHPS(this, etNombreHps);
 
         // Activamos el método de Utilidades en ambas cajas de fecha para que salte el calendario desplegable

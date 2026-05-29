@@ -9,7 +9,7 @@ package com.proyecto.miexmi;
   a mi cuñada Amparo (gracias, nos volveremos a ver)
   ========================================================================
  */
-// Importaciones necesarias
+
 
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         // Acción al pulsar el botón LOGIN
         btnLogin.setOnClickListener(v -> {
 
-            // Obtenemos lo que escribe el usuario, (con .trim()  quitamos espacios inútiles)
+            // Obtenemos lo que escribe el usuario, (con .trim()  quitamos espacios inútiles
             // Añado .toUpperCase() para que las minúsculas no den problemas al iniciar sesión, ya que
             // en registro obligo a que de guarde la letra del dni en mayusculas, asi aqui aunuque el usuario
             // no se de cuenta de ponerlo en mayusculsa se transfoma

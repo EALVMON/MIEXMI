@@ -162,7 +162,7 @@ public class MenuPrincipal extends Temporizador {
 
 
         // --- LANZAMOS PARA VER LAS CADUCIDADES ---
-        // Recuperamos el, id del usuario que inicio el login
+        // Recuperamos el id del usuario que inicio el login
         int idUsuarioActual = Utilidades.obtenerUsuarioActual(this);
         if (idUsuarioActual != -1) {
             verificarCaducidades(idUsuarioActual);
@@ -310,8 +310,7 @@ public class MenuPrincipal extends Temporizador {
         lanzadorGuardarArchivo.launch(intent);
     }
 
-    // MEtodo privado que no devuelve nada (void). Recibe como dato el ID del usuario actual.
-    // Su trabajo es revisar carnets, armas, TMI y HPS buscando caducidades próximas.
+    // MEtodo para revisar carnets, armas, TMI y HPS buscando caducidades próximas.
     private void verificarCaducidades(int idUsuario) {
 
         // --- 1. COMPROBACIÓN DEL MODO "NO MOLESTAR" ---

@@ -83,7 +83,7 @@ public class PruebasFisicas extends Temporizador {
         Button btnLimpiar = findViewById(R.id.btnLimpiarTcgf);
         RecyclerView rvTcgf = findViewById(R.id.rvTcgf);
 
-        // Activamos los métodos que están en la clase Utilidades.
+        // utilizamos los métodos que están en la clase Utilidades.
         // Uno para que al tocar la fecha salga el calendario y otro para el desplegable de aptitud (Apto, No Apto...)
         Utilidades.configurarCalendario(this, etFecha);
         Utilidades.configurarDesplegableAptoTcgf(this, etApto);
@@ -149,7 +149,7 @@ public class PruebasFisicas extends Temporizador {
             }
         });
 
-        // Botón MODIFICAR
+       
         // Botón MODIFICAR
         btnModificar.setOnClickListener(v -> {
             // Si el ID es -1, significa que no ha tocado ninguna fila de la lista para editar

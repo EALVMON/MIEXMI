@@ -14,7 +14,7 @@ public class ComprobarDni {
         // Comprobar que los números son válidos
         if (!numeros.matches("[0-9]+")) return false;
 
-        // Tabla oficial
+        // Tabla oficial de las letras que pueden tener los DNI
         String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
 
         // Calcular letra correcta
