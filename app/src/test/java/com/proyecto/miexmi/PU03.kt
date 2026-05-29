@@ -8,7 +8,7 @@ class PU03 {
 
     @Test
     fun verificarCoincidenciaContrasenas() {
-        // Caso A: Las contraseñas son DIFERENTES -> Debe dar FALSO
+        //1-Las contraseñas son DIFERENTES -> Debe dar FALSO
         val passNueva = "Soldado123"
         val passRepetida = "Sargento123"
 
@@ -16,11 +16,11 @@ class PU03 {
         val coincidenDiferentes = Utilidades.contrasenasCoinciden(passNueva, passRepetida)
         assertFalse("El sistema debe rechazar contraseñas que no coinciden", coincidenDiferentes)
 
-        // Caso B: Las contraseñas son IGUALES -> Debe dar VERDADERO
+        // 2-Las contraseñas son IGUALES -> Debe dar VERDADERO
         val passCorrecta = "Capitan2024"
         val passRepetidaCorrecta = "Capitan2024"
 
-        // Llamamos a tu clase real de nuevo
+        // Llamamos a la clase real de nuevo
         val coincidenIguales = Utilidades.contrasenasCoinciden(passCorrecta, passRepetidaCorrecta)
         assertTrue("El sistema debe aceptar contraseñas idénticas", coincidenIguales)
     }

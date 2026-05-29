@@ -13,17 +13,17 @@ class PU12 {
         val fechaValida = "10/05/2026"
         val bodValido = "123"
 
-        // CASO A: El usuario olvida el nombre del empleo (Campo obligatorio)
+        // 1-El usuario olvida el nombre del empleo (Campo obligatorio)
         val nombreVacio = ""
         val resultadoA = Utilidades.camposRellenos(nombreVacio, fechaValida, bodValido)
         assertFalse("El sistema debe detectar que falta el nombre del empleo", resultadoA)
 
-        // CASO B: El usuario olvida la fecha (Campo obligatorio)
+        // 2-El usuario olvida la fecha (Campo obligatorio)
         val fechaVacia = " "
         val resultadoB = Utilidades.camposRellenos(empleoValido, fechaVacia, bodValido)
         assertFalse("El sistema debe detectar que falta la fecha", resultadoB)
 
-        // CASO C: Esta  rellenado correctamente
+        // 3-Esta  rellenado correctamente
         val resultadoC = Utilidades.camposRellenos(empleoValido, fechaValida, bodValido)
         assertTrue("El sistema debe permitir el paso si todo está relleno", resultadoC)
     }

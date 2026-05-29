@@ -66,7 +66,7 @@ class PU11 {
         )
         cursor.close()
 
-        // --- 6. ELIMINACIÓN: Borramos el registro ---
+        // --- Borramos el registro ---
         val exitoBorrado = dbHelper.eliminarEmpleo(idRegistro)
         assertTrue("La eliminación del registro debería ser exitosa", exitoBorrado)
 

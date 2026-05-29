@@ -32,7 +32,7 @@ class PU10 {
 
     @Test
     fun verificarFiltroPorBOD() {
-        // --- EJECUCIÓN (CU.06 Búsqueda) ---
+
         // Buscamos EXCLUSIVAMENTE por el BOD "150"
         val resumenFiltrado = dbHelper.obtenerResumenExpediente(idUsuarioTest, "150", "")
 

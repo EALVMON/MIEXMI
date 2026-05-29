@@ -8,7 +8,7 @@ class PU04 {
 
     @Test
     fun verificarCamposVaciosLogin() {
-        // Caso A: Ambos campos vacíos -> Debe dar FALSO (bloquear)
+        // 1- Ambos campos vacíos -> Debe dar FALSO (bloquear)
         val dniVacio = ""
         val passVacia = ""
         assertFalse(
@@ -16,15 +16,15 @@ class PU04 {
             Utilidades.camposRellenos(dniVacio, passVacia)
         )
 
-        // Caso B: Solo DNI vacío -> Debe dar FALSO
+        // 2- Solo DNI vacío -> Debe dar FALSO
         val passOk = "Soldado123"
         assertFalse("Debe fallar si el DNI está vacío", Utilidades.camposRellenos("", passOk))
 
-        // Caso C: Solo Password vacío -> Debe dar FALSO
+        // 3- Solo Password vacío -> Debe dar FALSO
         val dniOk = "12345678Z"
         assertFalse("Debe fallar si la clave está vacía", Utilidades.camposRellenos(dniOk, ""))
 
-        // Caso D: Ambos rellenos -> Debe dar VERDADERO (permitir continuar)
+        // 4-Ambos rellenos -> Debe dar VERDADERO (permitir continuar)
         assertTrue(
             "Debe aceptar si ambos campos tienen texto",
             Utilidades.camposRellenos(dniOk, passOk)
